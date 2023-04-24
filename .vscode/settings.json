@@ -1,0 +1,9 @@
+{
+    // "rust-analyzer.cargo.extraEnv": {
+    //     "LEPTOS_OUTPUT_NAME": "leaflet"
+    // },
+    "rust-analyzer.linkedProjects": [
+        ".\\examples\\simple-map\\Cargo.toml",
+        ".\\Cargo.toml"
+    ]
+}
