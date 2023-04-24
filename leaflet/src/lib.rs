@@ -120,7 +120,7 @@ extern "C" {
 
     // LatLng
 
-    #[derive(Debug, Clone)]
+    #[derive(Debug, Default, Clone)]
     pub type LatLng;
 
     #[wasm_bindgen(constructor, js_namespace = L)]

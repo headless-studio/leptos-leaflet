@@ -7,7 +7,9 @@ pub fn App(cx: Scope) -> impl IntoView {
         <MapContainer style="height: 400px" locate=true set_view=true>
             <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"/>
             <Marker position=latlng!(39.020959, -9.149168) >
-                <Popup content="Popup"/>
+                <Popup>
+                    <strong>{"A pretty CSS3 popup"}</strong>
+                </Popup>
             </Marker>
         </MapContainer>
     }
