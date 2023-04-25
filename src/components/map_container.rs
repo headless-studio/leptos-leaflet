@@ -1,3 +1,4 @@
+use crate::components::provide_leaflet_context;
 use leaflet::{LatLng, LocateOptions};
 use leptos::{html::Div, *};
 use wasm_bindgen::prelude::*;
@@ -34,12 +35,11 @@ pub fn MapContainer(
 ) -> impl IntoView {
     let map_ref = create_node_ref::<Div>(cx);
 
-    provide_context(cx, LeafletMapContext::new(cx));
+    provide_leaflet_context(cx);
 
     create_effect(cx, move |_| {
         if let Some(node) = map_ref() {
             let center = center.clone();
-            let zoom = zoom.clone();
             let html_node = node.unchecked_ref::<HtmlDivElement>();
             // Randomize the id of the map
             if html_node.id().is_empty() {
@@ -47,7 +47,8 @@ pub fn MapContainer(
                 node.clone().id(id);
             }
             node.on_mount(move |node| {
-                let map_context = use_context::<LeafletMapContext>(cx).expect("Map context not found");
+                let map_context =
+                    use_context::<LeafletMapContext>(cx).expect("Map context not found");
                 let node = node.unchecked_ref::<HtmlDivElement>();
                 let mut options = leaflet::MapOptions::new();
                 options.zoom(zoom());

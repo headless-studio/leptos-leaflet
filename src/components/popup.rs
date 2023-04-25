@@ -1,7 +1,7 @@
+use super::{LeafletMapContext, LeafletOverlayContainerContext};
+use leptos::svg::marker;
 use leptos::*;
 use wasm_bindgen::prelude::*;
-
-use super::LeafletMapContext;
 
 #[component]
 pub fn Popup(
@@ -10,15 +10,18 @@ pub fn Popup(
     children: Children,
 ) -> impl IntoView {
     let map_context = use_context::<LeafletMapContext>(cx).expect("Map context not found");
+    let overlay_context = use_context::<LeafletOverlayContainerContext>(cx);
 
     let content = view! {cx, <div>{children(cx)}</div>};
     create_effect(cx, move |_| {
         log!("Popup context {:?}", map_context);
         let inner_content = content.clone();
-        map_context.marker_signal().track();
-        if map_context.in_marker() {
+        if let Some(overlay_context) = overlay_context.clone() {
             log!("we are in marker");
-            if let (Some(marker), Some(map)) = (map_context.marker(), map_context.map()) {
+            if let (Some(marker), Some(_map)) = (
+                overlay_context.container::<leaflet::Marker>(),
+                map_context.map(),
+            ) {
                 log!("Adding popup");
                 let options = leaflet::PopupOptions::default();
                 let popup = leaflet::Popup::new(&options, Some(marker.unchecked_ref()));
