@@ -7,6 +7,8 @@ pub mod plugins;
 mod popup;
 mod raster;
 mod shapes;
+mod tooltip;
+mod div_overlay;
 
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
@@ -21,6 +23,8 @@ pub use raster::{TileLayer, TileLayerOptions};
 pub use shapes::{
     Circle, CircleMarker, Path, PathOptions, Polygon, Polyline, PolylineOptions, Rectangle,
 };
+pub use tooltip::{Tooltip, TooltipOptions};
+pub use div_overlay::DivOverlay;
 
 #[macro_export]
 macro_rules! object_property_set {
@@ -177,17 +181,6 @@ extern "C" {
 
     #[wasm_bindgen(method)]
     pub fn on(this: &Marker, event_name: &str, handler: &JsValue);
-
-    // Tooltip
-
-    /// [`Tooltip`](https://leafletjs.com/reference-1.7.1.html#tooltip)
-    #[derive(Debug, Clone)]
-    #[wasm_bindgen(extends = Layer)]
-    pub type Tooltip;
-
-    /// [`L.tooltip`](https://leafletjs.com/reference-1.7.1.html#tooltip-l-tooltip)
-    #[wasm_bindgen(js_namespace = L)]
-    pub fn tooltip(options: &JsValue, layer: Option<&Layer>) -> Popup;
 
     // MouseEvent
 

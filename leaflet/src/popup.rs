@@ -1,7 +1,7 @@
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
 
-use crate::{LatLng, Layer, Map, object_construtor, object_property_set, Point};
+use crate::{LatLng, Layer, Map, object_construtor, object_property_set, Point, DivOverlay};
 
 #[wasm_bindgen]
 extern "C" {
@@ -13,7 +13,7 @@ extern "C" {
 
     /// [`Popup`](https://leafletjs.com/reference.html#popup)
     #[derive(Debug, Clone)]
-    #[wasm_bindgen(extends = Layer)]
+    #[wasm_bindgen(extends = DivOverlay)]
     pub type Popup;
 
     /// [`L.popup`](https://leafletjs.com/reference.html#popup-l-popup)
@@ -23,42 +23,6 @@ extern "C" {
     /// [`L.popup`](/// [`L.popup`](https://leafletjs.com/reference.html#popup-l-popup))
     #[wasm_bindgen(constructor, js_namespace = L)]
     pub fn new_with_lat_lng(lat_lng: &LatLng, options: &PopupOptions) -> Popup;
-
-    /// [`getLatLng`](https://leafletjs.com/reference-1.7.1.html#popup-getlatlng)
-    #[wasm_bindgen(method)]
-    pub fn getLatLng(this: &Popup) -> LatLng;
-
-    /// [`setLatLng`](https://leafletjs.com/reference-1.7.1.html#popup-setlatlng)
-    #[wasm_bindgen(method)]
-    pub fn setLatLng(this: &Popup, latlng: &LatLng);
-
-    /// [`getContent`](https://leafletjs.com/reference-1.7.1.html#popup-getcontent)
-    #[wasm_bindgen(method)]
-    pub fn getContent(this: &Popup) -> JsValue;
-
-    /// [`setContent`](https://leafletjs.com/reference-1.7.1.html#popup-setcontent)
-    #[wasm_bindgen(method)]
-    pub fn setContent(this: &Popup, content: &JsValue);
-
-    /// [`update`](https://leafletjs.com/reference-1.7.1.html#popup-update)
-    #[wasm_bindgen(method)]
-    pub fn update(this: &Popup);
-
-    /// [`isOpen`](https://leafletjs.com/reference-1.7.1.html#popup-isopen)
-    #[wasm_bindgen(method)]
-    pub fn isOpen(this: &Popup) -> bool;
-
-    /// [`bringToFront`](https://leafletjs.com/reference-1.7.1.html#popup-bringtofront)
-    #[wasm_bindgen(method)]
-    pub fn bringToFront(this: &Popup);
-
-    /// [`bringToBack`](https://leafletjs.com/reference-1.7.1.html#popup-bringtoback)
-    #[wasm_bindgen(method)]
-    pub fn bringToBack(this: &Popup);
-
-    /// [`openOn`](https://leafletjs.com/reference-1.7.1.html#popup-openon)
-    #[wasm_bindgen(method)]
-    pub fn openOn(this: &Popup, map: &Map);
 }
 
 impl PopupOptions {

@@ -2,12 +2,15 @@ mod map_container;
 mod marker;
 mod popup;
 mod tile_layer;
+mod tooltip;
 
+use leaflet::LatLng;
 use leptos::*;
 pub use map_container::MapContainer;
 pub use marker::Marker;
 pub use popup::Popup;
 pub use tile_layer::TileLayer;
+pub use tooltip::Tooltip;
 use wasm_bindgen::JsCast;
 
 #[derive(Debug, Clone)]
@@ -73,5 +76,35 @@ impl LeafletOverlayContainerContext {
         self.container
             .get_untracked()
             .map(|layer| layer.unchecked_into())
+    }
+}
+
+#[derive(Debug, Default, Clone)]
+pub struct Position {
+    pub lat: f64,
+    pub lng: f64,
+}
+
+impl Position {
+    pub fn new(lat: f64, lng: f64) -> Self {
+        Self { lat, lng }
+    }
+}
+
+impl From<Position> for LatLng {
+    fn from(value: Position) -> Self {
+        LatLng::new(value.lat, value.lng)
+    }
+}
+
+impl From<Position> for (f64, f64) {
+    fn from(value: Position) -> Self {
+        (value.lat, value.lng)
+    }
+}
+
+impl From<Position> for [f64; 2] {
+    fn from(value: Position) -> Self {
+        [value.lat, value.lng]
     }
 }
