@@ -22,7 +22,7 @@ pub fn Circle(
                 .map()
             {
                 log!("Adding circle");
-                let mut options = options();
+                let mut options = options.get_untracked();
                 options.radius(radius.get_untracked());
                 let circle =
                     leaflet::Circle::new_with_options(&center.get_untracked().into(), &options);

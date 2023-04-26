@@ -33,3 +33,9 @@ impl IconOptions {
     object_property_set!(class_name, className, &str);
     object_property_set!(cross_origin, crossOrigin, &str);
 }
+
+impl Default for IconOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
