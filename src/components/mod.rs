@@ -3,15 +3,20 @@ mod marker;
 mod popup;
 mod tile_layer;
 mod tooltip;
+mod polygon;
+mod polyline;
 
 use leaflet::LatLng;
 use leptos::*;
+use wasm_bindgen::JsCast;
+
 pub use map_container::MapContainer;
 pub use marker::Marker;
 pub use popup::Popup;
 pub use tile_layer::TileLayer;
 pub use tooltip::Tooltip;
-use wasm_bindgen::JsCast;
+pub use polyline::Polyline;
+pub use polygon::Polygon;
 
 #[derive(Debug, Clone)]
 pub struct LeafletMapContext {
@@ -49,6 +54,11 @@ pub fn extend_context_with_overlay(cx: Scope) -> LeafletOverlayContainerContext 
     overlay_context
 }
 
+pub fn update_overlay_context<C: Into<leaflet::Layer> + Clone>(cx: Scope, layer: &C) {
+    let overlay_context = use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
+    overlay_context.set_container(layer);
+}
+
 #[derive(Debug, Clone)]
 pub struct LeafletOverlayContainerContext {
     container: RwSignal<Option<leaflet::Layer>>,
@@ -79,7 +89,7 @@ impl LeafletOverlayContainerContext {
     }
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub struct Position {
     pub lat: f64,
     pub lng: f64,

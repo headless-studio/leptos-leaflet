@@ -21,7 +21,4 @@ pub fn TileLayer(cx: Scope,
 
         }
     });
-    view! { cx,
-        {add_layer}
-    }
 }

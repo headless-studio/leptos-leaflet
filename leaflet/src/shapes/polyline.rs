@@ -1,7 +1,7 @@
 use js_sys::{Array, Object};
 use wasm_bindgen::prelude::*;
 
-use crate::{object_construtor, object_property_set, LatLng, LatLngBounds, Path, Point};
+use crate::{object_construtor, object_property_set, LatLng, LatLngBounds, Path, Point, Layer};
 
 #[wasm_bindgen]
 extern "C" {
@@ -15,10 +15,10 @@ extern "C" {
     pub type Polyline;
 
     #[wasm_bindgen(constructor, js_namespace = L)]
-    pub fn new() -> Polyline;
+    pub fn new(latlngs: &Array) -> Polyline;
 
     #[wasm_bindgen(constructor, js_namespace = L)]
-    pub fn new_with_options(options: &PolylineOptions) -> Polyline;
+    pub fn new_with_options(latlngs: &Array, options: &PolylineOptions) -> Polyline;
 
     #[wasm_bindgen(method, js_name = toGeoJSON)]
     pub fn toGeoJSON(this: &Polyline, precision: f64) -> Object;
@@ -49,4 +49,11 @@ impl PolylineOptions {
     object_construtor!();
     object_property_set!(smooth_factor, smoothFactor, f64);
     object_property_set!(no_clip, noClip, bool);
+}
+
+/// Seems that wasmbindgen doesn't implement From<Polyline> for Layer
+impl From<Polyline> for Layer {
+    fn from(value: Polyline) -> Self {
+        value.unchecked_into()
+    }
 }

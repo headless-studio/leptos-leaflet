@@ -1,6 +1,6 @@
-use crate::components::provide_leaflet_context;
+use crate::components::{provide_leaflet_context, Position};
 use leaflet::{LatLng, LocateOptions};
-use leptos::{html::Div, *};
+use leptos::{html::Div, *, leptos_dom::HydrationCtx};
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlDivElement;
 
@@ -13,7 +13,7 @@ pub fn MapContainer(
     #[prop(into, optional)] style: MaybeSignal<String>,
     /// Centers the map on the given location
     #[prop(into, optional)]
-    center: MaybeSignal<Option<LatLng>>,
+    center: MaybeSignal<Option<Position>>,
     /// Zoom level of the map. Defaults to 10.0
     #[prop(into, optional, default = 10.0.into())]
     zoom: MaybeSignal<f64>,
@@ -35,6 +35,7 @@ pub fn MapContainer(
 ) -> impl IntoView {
     let map_ref = create_node_ref::<Div>(cx);
 
+    let next_id = HydrationCtx::next_component();
     provide_leaflet_context(cx);
 
     create_effect(cx, move |_| {
@@ -53,7 +54,7 @@ pub fn MapContainer(
                 let mut options = leaflet::MapOptions::new();
                 options.zoom(zoom());
                 if let Some(center) = center.get() {
-                    options.center(&center);
+                    options.center(&center.into());
                 }
                 log!("Map options: {:?}", options);
                 let map = leaflet::Map::new(&node.id(), &options);
@@ -72,7 +73,8 @@ pub fn MapContainer(
         }
     });
 
-    let children = children
+    // Process all children, since this is mostly javascript callbacks we don't "render" the views
+    children
         .map(|children| {
             children(cx)
                 .as_children()
@@ -82,9 +84,10 @@ pub fn MapContainer(
         })
         .unwrap_or_default();
 
+    HydrationCtx::continue_from(next_id);
+
     view! { cx,
         <div class=class _ref=map_ref style=style>
-            {children}
         </div>
     }
 }

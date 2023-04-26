@@ -10,7 +10,7 @@ mod shapes;
 mod tooltip;
 mod div_overlay;
 
-use js_sys::Object;
+use js_sys::{Object, Array};
 use wasm_bindgen::prelude::*;
 
 pub use evented::Evented;
@@ -279,4 +279,12 @@ impl Into<LatLngBounds> for (LatLng, LatLng) {
     fn into(self) -> LatLngBounds {
         LatLngBounds::new(&self.0, &self.1)
     }
+}
+
+pub fn to_lat_lng_array<T: Into<LatLng> + Copy>(lat_lngs: &[T]) -> Array {
+    let array = Array::new();
+    for &lat_lng in lat_lngs {
+        array.push(&lat_lng.into());
+    }
+    array
 }
