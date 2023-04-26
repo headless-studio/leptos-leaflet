@@ -12,7 +12,7 @@ extern "C" {
     pub type GridLayerOptions;
 
     #[wasm_bindgen(extends = Layer)]
-    #[derive(Debug, Clone)]
+    #[derive(Debug, Clone, PartialEq)]
     pub type GridLayer;
 
     #[wasm_bindgen(constructor, js_namespace = L)]

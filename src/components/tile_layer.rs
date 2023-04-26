@@ -14,7 +14,11 @@ pub fn TileLayer(cx: Scope,
         if let Some(map) = map_context.map() {
             log!("Adding tile layer: {}", url);
             let map_layer = leaflet::TileLayer::new(&url);
-            map_layer.add_to(&map);
+            map_layer.addTo(&map);
+            on_cleanup(cx, move || {
+                map_layer.remove();
+            });
+
         }
     });
     view! { cx,

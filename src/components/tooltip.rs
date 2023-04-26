@@ -34,6 +34,9 @@ pub fn Tooltip(
                 let tooltip = leaflet::Tooltip::new(&options, Some(layer.unchecked_ref()));
                 tooltip.setContent(content.unchecked_ref());
                 layer.bindPopup(&tooltip);
+                on_cleanup(cx, move || {
+                    tooltip.remove();
+                });
             }
         } else if let Some(map) = map_context.map() {
             log!("Adding tooltip");
@@ -41,6 +44,9 @@ pub fn Tooltip(
             let html_view: &JsValue = content.unchecked_ref();
             tooltip.setContent(html_view);
             tooltip.openOn(&map);
-        }
+            on_cleanup(cx, move || {
+                tooltip.remove();
+            });
+    }
     });
 }

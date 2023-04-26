@@ -62,8 +62,8 @@ impl LeafletOverlayContainerContext {
     }
 
     /// Calls set on the inner signal for the Layer
-    pub fn set_container<C: Into<leaflet::Layer>>(&self, layer: C) {
-        self.container.set(Some(layer.into()));
+    pub fn set_container<C: Into<leaflet::Layer> + Clone>(&self, layer: &C) {
+        self.container.set(Some(layer.clone().into()));
     }
 
     /// Calls get on the inner signal for the Layer

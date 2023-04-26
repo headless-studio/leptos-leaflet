@@ -21,8 +21,11 @@ pub fn Marker(
                 log!("Adding marker");
                 let marker = leaflet::Marker::new(&position().into());
                 marker.addTo(&map);
-                overlay.set_container(marker);
-                // map_context.set_marker(marker);
+                overlay.set_container(&marker);
+
+                on_cleanup(cx, move || {
+                    marker.remove();
+                });
             };
         });
 

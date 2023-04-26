@@ -13,7 +13,7 @@ extern "C" {
     pub type LayerOptions;
 
     #[wasm_bindgen(extends = Evented)]
-    #[derive(Debug, Clone)]
+    #[derive(Debug, Clone, PartialEq)]
     pub type Layer;
 
     /// [`addTo`](https://leafletjs.com/reference.html#layer-addto)

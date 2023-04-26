@@ -28,6 +28,9 @@ pub fn Popup(
                 let html_view: &JsValue = inner_content.unchecked_ref();
                 popup.setContent(html_view);
                 marker.bindPopup(&popup);
+                on_cleanup(cx, move || {
+                    popup.remove();
+                });
             }
         } else if let Some(map) = map_context.map() {
             log!("Adding popup");
@@ -36,6 +39,9 @@ pub fn Popup(
             let html_view: &JsValue = inner_content.unchecked_ref();
             popup.setContent(html_view);
             popup.openOn(&map);
+            on_cleanup(cx, move || {
+                popup.remove();
+            });
         }
     });
 
