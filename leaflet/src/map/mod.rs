@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 use web_sys::HtmlElement;
 
 use crate::{
-    object_construtor, object_property_set, object_property_set_with, Control, Evented, LatLng,
+    object_constructor, object_property_set, object_property_set_with, Control, Evented, LatLng,
     LatLngBounds, Layer, Point, Popup, Tooltip,
 };
 pub use geolocation::*;
@@ -216,7 +216,7 @@ extern "C" {
 }
 
 impl MapOptions {
-    object_construtor!();
+    object_constructor!();
     // Options
     object_property_set!(prefer_canvas, preferCanvas, bool);
     // Control options

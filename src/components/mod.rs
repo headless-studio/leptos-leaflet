@@ -5,6 +5,8 @@ mod tile_layer;
 mod tooltip;
 mod polygon;
 mod polyline;
+mod circle;
+mod image_overlay;
 
 use leaflet::LatLng;
 use leptos::*;
@@ -17,6 +19,8 @@ pub use tile_layer::TileLayer;
 pub use tooltip::Tooltip;
 pub use polyline::Polyline;
 pub use polygon::Polygon;
+pub use circle::Circle;
+pub use leaflet::{PathOptions, PolylineOptions, CircleOptions};
 
 #[derive(Debug, Clone)]
 pub struct LeafletMapContext {

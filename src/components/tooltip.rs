@@ -33,7 +33,7 @@ pub fn Tooltip(
                 log!("Adding tooltip");
                 let tooltip = leaflet::Tooltip::new(&options, Some(layer.unchecked_ref()));
                 tooltip.setContent(content.unchecked_ref());
-                layer.bindPopup(&tooltip);
+                layer.bindTooltip(&tooltip);
                 on_cleanup(cx, move || {
                     tooltip.remove();
                 });

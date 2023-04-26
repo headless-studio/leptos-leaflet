@@ -1,7 +1,7 @@
 use js_sys::{Array, Object};
 use wasm_bindgen::prelude::*;
 
-use crate::{object_construtor, object_property_set, Map};
+use crate::{object_constructor, object_property_set, Map};
 
 #[wasm_bindgen]
 extern "C" {
@@ -70,7 +70,7 @@ impl Map {
 }
 
 impl GeomanControls {
-    object_construtor!();
+    object_constructor!();
     object_property_set!(position, &str);
     object_property_set!(positions, &JsValue);
     object_property_set!(draw_marker, drawMarker, bool);

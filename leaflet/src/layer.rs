@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 use web_sys::HtmlElement;
 
 use crate::{
-    object_construtor, object_property_set, Evented, LatLng, LayerGroup, Map, Popup, Tooltip,
+    object_constructor, object_property_set, Evented, LatLng, LayerGroup, Map, Popup, Tooltip,
 };
 
 #[wasm_bindgen]
@@ -43,7 +43,7 @@ extern "C" {
 
     /// [`bindPopup`](https://leafletjs.com/reference.html#layer-bindpopup)
     #[wasm_bindgen(method)]
-    pub fn bindPopup(this: &Layer, content: &JsValue) -> Layer;
+    pub fn bindPopup(this: &Layer, content: &Popup) -> Layer;
 
     /// [`bindPopup`](https://leafletjs.com/reference.html#layer-bindpopup)
     #[wasm_bindgen(method)]
@@ -85,7 +85,10 @@ extern "C" {
 
     /// [`bindTooltip`](https://leafletjs.com/reference.html#layer-bindtooltip)
     #[wasm_bindgen(method)]
-    pub fn bindTooltip(this: &Layer, content: &JsValue, options: &JsValue) -> Layer;
+    pub fn bindTooltip(this: &Layer, tooltip: &Tooltip) -> Layer;
+    
+    #[wasm_bindgen(method)]
+    pub fn bindTooltipWithContent(this: &Layer, content: &JsValue, options: &JsValue) -> Layer;
 
     /// [`unbindTooltip`](https://leafletjs.com/reference.html#layer-unbindtooltip)
     #[wasm_bindgen(method)]
@@ -117,7 +120,7 @@ extern "C" {
 }
 
 impl LayerOptions {
-    object_construtor!();
+    object_constructor!();
     object_property_set!(pane, &str);
     object_property_set!(attribution, &str);
 }

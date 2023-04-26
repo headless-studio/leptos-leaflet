@@ -1443,6 +1443,7 @@ dependencies = [
  "console_error_panic_hook",
  "leptos",
  "leptos-leaflet",
+ "web-sys",
 ]
 
 [[package]]

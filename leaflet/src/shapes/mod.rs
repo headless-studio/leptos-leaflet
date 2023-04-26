@@ -5,7 +5,7 @@ mod polygon;
 mod polyline;
 mod rectangle;
 
-pub use circle::Circle;
+pub use circle::{Circle, CircleOptions};
 pub use circle_marker::CircleMarker;
 pub use path::{Path, PathOptions};
 pub use polygon::Polygon;

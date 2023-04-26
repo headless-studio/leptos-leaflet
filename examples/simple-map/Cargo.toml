@@ -13,3 +13,5 @@ leptos = { git = "https://github.com/leptos-rs/leptos", default-features = false
 leptos-leaflet = { path = "../../", default-features = false, features = [
     "csr",
 ] }
+
+web-sys = { version = "0.3", features=["HtmlBodyElement"] }

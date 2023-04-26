@@ -9,19 +9,23 @@ mod raster;
 mod shapes;
 mod tooltip;
 mod div_overlay;
+mod marker;
+mod icon;
 
 use js_sys::{Object, Array};
 use wasm_bindgen::prelude::*;
 
 pub use evented::Evented;
 pub use grid_layer::{GridLayer, GridLayerOptions};
+pub use icon::Icon;
 pub use layer::Layer;
 pub use layer_group::LayerGroup;
 pub use map::{LocateOptions, Map, MapOptions};
+pub use marker::{Marker, MarkerOptions};
 pub use popup::{Popup, PopupOptions};
-pub use raster::{TileLayer, TileLayerOptions};
+pub use raster::{TileLayer, TileLayerOptions, ImageOverlay, ImageOverlayOptions};
 pub use shapes::{
-    Circle, CircleMarker, Path, PathOptions, Polygon, Polyline, PolylineOptions, Rectangle,
+    Circle, CircleMarker, Path, PathOptions, Polygon, Polyline, PolylineOptions, Rectangle, CircleOptions
 };
 pub use tooltip::{Tooltip, TooltipOptions};
 pub use div_overlay::DivOverlay;
@@ -68,7 +72,7 @@ macro_rules! object_property_set_with {
 }
 
 #[macro_export]
-macro_rules! object_construtor {
+macro_rules! object_constructor {
     () => {
         #[allow(clippy::new_without_default)]
         pub fn new() -> Self {
@@ -78,15 +82,6 @@ macro_rules! object_construtor {
         }
     };
 }
-
-// Doesn't inside the proc_macro :(
-// #[macro_export]
-// macro_rules! import_method {
-//     ($js_type:ty, $method_name:ident, $return_type:ty, $($v:ident: $t:ty),*) => {
-//         #[wasm_bindgen(method, js_name = $method_name)]
-//         pub fn $method_name(this: &$js_type, $($v: $t),*) -> $return_type;
-//     };
-// }
 
 #[wasm_bindgen]
 extern "C" {
@@ -102,14 +97,7 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn addTo(this: &mapboxGL, map: &Map);
 
-    #[derive(Debug)]
-    pub type Icon;
-
-    #[wasm_bindgen(constructor, js_namespace = L)]
-    pub fn new(options: &JsValue) -> Icon;
-
     // Point
-
     #[derive(Debug)]
     pub type Point;
 
@@ -155,32 +143,6 @@ extern "C" {
 
     #[wasm_bindgen(method)]
     pub fn contains(this: &LatLngBounds, latlng: &LatLng) -> bool;
-
-    // Marker
-
-    #[derive(Debug, Clone)]
-    #[wasm_bindgen(extends = Layer)]
-    pub type Marker;
-
-    // [`Marker`](https://leafletjs.com/reference-1.7.1.html#marker-l-marker)
-    #[wasm_bindgen(constructor, js_namespace = L)]
-    pub fn new(latlng: &LatLng) -> Marker;
-
-    // [`Marker`](https://leafletjs.com/reference-1.7.1.html#marker-l-marker)
-    #[wasm_bindgen(constructor, js_namespace = L)]
-    pub fn new_with_options(latlng: &LatLng, options: &JsValue) -> Marker;
-
-    #[wasm_bindgen(method)]
-    pub fn setIcon(this: &Marker, icon: &Icon);
-
-    #[wasm_bindgen(method)]
-    pub fn getLatLng(this: &Marker) -> LatLng;
-
-    #[wasm_bindgen(method)]
-    pub fn setLatLng(this: &Marker, latlng: &LatLng);
-
-    #[wasm_bindgen(method)]
-    pub fn on(this: &Marker, event_name: &str, handler: &JsValue);
 
     // MouseEvent
 

@@ -2,7 +2,7 @@ use js_sys::Object;
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlElement;
 
-use crate::{object_construtor, object_property_set, LatLngBounds, Layer, Point};
+use crate::{object_constructor, object_property_set, LatLngBounds, Layer, Point};
 
 #[wasm_bindgen]
 extern "C" {
@@ -44,7 +44,7 @@ extern "C" {
 }
 
 impl GridLayerOptions {
-    object_construtor!();
+    object_constructor!();
     object_property_set!(tile_size, tileSize, f64);
     object_property_set!(tile_size_point, tileSize, &Point);
     object_property_set!(opacity, f64);

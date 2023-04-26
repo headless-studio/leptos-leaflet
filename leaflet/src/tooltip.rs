@@ -1,7 +1,7 @@
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
 
-use crate::{LatLng, object_construtor, DivOverlay, Layer, object_property_set, Point};
+use crate::{LatLng, object_constructor, DivOverlay, Layer, object_property_set, Point};
 
 #[wasm_bindgen]
 extern "C" {
@@ -35,7 +35,7 @@ extern "C" {
 }
 
 impl TooltipOptions {
-    object_construtor!();
+    object_constructor!();
     object_property_set!(pane, &str);
     object_property_set!(direction, &str);
     object_property_set!(offset, &Point);

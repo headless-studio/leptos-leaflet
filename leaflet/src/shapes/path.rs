@@ -1,7 +1,7 @@
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
 
-use crate::{object_construtor, object_property_set, Layer};
+use crate::{object_constructor, object_property_set, Layer};
 
 #[wasm_bindgen]
 extern "C" {
@@ -33,7 +33,7 @@ extern "C" {
 }
 
 impl PathOptions {
-    object_construtor!();
+    object_constructor!();
     object_property_set!(stroke, bool);
     object_property_set!(color, &str);
     object_property_set!(weight, f64);

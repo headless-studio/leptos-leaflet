@@ -1,7 +1,7 @@
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
 
-use crate::{LatLng, Layer, Map, object_construtor, object_property_set, Point, DivOverlay};
+use crate::{LatLng, Layer, object_constructor, object_property_set, Point, DivOverlay};
 
 #[wasm_bindgen]
 extern "C" {
@@ -26,7 +26,7 @@ extern "C" {
 }
 
 impl PopupOptions {
-    object_construtor!();
+    object_constructor!();
     object_property_set!(pane, &str);
     object_property_set!(offset, Point);
     object_property_set!(min_width, minWidth, f64);

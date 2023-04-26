@@ -1,11 +1,14 @@
 use js_sys::Object;
+use std::ops::DerefMut;
 use wasm_bindgen::prelude::*;
 
-use crate::{object_construtor, object_property_set, CircleMarker, LatLng, LatLngBounds};
+use crate::{
+    object_constructor, object_property_set, CircleMarker, LatLng, LatLngBounds, Layer, PathOptions,
+};
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(extends = Object, js_name = CircleOptions)]
+    #[wasm_bindgen(extends = PathOptions, js_name = CircleOptions)]
     #[derive(Debug, Clone, PartialEq)]
     pub type CircleOptions;
 
@@ -17,7 +20,10 @@ extern "C" {
     pub fn new(latlng: &LatLng) -> Circle;
 
     #[wasm_bindgen(constructor, js_namespace = L)]
-    pub fn new_with_options(latlng: &LatLng, options: &JsValue) -> Circle;
+    pub fn new_with_radius(latlng: &LatLng) -> Circle;
+
+    #[wasm_bindgen(constructor, js_namespace = L)]
+    pub fn new_with_options(latlng: &LatLng, options: &CircleOptions) -> Circle;
 
     /// [`setRadius`](https://leafletjs.com/reference-1.7.1.html#circle-setradius)
     #[wasm_bindgen(method)]
@@ -30,10 +36,27 @@ extern "C" {
     /// [`getBounds`](https://leafletjs.com/reference.html#circle-getbounds)
     #[wasm_bindgen(method)]
     pub fn getBounds(this: &Circle) -> LatLngBounds;
-
 }
 
 impl CircleOptions {
-    object_construtor!();
+    object_constructor!();
     object_property_set!(radius, f64);
+}
+
+impl Default for CircleOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl DerefMut for CircleOptions {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.obj
+    }
+}
+
+impl From<Circle> for Layer {
+    fn from(circle: Circle) -> Self {
+        circle.unchecked_into()
+    }
 }

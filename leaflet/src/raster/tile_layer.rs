@@ -1,8 +1,8 @@
-use js_sys::{Function, Object, Reflect};
+use js_sys::{Function, Object};
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlElement;
 
-use crate::{GridLayer, LatLng};
+use crate::{object_constructor, object_property_set, GridLayer, LatLng, LatLngBounds, Point};
 
 #[wasm_bindgen]
 extern "C" {
@@ -32,107 +32,39 @@ extern "C" {
     pub fn createTile(this: &TileLayer, lat_long: &LatLng) -> HtmlElement;
 
     #[wasm_bindgen(method, js_name = createTile)]
-    pub fn createTileWithDone(
-        this: &TileLayer,
-        lat_long: &LatLng,
-        done: &Function,
-    ) -> HtmlElement;
+    pub fn createTileWithDone(this: &TileLayer, lat_long: &LatLng, done: &Function) -> HtmlElement;
 }
 
 impl TileLayerOptions {
-    pub fn new() -> Self {
-        #[allow(unused_mut)]
-        let mut ret: Self = ::wasm_bindgen::JsCast::unchecked_into(::js_sys::Object::new());
-        ret
-    }
-
-    pub fn min_zoom(&mut self, val: f64) -> &mut Self {
-        let r = Reflect::set(
-            self.as_ref(),
-            &JsValue::from("minZoom"),
-            &JsValue::from(val),
-        );
-        let _ = r;
-        self
-    }
-
-    pub fn max_zoom(&mut self, val: f64) -> &mut Self {
-        let r = Reflect::set(
-            self.as_ref(),
-            &JsValue::from("maxZoom"),
-            &JsValue::from(val),
-        );
-        let _ = r;
-        self
-    }
-
-    pub fn subdomains(&mut self, val: bool) -> &mut Self {
-        let r = Reflect::set(
-            self.as_ref(),
-            &JsValue::from("subdomains"),
-            &JsValue::from(val),
-        );
-        let _ = r;
-        self
-    }
-
-    pub fn error_tile_url(&mut self, val: &str) -> &mut Self {
-        let r = Reflect::set(
-            self.as_ref(),
-            &JsValue::from("errorTileUrl"),
-            &JsValue::from(val),
-        );
-        let _ = r;
-        self
-    }
-
-    pub fn zoom_offset(&mut self, val: f64) -> &mut Self {
-        let r = Reflect::set(
-            self.as_ref(),
-            &JsValue::from("zoomOffset"),
-            &JsValue::from(val),
-        );
-        let _ = r;
-        self
-    }
-
-    pub fn tms(&mut self, val: bool) -> &mut Self {
-        let r = Reflect::set(self.as_ref(), &JsValue::from("tms"), &JsValue::from(val));
-        let _ = r;
-        self
-    }
-
-    pub fn zoom_reverse(&mut self, val: bool) -> &mut Self {
-        let r = Reflect::set(
-            self.as_ref(),
-            &JsValue::from("zoomReverse"),
-            &JsValue::from(val),
-        );
-        let _ = r;
-        self
-    }
-
-    pub fn detect_retina(&mut self, val: bool) -> &mut Self {
-        let r = Reflect::set(
-            self.as_ref(),
-            &JsValue::from("detectRetina"),
-            &JsValue::from(val),
-        );
-        let _ = r;
-        self
-    }
-
-    pub fn cross_origin(&mut self, val: &JsValue) -> &mut Self {
-        let r = Reflect::set(self.as_ref(), &JsValue::from("crossOrigin"), val);
-        let _ = r;
-        self
-    }
-
-    pub fn referrer_policy(&mut self, val: &JsValue) -> &mut Self {
-        let r = Reflect::set(self.as_ref(), &JsValue::from("referrerPolicy"), val);
-        let _ = r;
-        self
-    }
+    object_constructor!();
+    // TileLayerOptions
+    object_property_set!(min_zoom, minZoom, f64);
+    object_property_set!(max_zoom, maxZoom, f64);
+    object_property_set!(subdomains, bool);
+    object_property_set!(error_tile_url, errorTileUrl, &str);
+    object_property_set!(zoom_offset, zoomOffset, f64);
+    object_property_set!(tms, bool);
+    object_property_set!(zoom_reverse, zoomReverse, bool);
+    object_property_set!(detect_retina, detectRetina, bool);
+    object_property_set!(cross_origin, crossOrigin, &str);
+    object_property_set!(referrer_policy, referrerPolicy, &str);
+    // GridLayerOptions
+    object_property_set!(tile_size, tileSize, u32);
+    object_property_set!(tile_size_with_point, tileSize, Point);
+    object_property_set!(opacity, opacity, f64);
+    object_property_set!(update_when_idle, updateWhenIdle, bool);
+    object_property_set!(update_when_zooming, updateWhenZooming, bool);
+    object_property_set!(update_interval, updateInterval, f64);
+    object_property_set!(z_index, zIndex, f64);
+    object_property_set!(bounds, bounds, LatLngBounds);
+    object_property_set!(max_native_zoom, maxNativeZoom, f64);
+    object_property_set!(min_native_zoom, minNativeZoom, f64);
+    object_property_set!(no_wrap, noWrap, bool);
+    object_property_set!(pane, &str);
+    object_property_set!(class_name, className, &str);
+    object_property_set!(keep_buffer, keepBuffer, u32);
+    // LayerOptions
+    object_property_set!(attribution, &str);
 }
 
 impl Default for TileLayerOptions {

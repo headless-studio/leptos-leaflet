@@ -1,4 +1,4 @@
-use leaflet::{LatLng, to_lat_lng_array};
+use leaflet::{LatLng, PolylineOptions, to_lat_lng_array};
 use leptos::*;
 
 use wasm_bindgen::prelude::*;
@@ -10,6 +10,8 @@ use super::{extend_context_with_overlay, update_overlay_context, Position};
 #[component]
 pub fn Polyline(
     cx: Scope,
+    #[prop(into, optional)]
+    options: MaybeSignal<PolylineOptions>,
     #[prop(into)]
     positions: Vec<Position>,
     #[prop(optional)]
@@ -25,7 +27,7 @@ pub fn Polyline(
             {
                 log!("Adding polyline");
                 let lat_lngs = to_lat_lng_array(&positions);
-                let polyline = leaflet::Polyline::new(&lat_lngs);
+                let polyline = leaflet::Polyline::new_with_options(&lat_lngs, &options());
                 polyline.addTo(&map);
                 update_overlay_context(cx, &polyline);
                 on_cleanup(cx, move ||{

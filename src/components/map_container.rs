@@ -1,6 +1,6 @@
 use crate::components::{provide_leaflet_context, Position};
-use leaflet::{LatLng, LocateOptions};
-use leptos::{html::Div, *, leptos_dom::HydrationCtx};
+use leaflet::LocateOptions;
+use leptos::{html::Div, leptos_dom::HydrationCtx, *};
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlDivElement;
 
