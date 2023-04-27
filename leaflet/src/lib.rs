@@ -252,3 +252,9 @@ pub fn to_lat_lng_array<T: Into<LatLng> + Copy>(lat_lngs: &[T]) -> Array {
     }
     array
 }
+
+impl From<(u32, u32)> for Point {
+    fn from((x, y): (u32, u32)) -> Point {
+        Point::new(x, y)
+    }
+}

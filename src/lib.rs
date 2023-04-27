@@ -1,5 +1,7 @@
 use components::Position;
-use leptos::{MaybeSignal, RwSignal, Signal, SignalGetUntracked};
+use leptos::{
+    MaybeSignal, SignalGet, SignalGetUntracked, SignalWith, SignalWithUntracked,
+};
 use std::ops::Deref;
 
 pub mod components;
@@ -26,12 +28,51 @@ pub fn positions(positions: &[(f64, f64)]) -> Vec<Position> {
         .collect()
 }
 
-#[derive(Clone, Debug, Default)]
-pub struct MaybeSignalString {
-    value: MaybeSignal<Option<String>>,
+#[derive(Debug)]
+pub struct MaybeSignalOption<T>
+where
+    T: 'static,
+{
+    value: MaybeSignal<Option<T>>,
 }
 
-impl MaybeSignalString {
+impl<T: Clone> Clone for MaybeSignalOption<T> {
+    fn clone(&self) -> Self {
+        Self {
+            value: self.value.clone(),
+        }
+    }
+}
+
+impl<T: Copy> Copy for MaybeSignalOption<T> {}
+
+impl<T: Default> Default for MaybeSignalOption<T> {
+    fn default() -> Self {
+        MaybeSignalOption {
+            value: MaybeSignal::Static(None),
+        }
+    }
+}
+
+impl<T: Clone> MaybeSignalOption<T> {
+    fn get(&self) -> Option<T> {
+        self.value.get()
+    }
+
+    fn try_get(&self) -> Option<Option<T>> {
+        self.value.try_get()
+    }
+
+    fn get_untracked(&self) -> Option<T> {
+        self.value.get_untracked()
+    }
+
+    fn try_get_untracked(&self) -> Option<Option<T>> {
+        self.value.try_get_untracked()
+    }
+}
+
+impl MaybeSignalOption<String> {
     pub fn new(value: &str) -> Self {
         Self {
             value: MaybeSignal::Static(Some(value.to_string())),
@@ -39,7 +80,7 @@ impl MaybeSignalString {
     }
 }
 
-impl Deref for MaybeSignalString {
+impl Deref for MaybeSignalOption<String> {
     type Target = MaybeSignal<Option<String>>;
 
     fn deref(&self) -> &Self::Target {
@@ -47,7 +88,7 @@ impl Deref for MaybeSignalString {
     }
 }
 
-impl From<&str> for MaybeSignalString {
+impl From<&str> for MaybeSignalOption<String> {
     fn from(value: &str) -> Self {
         Self {
             value: MaybeSignal::Static(Some(value.to_string())),
@@ -55,8 +96,26 @@ impl From<&str> for MaybeSignalString {
     }
 }
 
-impl From<Signal<Option<String>>> for MaybeSignalString {
-    fn from(value: Signal<Option<String>>) -> Self {
-        Self { value: value.into() }
+impl From<bool> for MaybeSignalOption<bool> {
+    fn from(value: bool) -> Self {
+        Self {
+            value: MaybeSignal::Static(Some(value)),
+        }
+    }
+}
+
+impl From<f64> for MaybeSignalOption<f64> {
+    fn from(value: f64) -> Self {
+        Self {
+            value: MaybeSignal::Static(Some(value)),
+        }
+    }
+}
+
+impl From<(u32, u32)> for MaybeSignalOption<(u32, u32)> {
+    fn from(value: (u32, u32)) -> Self {
+        Self {
+            value: MaybeSignal::Static(Some(value)),
+        }
     }
 }

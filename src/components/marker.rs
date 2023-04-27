@@ -1,7 +1,4 @@
 use super::{extend_context_with_overlay, Position};
-use leaflet::MarkerOptions;
-
-use leptos::svg::marker;
 use leptos::*;
 
 use super::LeafletMapContext;

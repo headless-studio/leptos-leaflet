@@ -66,12 +66,12 @@ fn HomePage(cx: Scope) -> impl IntoView {
                       <strong>{"A pretty CSS3 popup"}</strong>
                   </Popup>
               </Marker>
-                <Marker position=position!(51.5, -0.065) draggable=true >
-                  <Popup>
+              <Marker position=position!(51.5, -0.065) draggable=true >
+                  <Popup auto_close=false close_on_click=false>
                       <strong>{"A pretty CSS3 popup"}</strong>
                   </Popup>
               </Marker>
-              <Tooltip position=position!(51.5, -0.06) permanent=true direction="top">
+              <Tooltip position=position!(51.5, -0.09) permanent=true direction="top">
                   <strong>{"And a tooltip"}</strong>
               </Tooltip>
               <Polyline positions=positions(&[(51.505, -0.09), (51.51, -0.1), (51.51, -0.12)])/>
