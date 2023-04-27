@@ -1,4 +1,6 @@
 use leptos::*;
+use leptos::html::Div;
+use leptos::leptos_dom::is_server;
 
 use wasm_bindgen::prelude::*;
 
@@ -16,7 +18,8 @@ pub fn Tooltip(
     let map_context = use_context::<LeafletMapContext>(cx).expect("Map context not found");
     let overlay_context = use_context::<LeafletOverlayContainerContext>(cx);
 
-    let content = view! {cx, <div>{children(cx)}</div>};
+    let content = create_node_ref::<Div>(cx);
+    // let content = view! {cx, <div>{children(cx)}</div>};
     create_effect(cx, move |_| {
         let mut options = leaflet::TooltipOptions::default();
         options.permanent(permanent());
@@ -31,6 +34,7 @@ pub fn Tooltip(
             ) {
                 log!("Adding tooltip");
                 let tooltip = leaflet::Tooltip::new(&options, Some(layer.unchecked_ref()));
+                let content = content.get_untracked().expect("content ref");
                 tooltip.setContent(content.unchecked_ref());
                 layer.bindTooltip(&tooltip);
                 on_cleanup(cx, move || {
@@ -40,6 +44,7 @@ pub fn Tooltip(
         } else if let Some(map) = map_context.map() {
             log!("Adding tooltip");
             let tooltip = leaflet::Tooltip::new_with_lat_lng(&position().into(), &options);
+            let content = content.get_untracked().expect("content ref");
             let html_view: &JsValue = content.unchecked_ref();
             tooltip.setContent(html_view);
             tooltip.openOn(&map);
@@ -48,4 +53,6 @@ pub fn Tooltip(
             });
     }
     });
+
+    view! {cx, <div style="visibility:collapse"><div _ref=content>{children(cx)}</div></div> }
 }

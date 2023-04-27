@@ -28,7 +28,7 @@ pub fn Polygon(
     #[prop(into, optional)] no_clip: MaybeSignal<Option<bool>>,
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
-    cx.child_scope(|cx| {
+    let (child, _) = cx.run_child_scope(|cx| {
         extend_context_with_overlay(cx);
 
         let positions_for_effect = positions.clone();
@@ -42,10 +42,8 @@ pub fn Polygon(
                 if let Some(stroke) = stroke.get_untracked() {
                     options.stroke(stroke);
                 }
-                if let color = color.get_untracked() {
-                    if !color.is_empty() {
-                        options.color(&color);
-                    }
+                if !color.get_untracked().is_empty() {
+                    options.color(&color.get_untracked());
                 }
                 if let Some(weight) = weight.get_untracked() {
                     options.weight(weight);
@@ -108,14 +106,16 @@ pub fn Polygon(
             }
         });
 
-        children
-            .map(|children| {
-                children(cx)
-                    .as_children()
-                    .iter()
-                    .map(|child| child.into_view(cx))
-                    .collect::<Vec<_>>()
-            })
-            .unwrap_or_default();
+        // children
+        //     .map(|children| {
+        //         children(cx)
+        //             .as_children()
+        //             .iter()
+        //             .map(|child| child.into_view(cx))
+        //             .collect::<Vec<_>>()
+        //     })
+        //     .unwrap_or_default();
+        children.map(|child| child(cx))
     });
+    child
 }

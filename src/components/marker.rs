@@ -33,7 +33,7 @@ pub fn Marker(
     let position_tracking = position.clone();
     let map_context = use_context::<LeafletMapContext>(cx).expect("Map context not found");
 
-    cx.child_scope(|cx| {
+    let (child, _) = cx.run_child_scope(|cx| {
         let overlay = extend_context_with_overlay(cx);
         create_effect(cx, move |_| {
             if let Some(map) = map_context.map() {
@@ -127,14 +127,16 @@ pub fn Marker(
             }
         });
 
-        children
-            .map(|children| {
-                children(cx)
-                    .as_children()
-                    .iter()
-                    .map(|child| child.into_view(cx))
-                    .collect::<Vec<_>>()
-            })
-            .unwrap_or_default();
+        // children
+        //     .map(|children| {
+        //         children(cx)
+        //             .as_children()
+        //             .iter()
+        //             .map(|child| child.into_view(cx))
+        //             .collect::<Vec<_>>()
+        //     })
+        //     .unwrap_or_default();
+        children.map(|child| child(cx))
     });
+    child
 }

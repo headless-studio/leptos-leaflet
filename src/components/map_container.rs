@@ -1,7 +1,7 @@
 use crate::components::{provide_leaflet_context, Position};
 use leaflet::LocateOptions;
-use leptos::{html::Div, leptos_dom::HydrationCtx, *};
 use leptos::leptos_dom::is_server;
+use leptos::{html::Div, leptos_dom::HydrationCtx, *};
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlDivElement;
 
@@ -10,10 +10,8 @@ use super::LeafletMapContext;
 #[component]
 pub fn MapContainer(
     cx: Scope,
-    #[prop(into, optional)]
-    class: MaybeSignal<String>,
-    #[prop(into, optional)]
-    style: MaybeSignal<String>,
+    #[prop(into, optional)] class: MaybeSignal<String>,
+    #[prop(into, optional)] style: MaybeSignal<String>,
     /// Centers the map on the given location
     #[prop(into, optional)]
     center: MaybeSignal<Option<Position>>,
@@ -32,7 +30,7 @@ pub fn MapContainer(
     /// Sets the view of the map if geolocation is available
     #[prop(into, optional)]
     set_view: MaybeSignal<bool>,
-    // on_locate_found: Box<dyn FnOnce()>,
+    #[prop(optional)] map: Option<WriteSignal<LeafletMap>>,
     /// Inner map child nodes
     #[prop(optional)]
     children: Option<Children>,
@@ -61,41 +59,61 @@ pub fn MapContainer(
                     options.center(&center.into());
                 }
                 log!("Map options: {:?}", options);
-                let map = leaflet::Map::new(&node.id(), &options);
+                let leaflet_map = leaflet::Map::new(&node.id(), &options);
+                #[cfg(target_arch = "wasm32")]
+                if let Some(set_map) = map {
+                    set_map.set(LeafletMap {
+                        map: Some(leaflet_map.clone()),
+                    });
+                }
                 if locate() {
                     let mut locate_options = LocateOptions::new();
                     locate_options.enable_high_accuracy(enable_high_accuracy());
                     locate_options.set_view(set_view());
                     locate_options.watch(watch());
-                    map.locate_with_options(&locate_options);
+                    leaflet_map.locate_with_options(&locate_options);
                     log!("Map locate options: {:?}", locate_options);
                 }
 
                 log!("Map node: {:?}", node.id());
-                map_context.set_map(map);
+
+                map_context.set_map(&leaflet_map);
             });
         }
     });
 
     // Process all children, since this is mostly javascript callbacks we don't "render" the views
-    children
-        .map(|children| {
-            children(cx)
-                .as_children()
-                .iter()
-                .map(|child| child.into_view(cx))
-                .collect::<Vec<_>>()
-        })
-        .unwrap_or_default();
+    // children
+    //     .map(|children| {
+    //         children(cx)
+    //             .as_children()
+    //             .iter()
+    //             .map(|child| child.into_view(cx))
+    //             .collect::<Vec<_>>()
+    //     })
+    //     .unwrap_or_default();
 
     // HydrationCtx::continue_from(next_id);
-    
+
     // Transition(cx, TransitionProps::builder().fallback(move || view! { cx, <div>{"Loading map..."}</div> }).children(Box::new(move |cx| {
     //     let class = class.clone();
     //     let style = style.clone();
     //     Fragment::lazy(move || vec![{view! {cx, <div class=class _ref=map_ref style=style></div>}}.into_view(cx)])
     // })).build())
-    view! {cx, <div class=class _ref=map_ref style=style></div>}
+    view! {cx, <div class=class _ref=map_ref style=style>{children.map(|child|child(cx))}</div>}
 }
 
-fn handle_map_events(cx: Scope) {}
+#[derive(Debug, Default, Clone)]
+pub struct LeafletMap {
+    #[cfg(target_arch = "wasm32")]
+    pub map: Option<leaflet::Map>,
+}
+
+impl LeafletMap {
+    pub fn new() -> Self {
+        Self {
+            #[cfg(target_arch = "wasm32")]
+            map: None,
+        }
+    }
+}

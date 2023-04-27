@@ -36,22 +36,30 @@ pub fn App(cx: Scope) -> impl IntoView {
 #[component]
 fn HomePage(cx: Scope) -> impl IntoView {
     let (marker_position, set_marker_position) = create_signal(cx, Position::new(51.49, -0.08));
-
+    let (map, set_map) = create_signal(cx, LeafletMap::new());
+    
     create_effect(cx, move |_| {
-        set_interval_with_handle(
-            move || {
-                set_marker_position.update(|pos| {
-                    pos.lat += 0.001;
-                    pos.lng += 0.001;
-                });
-            },
-            Duration::from_millis(200),
-        )
-        .ok()
+        // set_interval_with_handle(
+        //     move || {
+        //         set_marker_position.update(|pos| {
+        //             pos.lat += 0.001;
+        //             pos.lng += 0.001;
+        //         });
+        //     },
+        //     Duration::from_millis(200),
+        // )
+        // .ok()
+    });
+    
+    create_effect(cx, move |_| {
+        #[cfg(target_arch = "wasm32")]
+        if let LeafletMap { map: Some(map) } = map.get() {
+            log!("Map context {:?}", map);
+        }
     });
 
     view! { cx,
-          <MapContainer style="height: 400px" center=pos_opt!(51.505, -0.09) zoom=13.0 set_view=true>
+          <MapContainer style="height: 400px" center=pos_opt!(51.505, -0.09) zoom=13.0 set_view=true map=set_map>
               <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"/>
               <Marker position=marker_position >
                   <Popup>

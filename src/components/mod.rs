@@ -14,7 +14,7 @@ use wasm_bindgen::JsCast;
 
 pub use circle::Circle;
 pub use leaflet::{CircleOptions, PathOptions, PolylineOptions};
-pub use map_container::MapContainer;
+pub use map_container::{LeafletMap, MapContainer};
 pub use marker::Marker;
 pub use polygon::Polygon;
 pub use polyline::Polyline;
@@ -39,8 +39,8 @@ impl LeafletMapContext {
         }
     }
 
-    pub fn set_map(&self, map: leaflet::Map) {
-        self.map.set(Some(map));
+    pub fn set_map(&self, map: &leaflet::Map) {
+        self.map.set(Some(map.clone()));
     }
 
     pub fn map(&self) -> Option<leaflet::Map> {
