@@ -8,8 +8,6 @@ pub fn TileLayer(cx: Scope,
     #[prop(into)]
     url: String,
     #[prop(into, optional)]
-    options: TileLayerOptions,
-    #[prop(into, optional)]
     attribution: String,
 ) -> impl IntoView {
     let map_context = use_context::<LeafletMapContext>(cx).expect("map context not found");
@@ -17,7 +15,7 @@ pub fn TileLayer(cx: Scope,
     create_effect(cx, move |_| {
         if let Some(map) = map_context.map() {
             log!("Adding tile layer: {}", url);
-            let mut options = options.clone();
+            let mut options = leaflet::TileLayerOptions::default();
             if attribution.is_empty() {
                 options.attribution(&attribution);
             }

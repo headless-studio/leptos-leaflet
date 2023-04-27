@@ -1,6 +1,7 @@
 use crate::components::{provide_leaflet_context, Position};
 use leaflet::LocateOptions;
 use leptos::{html::Div, leptos_dom::HydrationCtx, *};
+use leptos::leptos_dom::is_server;
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlDivElement;
 
@@ -9,8 +10,10 @@ use super::LeafletMapContext;
 #[component]
 pub fn MapContainer(
     cx: Scope,
-    #[prop(into, optional)] class: MaybeSignal<String>,
-    #[prop(into, optional)] style: MaybeSignal<String>,
+    #[prop(into, optional)]
+    class: MaybeSignal<String>,
+    #[prop(into, optional)]
+    style: MaybeSignal<String>,
     /// Centers the map on the given location
     #[prop(into, optional)]
     center: MaybeSignal<Option<Position>>,
@@ -29,13 +32,14 @@ pub fn MapContainer(
     /// Sets the view of the map if geolocation is available
     #[prop(into, optional)]
     set_view: MaybeSignal<bool>,
+    // on_locate_found: Box<dyn FnOnce()>,
     /// Inner map child nodes
     #[prop(optional)]
     children: Option<Children>,
 ) -> impl IntoView {
     let map_ref = create_node_ref::<Div>(cx);
 
-    let next_id = HydrationCtx::next_component();
+    // let next_id = HydrationCtx::next_component();
     provide_leaflet_context(cx);
 
     create_effect(cx, move |_| {
@@ -84,10 +88,14 @@ pub fn MapContainer(
         })
         .unwrap_or_default();
 
-    HydrationCtx::continue_from(next_id);
-
-    view! { cx,
-        <div class=class _ref=map_ref style=style>
-        </div>
-    }
+    // HydrationCtx::continue_from(next_id);
+    
+    // Transition(cx, TransitionProps::builder().fallback(move || view! { cx, <div>{"Loading map..."}</div> }).children(Box::new(move |cx| {
+    //     let class = class.clone();
+    //     let style = style.clone();
+    //     Fragment::lazy(move || vec![{view! {cx, <div class=class _ref=map_ref style=style></div>}}.into_view(cx)])
+    // })).build())
+    view! {cx, <div class=class _ref=map_ref style=style></div>}
 }
+
+fn handle_map_events(cx: Scope) {}

@@ -17,7 +17,6 @@ pub fn Tooltip(
     let overlay_context = use_context::<LeafletOverlayContainerContext>(cx);
 
     let content = view! {cx, <div>{children(cx)}</div>};
-
     create_effect(cx, move |_| {
         let mut options = leaflet::TooltipOptions::default();
         options.permanent(permanent());

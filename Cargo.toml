@@ -1,5 +1,5 @@
 [workspace]
-members = [".", "leaflet", "examples/simple-map"]
+members = [".", "leaflet", "examples/simple-map", "examples/with-server"]
 
 [package]
 name = "leptos-leaflet"
@@ -10,7 +10,7 @@ edition = "2021"
 leaflet = { path = "./leaflet" }
 leptos = { git = "https://github.com/leptos-rs/leptos", default-features = false }
 leptos_meta = { git = "https://github.com/leptos-rs/leptos", default-features = false }
-getrandom = "0.2"
+getrandom = { version="0.2", features=["js"] }
 rand = "0.8"
 
 [dependencies.wasm-bindgen]
@@ -22,6 +22,6 @@ version = "0.3"
 features = ["console", "HtmlElement", "HtmlDivElement"]
 
 [features]
-hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "getrandom/js"]
-csr = ["leptos/csr", "leptos_meta/csr", "getrandom/js"]
+hydrate = ["leptos/hydrate", "leptos_meta/hydrate"]
+csr = ["leptos/csr", "leptos_meta/csr"]
 ssr = ["leptos/ssr", "leptos_meta/ssr"]
