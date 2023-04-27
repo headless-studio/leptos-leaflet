@@ -1,10 +1,10 @@
-use leaflet::{GridLayerOptions, TileLayerOptions};
+use leaflet::TileLayerOptions;
 use leptos::*;
 
 use super::LeafletMapContext;
 
 #[component(transparent)]
-pub fn TileLayer(cx: Scope, 
+pub fn TileLayer(cx: Scope,
     #[prop(into)]
     url: String,
     #[prop(into, optional)]
@@ -13,6 +13,7 @@ pub fn TileLayer(cx: Scope,
     attribution: String,
 ) -> impl IntoView {
     let map_context = use_context::<LeafletMapContext>(cx).expect("map context not found");
+
     create_effect(cx, move |_| {
         if let Some(map) = map_context.map() {
             log!("Adding tile layer: {}", url);
@@ -28,3 +29,4 @@ pub fn TileLayer(cx: Scope,
         }
     });
 }
+

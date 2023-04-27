@@ -26,6 +26,11 @@ pub fn App(cx: Scope) -> impl IntoView {
                       <strong>{"A pretty CSS3 popup"}</strong>
                   </Popup>
               </Marker>
+                <Marker position=position!(51.5, -0.065) draggable=true >
+                  <Popup>
+                      <strong>{"A pretty CSS3 popup"}</strong>
+                  </Popup>
+              </Marker>
               <Tooltip position=position!(51.5, -0.06) permanent=true direction="top">
                   <strong>{"And a tooltip"}</strong>
               </Tooltip>

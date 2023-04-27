@@ -1,3 +1,4 @@
 [toolchain]
 channel = "nightly"
 profile = "default"
+target = "wasm32-unknown-unknown"

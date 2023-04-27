@@ -12,11 +12,12 @@ pub fn Popup(
     let map_context = use_context::<LeafletMapContext>(cx).expect("Map context not found");
     let overlay_context = use_context::<LeafletOverlayContainerContext>(cx);
 
+    // Render popup content to a html element
     let content = view! {cx, <div>{children(cx)}</div>};
     create_effect(cx, move |_| {
         log!("Popup context {:?}", map_context);
         let inner_content = content.clone();
-        if let Some(overlay_context) = overlay_context.clone() {
+        if let Some(overlay_context) = overlay_context {
             log!("we are in marker");
             if let (Some(marker), Some(_map)) = (
                 overlay_context.container::<leaflet::Layer>(),

@@ -9,6 +9,7 @@ use super::LeafletMapContext;
 pub fn Marker(
     cx: Scope,
     #[prop(into)] position: MaybeSignal<Position>,
+    #[prop(into, optional)] draggable: MaybeSignal<bool>,
     #[prop(into, optional)] options: MarkerOptions,
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
@@ -17,10 +18,14 @@ pub fn Marker(
 
     cx.child_scope(|cx| {
         let overlay = extend_context_with_overlay(cx);
-        let cloned_overlay = overlay.clone();
         create_effect(cx, move |_| {
             if let Some(map) = map_context.map() {
                 log!("Adding marker");
+                let mut options = options.clone();
+                let drag = draggable.get_untracked();
+                if drag {
+                    options.draggable(drag);
+                }
                 let marker = leaflet::Marker::new_with_options(&position.get_untracked().into(), &options);
                 marker.addTo(&map);
                 overlay.set_container(&marker);
@@ -33,9 +38,20 @@ pub fn Marker(
 
         create_effect(cx, move |_| {
             position_tracking.track();
-            if let Some(marker) = cloned_overlay.container::<leaflet::Marker>() {
+            if let Some(marker) = overlay.container::<leaflet::Marker>() {
                 log!("Updating marker");
                 marker.setLatLng(&position_tracking.get_untracked().into());
+            }
+        });
+        
+        create_effect(cx, move |_| {
+            if let Some(marker) = overlay.container::<leaflet::Marker>() {
+                log!("Changing draggable");
+                if draggable.get() {
+                    marker.dragging().enable();
+                } else {
+                    marker.dragging().disable();
+                }
             }
         });
 

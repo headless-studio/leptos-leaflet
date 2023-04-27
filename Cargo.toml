@@ -1,3 +1,6 @@
+[workspace]
+members = [".", "leaflet", "examples/simple-map"]
+
 [package]
 name = "leptos-leaflet"
 version = "0.1.0"
@@ -19,7 +22,6 @@ version = "0.3"
 features = ["console", "HtmlElement", "HtmlDivElement"]
 
 [features]
-default = ["hydrate"]
 hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "getrandom/js"]
 csr = ["leptos/csr", "leptos_meta/csr", "getrandom/js"]
 ssr = ["leptos/ssr", "leptos_meta/ssr"]

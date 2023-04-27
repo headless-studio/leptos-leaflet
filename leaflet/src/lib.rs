@@ -11,13 +11,15 @@ mod tooltip;
 mod div_overlay;
 mod marker;
 mod icon;
+mod handler;
 
 use js_sys::{Object, Array};
 use wasm_bindgen::prelude::*;
 
 pub use evented::Evented;
 pub use grid_layer::{GridLayer, GridLayerOptions};
-pub use icon::Icon;
+pub use handler::Handler;
+pub use icon::{Icon, IconOptions, setDefaultIconOptions};
 pub use layer::Layer;
 pub use layer_group::LayerGroup;
 pub use map::{LocateOptions, Map, MapOptions};

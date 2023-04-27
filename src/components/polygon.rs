@@ -1,35 +1,39 @@
 use leaflet::{PolylineOptions, to_lat_lng_array};
 use leptos::*;
 
-use crate::components::{
-    extend_context_with_overlay, update_overlay_context, LeafletMapContext, Position,
-};
-use wasm_bindgen::prelude::*;
+use crate::components::{extend_context_with_overlay, update_overlay_context, LeafletMapContext, Position, LeafletOverlayContainerContext};
 
-#[component]
+#[component(transparent)]
 pub fn Polygon(
     cx: Scope,
-    #[prop(into, optional)] options: MaybeSignal<PolylineOptions>,
-    #[prop(into)] positions: Vec<Position>,
+    #[prop(into, optional)] options: PolylineOptions,
+    #[prop(into)] positions: MaybeSignal<Vec<Position>>,
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
     cx.child_scope(|cx| {
         extend_context_with_overlay(cx);
 
+        let positions_for_effect = positions.clone();
         create_effect(cx, move |_| {
             if let Some(map) = use_context::<LeafletMapContext>(cx)
                 .expect("map context")
                 .map()
             {
-                log!("Adding polygon");
-                let lat_lngs = to_lat_lng_array(&positions);
-                let polygon = leaflet::Polygon::new_with_options(&lat_lngs, &options.get_untracked());
+                let lat_lngs = to_lat_lng_array(&positions.get_untracked());
+                let polygon = leaflet::Polygon::new_with_options(&lat_lngs, &options);
                 polygon.addTo(&map);
                 update_overlay_context(cx, &polygon);
                 on_cleanup(cx, move || {
                     polygon.remove();
                 });
             };
+        });
+
+        create_effect(cx, move |_| {
+            if let Some(polygon) = use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context").container::<leaflet::Polygon>() {
+                let lat_lngs = to_lat_lng_array(&positions_for_effect());
+                polygon.setLatLngs(&lat_lngs);
+            }
         });
 
         children

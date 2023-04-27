@@ -1,28 +1,28 @@
+mod circle;
+mod image_overlay;
 mod map_container;
 mod marker;
+mod polygon;
+mod polyline;
 mod popup;
 mod tile_layer;
 mod tooltip;
-mod polygon;
-mod polyline;
-mod circle;
-mod image_overlay;
 
 use leaflet::LatLng;
 use leptos::*;
 use wasm_bindgen::JsCast;
 
+pub use circle::Circle;
+pub use leaflet::{CircleOptions, PathOptions, PolylineOptions};
 pub use map_container::MapContainer;
 pub use marker::Marker;
+pub use polygon::Polygon;
+pub use polyline::Polyline;
 pub use popup::Popup;
 pub use tile_layer::TileLayer;
 pub use tooltip::Tooltip;
-pub use polyline::Polyline;
-pub use polygon::Polygon;
-pub use circle::Circle;
-pub use leaflet::{PathOptions, PolylineOptions, CircleOptions};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct LeafletMapContext {
     map: RwSignal<Option<leaflet::Map>>,
 }
@@ -59,11 +59,12 @@ pub fn extend_context_with_overlay(cx: Scope) -> LeafletOverlayContainerContext 
 }
 
 pub fn update_overlay_context<C: Into<leaflet::Layer> + Clone>(cx: Scope, layer: &C) {
-    let overlay_context = use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
+    let overlay_context =
+        use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
     overlay_context.set_container(layer);
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct LeafletOverlayContainerContext {
     container: RwSignal<Option<leaflet::Layer>>,
 }

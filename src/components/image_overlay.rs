@@ -2,7 +2,7 @@
 use leaflet::ImageOverlayOptions;
 use leptos::*;
 
-#[component]
+#[component(transparent)]
 pub fn ImageOverlay(
     cx: Scope,
     #[prop(into)] url: String,
