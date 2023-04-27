@@ -1,6 +1,7 @@
 use crate::components::{LeafletMapContext, LeafletOverlayContainerContext};
 use leaflet::{to_lat_lng_array, PolylineOptions};
 use leptos::*;
+use crate::MaybeSignalString;
 
 use super::{extend_context_with_overlay, update_overlay_context, Position};
 
@@ -9,24 +10,24 @@ pub fn Polyline(
     cx: Scope,
     #[prop(into)] positions: MaybeSignal<Vec<Position>>,
     #[prop(into, optional)] stroke: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] color: MaybeSignal<String>,
+    #[prop(into, optional)] color: MaybeSignalString,
     #[prop(into, optional)] weight: MaybeSignal<Option<f64>>,
     #[prop(into, optional)] opacity: MaybeSignal<Option<f64>>,
-    #[prop(into, optional)] line_cap: MaybeSignal<Option<String>>,
-    #[prop(into, optional)] line_join: MaybeSignal<Option<String>>,
-    #[prop(into, optional)] dash_array: MaybeSignal<Option<String>>,
-    #[prop(into, optional)] dash_offset: MaybeSignal<Option<String>>,
+    #[prop(into, optional)] line_cap: MaybeSignalString,
+    #[prop(into, optional)] line_join: MaybeSignalString,
+    #[prop(into, optional)] dash_array: MaybeSignalString,
+    #[prop(into, optional)] dash_offset: MaybeSignalString,
     #[prop(into, optional)] fill: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] fill_color: MaybeSignal<Option<String>>,
+    #[prop(into, optional)] fill_color: MaybeSignalString,
     #[prop(into, optional)] fill_opacity: MaybeSignal<Option<f64>>,
-    #[prop(into, optional)] fill_rule: MaybeSignal<Option<String>>,
+    #[prop(into, optional)] fill_rule: MaybeSignalString,
     #[prop(into, optional)] bubbling_mouse_events: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] class_name: MaybeSignal<Option<String>>,
+    #[prop(into, optional)] class_name: MaybeSignalString,
     #[prop(into, optional)] smooth_factor: MaybeSignal<Option<f64>>,
     #[prop(into, optional)] no_clip: MaybeSignal<Option<bool>>,
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
-    cx.child_scope(|cx| {
+    let (child, _) = cx.run_child_scope(|cx| {
         extend_context_with_overlay(cx);
 
         let positions_for_effect = positions.clone();
@@ -40,8 +41,8 @@ pub fn Polyline(
                 if let Some(stroke) = stroke.get_untracked() {
                     options.stroke(stroke);
                 }
-                if !color.get_untracked().is_empty() {
-                    options.color(&color.get_untracked());
+                if let Some(color) = color.get_untracked() {
+                    options.color(&color);
                 }
                 if let Some(weight) = weight.get_untracked() {
                     options.weight(weight);
@@ -104,14 +105,16 @@ pub fn Polyline(
             }
         });
 
-        children
-            .map(|children| {
-                children(cx)
-                    .as_children()
-                    .iter()
-                    .map(|child| child.into_view(cx))
-                    .collect::<Vec<_>>()
-            })
-            .unwrap_or_default();
+        // children
+        //     .map(|children| {
+        //         children(cx)
+        //             .as_children()
+        //             .iter()
+        //             .map(|child| child.into_view(cx))
+        //             .collect::<Vec<_>>()
+        //     })
+        //     .unwrap_or_default();
+        children.map(|child| child(cx))
     });
+    child
 }

@@ -2,6 +2,7 @@
     extend_context_with_overlay, update_overlay_context, LeafletMapContext,
     LeafletOverlayContainerContext, Position,
 };
+use crate::MaybeSignalString;
 use leptos::*;
 
 #[component(transparent)]
@@ -9,19 +10,19 @@ pub fn Circle(
     cx: Scope,
     #[prop(into)] center: MaybeSignal<Position>,
     #[prop(into, optional)] stroke: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] color: MaybeSignal<String>,
+    #[prop(into, optional)] color: MaybeSignalString,
     #[prop(into, optional)] weight: MaybeSignal<Option<f64>>,
     #[prop(into, optional)] opacity: MaybeSignal<Option<f64>>,
-    #[prop(into, optional)] line_cap: MaybeSignal<Option<String>>,
-    #[prop(into, optional)] line_join: MaybeSignal<Option<String>>,
-    #[prop(into, optional)] dash_array: MaybeSignal<Option<String>>,
-    #[prop(into, optional)] dash_offset: MaybeSignal<Option<String>>,
+    #[prop(into, optional)] line_cap: MaybeSignalString,
+    #[prop(into, optional)] line_join: MaybeSignalString,
+    #[prop(into, optional)] dash_array: MaybeSignalString,
+    #[prop(into, optional)] dash_offset: MaybeSignalString,
     #[prop(into, optional)] fill: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] fill_color: MaybeSignal<Option<String>>,
+    #[prop(into, optional)] fill_color: MaybeSignalString,
     #[prop(into, optional)] fill_opacity: MaybeSignal<Option<f64>>,
-    #[prop(into, optional)] fill_rule: MaybeSignal<Option<String>>,
+    #[prop(into, optional)] fill_rule: MaybeSignalString,
     #[prop(into, optional)] bubbling_mouse_events: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] class_name: MaybeSignal<Option<String>>,
+    #[prop(into, optional)] class_name: MaybeSignalString,
     #[prop(into)] radius: MaybeSignal<f64>,
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
@@ -38,10 +39,8 @@ pub fn Circle(
                 if let Some(stroke) = stroke.get_untracked() {
                     options.stroke(stroke);
                 }
-                if let color = color.get_untracked() {
-                    if !color.is_empty() {
-                        options.color(&color);
-                    }
+                if let Some(color) = color.get_untracked() {
+                    options.color(&color);
                 }
                 if let Some(weight) = weight.get_untracked() {
                     options.weight(weight);

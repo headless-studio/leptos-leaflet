@@ -1,6 +1,6 @@
-use leptos::*;
 use leptos::html::Div;
-use leptos::leptos_dom::is_server;
+use leptos::tracing::debug;
+use leptos::*;
 
 use wasm_bindgen::prelude::*;
 
@@ -27,12 +27,12 @@ pub fn Tooltip(
         options.sticky(sticky());
 
         if let Some(overlay_context) = overlay_context.clone() {
-            log!("we are in overlay");
+            debug!("we are in overlay");
             if let (Some(layer), Some(_map)) = (
                 overlay_context.container::<leaflet::Layer>(),
                 map_context.map(),
             ) {
-                log!("Adding tooltip");
+                debug!("Adding tooltip");
                 let tooltip = leaflet::Tooltip::new(&options, Some(layer.unchecked_ref()));
                 let content = content.get_untracked().expect("content ref");
                 tooltip.setContent(content.unchecked_ref());
@@ -42,7 +42,7 @@ pub fn Tooltip(
                 });
             }
         } else if let Some(map) = map_context.map() {
-            log!("Adding tooltip");
+            debug!("Adding tooltip");
             let tooltip = leaflet::Tooltip::new_with_lat_lng(&position().into(), &options);
             let content = content.get_untracked().expect("content ref");
             let html_view: &JsValue = content.unchecked_ref();
@@ -51,7 +51,7 @@ pub fn Tooltip(
             on_cleanup(cx, move || {
                 tooltip.remove();
             });
-    }
+        }
     });
 
     view! {cx, <div style="visibility:collapse"><div _ref=content>{children(cx)}</div></div> }
