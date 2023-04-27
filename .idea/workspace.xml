@@ -22,15 +22,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b1859398-b4c9-48ff-9af6-99796b3d8085" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/leaflet/src/raster/video_overlay.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/video_overlay.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/with-server/src/app.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/with-server/src/app.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/leaflet/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/leaflet/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/leaflet/src/raster/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/leaflet/src/raster/mod.rs" afterDir="false" />
+    <list default="true" id="b1859398-b4c9-48ff-9af6-99796b3d8085" name="Changes" comment="Clion">
       <change beforePath="$PROJECT_DIR$/src/components/map_container.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/map_container.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/marker.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/marker.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,12 +112,24 @@
       <workItem from="1682630451968" duration="382000" />
       <workItem from="1682630854595" duration="604000" />
       <workItem from="1682631484688" duration="432000" />
-      <workItem from="1682631946799" duration="1603000" />
+      <workItem from="1682631946799" duration="1685000" />
     </task>
+    <task id="LOCAL-00001" summary="Clion">
+      <created>1682633578615</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1682633578615</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Clion" />
+    <option name="LAST_COMMIT_MESSAGE" value="Clion" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
