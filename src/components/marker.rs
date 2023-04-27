@@ -6,6 +6,7 @@ use super::LeafletMapContext;
 #[component(transparent)]
 pub fn Marker(
     cx: Scope,
+    /// Position for the Marker
     #[prop(into)] position: MaybeSignal<Position>,
     #[prop(into, optional)] draggable: MaybeSignal<bool>,
     #[prop(into, optional)] keyboard: MaybeSignal<Option<bool>>,

@@ -7,6 +7,7 @@ mod polyline;
 mod popup;
 mod tile_layer;
 mod tooltip;
+mod video_overlay;
 
 use leaflet::LatLng;
 use leptos::*;

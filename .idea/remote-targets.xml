@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <targets>
+      <target name="WSL - Ubuntu_V2" type="wsl" uuid="c9243c50-1792-4de8-9638-66f1c18c0af8">
+        <config>
+          <option name="distributionMsId" value="Ubuntu_V2" />
+          <option name="projectRootOnTarget" value="/mnt/d/devtools/jetbrains/apps/CLion/ch-0/231.8109.222/jbr/bin&#10;/leptos-leaflet" />
+        </config>
+        <ContributedStateBase type="RsLanguageRuntime">
+          <config>
+            <option name="cargoPath" value="/home/dgsantana/.cargo/bin/cargo" />
+            <option name="cargoVersion" value="1.69.0 (6e9a83356 2023-04-12)" />
+            <option name="rustcPath" value="/home/dgsantana/.cargo/bin/rustc" />
+            <option name="rustcVersion" value="1.69.0 (84c898d65 2023-04-16)" />
+          </config>
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>

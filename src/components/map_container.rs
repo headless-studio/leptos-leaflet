@@ -1,7 +1,6 @@
 use crate::components::{provide_leaflet_context, Position};
 use leaflet::LocateOptions;
-use leptos::leptos_dom::is_server;
-use leptos::{html::Div, leptos_dom::HydrationCtx, *};
+use leptos::{html::Div, *};
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlDivElement;
 
@@ -37,7 +36,6 @@ pub fn MapContainer(
 ) -> impl IntoView {
     let map_ref = create_node_ref::<Div>(cx);
 
-    // let next_id = HydrationCtx::next_component();
     provide_leaflet_context(cx);
 
     create_effect(cx, move |_| {
@@ -51,7 +49,7 @@ pub fn MapContainer(
             }
             node.on_mount(move |node| {
                 let map_context =
-                    use_context::<LeafletMapContext>(cx).expect("Map context not found");
+                    expect_context::<LeafletMapContext>(cx);
                 let node = node.unchecked_ref::<HtmlDivElement>();
                 let mut options = leaflet::MapOptions::new();
                 options.zoom(zoom());
@@ -60,7 +58,9 @@ pub fn MapContainer(
                 }
                 log!("Map options: {:?}", options);
                 let leaflet_map = leaflet::Map::new(&node.id(), &options);
-                #[cfg(target_arch = "wasm32")]
+
+                // Signal that we have a map
+                #[cfg(not(feature = "ssr"))]
                 if let Some(set_map) = map {
                     set_map.set(LeafletMap {
                         map: Some(leaflet_map.clone()),
@@ -76,10 +76,15 @@ pub fn MapContainer(
                 }
 
                 log!("Map node: {:?}", node.id());
-
                 map_context.set_map(&leaflet_map);
             });
         }
+    });
+
+    on_cleanup(cx, || {
+        if let Some(map) = expect_context::<LeafletMapContext>(cx).map_signal().get_untracked() {
+            map.remove();
+        };
     });
 
     // Process all children, since this is mostly javascript callbacks we don't "render" the views
@@ -105,14 +110,14 @@ pub fn MapContainer(
 
 #[derive(Debug, Default, Clone)]
 pub struct LeafletMap {
-    #[cfg(target_arch = "wasm32")]
+    #[cfg(not(feature = "ssr"))]
     pub map: Option<leaflet::Map>,
 }
 
 impl LeafletMap {
     pub fn new() -> Self {
         Self {
-            #[cfg(target_arch = "wasm32")]
+            #[cfg(not(feature = "ssr"))]
             map: None,
         }
     }

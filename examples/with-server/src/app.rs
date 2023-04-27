@@ -52,7 +52,7 @@ fn HomePage(cx: Scope) -> impl IntoView {
     });
     
     create_effect(cx, move |_| {
-        #[cfg(target_arch = "wasm32")]
+        #[cfg(not(feature = "ssr"))]
         if let LeafletMap { map: Some(map) } = map.get() {
             log!("Map context {:?}", map);
         }

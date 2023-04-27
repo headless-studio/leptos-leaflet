@@ -25,7 +25,7 @@ pub use layer_group::LayerGroup;
 pub use map::{LocateOptions, Map, MapOptions};
 pub use marker::{Marker, MarkerOptions};
 pub use popup::{Popup, PopupOptions};
-pub use raster::{TileLayer, TileLayerOptions, ImageOverlay, ImageOverlayOptions};
+pub use raster::{TileLayer, TileLayerOptions, ImageOverlay, ImageOverlayOptions, VideoOverlay, VideoOverlayOptions};
 pub use shapes::{
     Circle, CircleMarker, Path, PathOptions, Polygon, Polyline, PolylineOptions, Rectangle, CircleOptions
 };
