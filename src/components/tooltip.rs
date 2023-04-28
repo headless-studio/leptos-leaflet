@@ -43,7 +43,7 @@ pub fn Tooltip(
             }
         } else if let Some(map) = map_context.map() {
             debug!("Adding tooltip");
-            let tooltip = leaflet::Tooltip::new_with_lat_lng(&position().into(), &options);
+            let tooltip = leaflet::Tooltip::newWithLatLng(&position().into(), &options);
             let content = content.get_untracked().expect("content ref");
             let html_view: &JsValue = content.unchecked_ref();
             tooltip.setContent(html_view);

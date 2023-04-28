@@ -94,7 +94,7 @@ pub fn Popup(
             }
         } else if let Some(map) = map_context.map() {
             log!("Adding popup");
-            let popup = leaflet::Popup::new_with_lat_lng(&position().into(), &options);
+            let popup = leaflet::Popup::newWithLatLng(&position().into(), &options);
             let content = inner_content.get_untracked().expect("content ref");
             let html_view: &JsValue = content.unchecked_ref();
             popup.setContent(html_view);

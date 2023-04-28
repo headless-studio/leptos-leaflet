@@ -1,36 +1,43 @@
+mod control;
+mod div_overlay;
 mod evented;
 mod grid_layer;
+mod handler;
+mod icon;
 mod layer;
+mod layer_control;
 mod layer_group;
 mod map;
+mod marker;
 pub mod plugins;
 mod popup;
 mod raster;
 mod shapes;
 mod tooltip;
-mod div_overlay;
-mod marker;
-mod icon;
-mod handler;
 
-use js_sys::{Object, Array};
+use js_sys::{Array, Object};
 use wasm_bindgen::prelude::*;
 
+pub use control::Control;
+pub use div_overlay::DivOverlay;
 pub use evented::Evented;
 pub use grid_layer::{GridLayer, GridLayerOptions};
 pub use handler::Handler;
-pub use icon::{Icon, IconOptions, setDefaultIconOptions};
+pub use icon::{setDefaultIconOptions, Icon, IconOptions};
 pub use layer::Layer;
 pub use layer_group::LayerGroup;
 pub use map::{LocateOptions, Map, MapOptions};
 pub use marker::{Marker, MarkerOptions};
 pub use popup::{Popup, PopupOptions};
-pub use raster::{TileLayer, TileLayerOptions, ImageOverlay, ImageOverlayOptions, VideoOverlay, VideoOverlayOptions};
+pub use raster::{
+    ImageOverlay, ImageOverlayOptions, TileLayer, TileLayerOptions, VideoOverlay,
+    VideoOverlayOptions,
+};
 pub use shapes::{
-    Circle, CircleMarker, Path, PathOptions, Polygon, Polyline, PolylineOptions, Rectangle, CircleOptions
+    Circle, CircleMarker, CircleOptions, Path, PathOptions, Polygon, Polyline, PolylineOptions,
+    Rectangle,
 };
 pub use tooltip::{Tooltip, TooltipOptions};
-pub use div_overlay::DivOverlay;
 
 #[macro_export]
 macro_rules! object_property_set {
@@ -87,18 +94,6 @@ macro_rules! object_constructor {
 
 #[wasm_bindgen]
 extern "C" {
-
-    // mapboxGl
-    #[allow(non_camel_case_types)]
-    #[derive(Debug)]
-    pub type mapboxGL;
-
-    #[wasm_bindgen(constructor, js_namespace = L)]
-    pub fn new(options: &JsValue) -> mapboxGL;
-
-    #[wasm_bindgen(method)]
-    pub fn addTo(this: &mapboxGL, map: &Map);
-
     // Point
     #[derive(Debug)]
     pub type Point;
@@ -214,17 +209,6 @@ extern "C" {
     /// [`setStyle`](https://leafletjs.com/reference-1.7.1.html#geojson-setstyle)
     #[wasm_bindgen(method)]
     pub fn setStyle(this: &GeoJSON, style: &JsValue);
-
-    // Control
-
-    #[derive(Debug)]
-    pub type Control;
-
-    #[wasm_bindgen(js_namespace = L, static_method_of = Control)]
-    pub fn extend(props: &JsValue) -> JsValue;
-
-    #[wasm_bindgen(method)]
-    pub fn addTo(this: &Control, map: &Map);
 }
 
 impl Into<LatLng> for (f64, f64) {

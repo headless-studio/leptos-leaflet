@@ -19,7 +19,7 @@ extern "C" {
 
     // [`Marker`](https://leafletjs.com/reference.html#marker-l-marker)
     #[wasm_bindgen(constructor, js_namespace = L)]
-    pub fn new_with_options(lat_lng: &LatLng, options: &MarkerOptions) -> Marker;
+    pub fn newWithOptions(lat_lng: &LatLng, options: &MarkerOptions) -> Marker;
 
     /// ['setIcon'](https://leafletjs.com/reference.html#marker-seticon)
     #[wasm_bindgen(method)]

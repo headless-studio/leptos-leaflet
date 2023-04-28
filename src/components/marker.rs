@@ -96,7 +96,7 @@ pub fn Marker(
                     options.attribution(&attribution);
                 }
                 let marker =
-                    leaflet::Marker::new_with_options(&position.get_untracked().into(), &options);
+                    leaflet::Marker::newWithOptions(&position.get_untracked().into(), &options);
                 marker.addTo(&map);
                 overlay.set_container(&marker);
 
