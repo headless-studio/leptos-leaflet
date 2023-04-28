@@ -5,7 +5,6 @@ use leptos::{
 use std::ops::Deref;
 
 pub mod components;
-pub mod core;
 
 #[macro_export]
 macro_rules! position {
