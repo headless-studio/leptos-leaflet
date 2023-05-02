@@ -81,7 +81,7 @@ pub fn MapContainer(
         }
     });
 
-    on_cleanup(cx, || {
+    on_cleanup(cx, move || {
         #[cfg(not(feature = "ssr"))]
         if let Some(map) = expect_context::<LeafletMapContext>(cx).map_signal().get_untracked() {
             map.remove();
