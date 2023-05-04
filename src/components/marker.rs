@@ -3,11 +3,16 @@ use leptos::*;
 
 use super::LeafletMapContext;
 
+macro_rules! option_effect {
+    ($e:ident) => {};
+}
+
 #[component(transparent)]
 pub fn Marker(
     cx: Scope,
     /// Position for the Marker
-    #[prop(into)] position: MaybeSignal<Position>,
+    #[prop(into)]
+    position: MaybeSignal<Position>,
     #[prop(into, optional)] draggable: MaybeSignal<bool>,
     #[prop(into, optional)] keyboard: MaybeSignal<Option<bool>>,
     #[prop(into, optional)] title: MaybeSignal<Option<String>>,
@@ -111,6 +116,16 @@ pub fn Marker(
             if let Some(marker) = overlay.container::<leaflet::Marker>() {
                 log!("Updating marker");
                 marker.setLatLng(&position_tracking.get_untracked().into());
+            }
+        });
+
+        create_effect(cx, move |_| {
+            opacity.track();
+            if let Some(marker) = overlay.container::<leaflet::Marker>() {
+                log!("Updating marker");
+                if let Some(opacity) = opacity.get_untracked() {
+                    marker.setOpacity(opacity);
+                }
             }
         });
 

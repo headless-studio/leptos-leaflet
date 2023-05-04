@@ -25,6 +25,10 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn setIcon(this: &Marker, icon: &Icon);
 
+    /// ['setIcon'](https://leafletjs.com/reference.html#marker-setopacity)
+    #[wasm_bindgen(method)]
+    pub fn setOpacity(this: &Marker, value: f64);
+
     /// ['getLatLng'](https://leafletjs.com/reference.html#marker-getlatlng)
     #[wasm_bindgen(method)]
     pub fn getLatLng(this: &Marker) -> LatLng;
