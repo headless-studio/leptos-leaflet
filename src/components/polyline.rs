@@ -4,7 +4,7 @@ use crate::components::context::{extend_context_with_overlay, LeafletMapContext,
 use crate::MaybeSignalOption;
 use crate::components::path_options::{FillRule, LineCap, LineJoin};
 
-use super::Position;
+use crate::components::position::Position;
 
 #[component(transparent)]
 pub fn Polyline(

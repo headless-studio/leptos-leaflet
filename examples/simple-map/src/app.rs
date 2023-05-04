@@ -2,6 +2,7 @@ use std::time::Duration;
 
 use leptos::*;
 use leptos_leaflet::{components::*, pos_opt, position, positions};
+use leptos_leaflet::components::position::Position;
 
 #[component]
 pub fn App(cx: Scope) -> impl IntoView {

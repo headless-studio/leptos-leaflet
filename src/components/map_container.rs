@@ -1,4 +1,4 @@
-use crate::components::Position;
+use crate::components::position::Position;
 use leaflet::LocateOptions;
 use leptos::{*, html::Div};
 use wasm_bindgen::prelude::*;

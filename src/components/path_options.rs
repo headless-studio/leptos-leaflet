@@ -70,3 +70,21 @@ impl Display for FillRule {
         }
     }
 }
+
+impl From<LineJoin> for String {
+    fn from(value: LineJoin) -> Self {
+        format!("{}", value)
+    }
+}
+
+impl From<LineCap> for String {
+    fn from(value: LineCap) -> Self {
+        format!("{}", value)
+    }
+}
+
+impl From<FillRule> for String {
+    fn from(value: FillRule) -> Self {
+        format!("{}", value)
+    }
+}

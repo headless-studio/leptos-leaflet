@@ -9,8 +9,9 @@ pub use components::FillRule;
 pub use components::LineCap;
 pub use components::LineJoin;
 pub use components::{
-    MapContainer, MapEvents, Marker, Polygon, Polyline, PolylineOptions, Popup, Position, TileLayer,
+    MapContainer, MapEvents, Marker, Polygon, Polyline, PolylineOptions, Popup, TileLayer,
 };
+pub use components::position::Position;
 
 pub use leaflet::{ErrorEvent, Event, LocationEvent, PopupEvent};
 

@@ -1,7 +1,7 @@
 use leaflet::{PolylineOptions, to_lat_lng_array};
 use leptos::*;
 
-use crate::components::Position;
+use crate::components::position::Position;
 use crate::components::context::{extend_context_with_overlay, LeafletMapContext, LeafletOverlayContainerContext, update_overlay_context};
 use crate::MaybeSignalOption;
 use crate::components::path_options::{FillRule, LineCap, LineJoin};

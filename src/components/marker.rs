@@ -1,4 +1,4 @@
-use super::Position;
+use crate::components::position::Position;
 use leptos::*;
 use crate::components::context::extend_context_with_overlay;
 

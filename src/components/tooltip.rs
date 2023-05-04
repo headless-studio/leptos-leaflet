@@ -5,7 +5,7 @@ use leptos::*;
 use wasm_bindgen::prelude::*;
 use crate::components::context::{LeafletMapContext, LeafletOverlayContainerContext};
 
-use super::Position;
+use crate::components::position::Position;
 
 #[component]
 pub fn Tooltip(
