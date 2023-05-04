@@ -1,29 +1,28 @@
-﻿use crate::components::{
-    extend_context_with_overlay, update_overlay_context, FillRule, LeafletMapContext,
-    LeafletOverlayContainerContext, LineCap, LineJoin, Position,
-};
+﻿use crate::components::Position;
 use crate::MaybeSignalOption;
 use leaflet::CircleOptions;
 use leptos::*;
+use crate::components::context::{extend_context_with_overlay, LeafletMapContext, LeafletOverlayContainerContext, update_overlay_context};
+use crate::components::path_options::{FillRule, LineCap, LineJoin};
 
 #[component(transparent)]
 pub fn Circle(
     cx: Scope,
     #[prop(into)] center: MaybeSignal<Position>,
     #[prop(into, optional)] stroke: MaybeSignalOption<bool>,
-    #[prop(into, optional)] color: MaybeSignalOption<String>,
+    #[prop(into, optional)] color: MaybeSignal<String>,
     #[prop(into, optional)] weight: MaybeSignalOption<f64>,
     #[prop(into, optional)] opacity: MaybeSignalOption<f64>,
     #[prop(into, optional)] line_cap: MaybeSignalOption<LineCap>,
     #[prop(into, optional)] line_join: MaybeSignalOption<LineJoin>,
-    #[prop(into, optional)] dash_array: MaybeSignalOption<String>,
-    #[prop(into, optional)] dash_offset: MaybeSignalOption<String>,
+    #[prop(into, optional)] dash_array: MaybeSignal<String>,
+    #[prop(into, optional)] dash_offset: MaybeSignal<String>,
     #[prop(into, optional)] fill: MaybeSignalOption<bool>,
-    #[prop(into, optional)] fill_color: MaybeSignalOption<String>,
+    #[prop(into, optional)] fill_color: MaybeSignal<String>,
     #[prop(into, optional)] fill_opacity: MaybeSignalOption<f64>,
     #[prop(into, optional)] fill_rule: MaybeSignalOption<FillRule>,
     #[prop(into, optional)] bubbling_mouse_events: MaybeSignalOption<bool>,
-    #[prop(into, optional)] class_name: MaybeSignalOption<String>,
+    #[prop(into, optional)] class_name: MaybeSignal<String>,
     #[prop(into)] radius: MaybeSignal<f64>,
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
@@ -42,8 +41,8 @@ pub fn Circle(
                 if let Some(stroke) = stroke.get_untracked() {
                     options.stroke(stroke);
                 }
-                if let Some(color) = inner_color.get_untracked() {
-                    options.color(&color);
+                if !inner_color.get_untracked().is_empty() {
+                    options.color(&inner_color.get_untracked());
                 }
                 if let Some(weight) = weight.get_untracked() {
                     options.weight(weight);
@@ -57,17 +56,17 @@ pub fn Circle(
                 if let Some(line_join) = line_join.get_untracked() {
                     options.line_join(&format!("{}", line_join));
                 }
-                if let Some(dash_array) = dash_array.get_untracked() {
-                    options.dash_array(&dash_array);
+                if !dash_array.get_untracked().is_empty() {
+                    options.dash_array(&dash_array.get_untracked());
                 }
-                if let Some(dash_offset) = dash_offset.get_untracked() {
-                    options.dash_offset(&dash_offset);
+                if !dash_offset.get_untracked().is_empty() {
+                    options.dash_offset(&dash_offset.get_untracked());
                 }
                 if let Some(fill) = fill.get_untracked() {
                     options.fill(fill);
                 }
-                if let Some(fill_color) = inner_fill_color.get_untracked() {
-                    options.fill_color(&fill_color);
+                if !inner_fill_color.get_untracked().is_empty() {
+                    options.fill_color(&inner_fill_color.get_untracked());
                 }
                 if let Some(fill_opacity) = fill_opacity.get_untracked() {
                     options.fill_opacity(fill_opacity);
@@ -78,8 +77,8 @@ pub fn Circle(
                 if let Some(bubbling_mouse_events) = bubbling_mouse_events.get_untracked() {
                     options.bubbling_mouse_events(bubbling_mouse_events);
                 }
-                if let Some(class_name) = class_name.get_untracked() {
-                    options.class_name(&class_name);
+                if !class_name.get_untracked().is_empty() {
+                    options.class_name(&class_name.get_untracked());
                 }
                 let circle =
                     leaflet::Circle::new_with_options(&center.get_untracked().into(), &options);
@@ -130,7 +129,7 @@ pub fn Circle(
         create_effect(cx, move |_| {
             let overlay_context =
                 use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
-            if let (Some(circle), Some(color)) =
+            if let (Some(circle), color) =
                 (overlay_context.container::<leaflet::Circle>(), color())
             {
                 let mut options = CircleOptions::new();
@@ -143,7 +142,7 @@ pub fn Circle(
         create_effect(cx, move |_| {
             let overlay_context =
                 use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
-            if let (Some(circle), Some(color)) =
+            if let (Some(circle), color) =
                 (overlay_context.container::<leaflet::Circle>(), fill_color())
             {
                 let mut options = CircleOptions::new();

@@ -3,8 +3,9 @@ use leptos::tracing::debug;
 use leptos::*;
 
 use wasm_bindgen::prelude::*;
+use crate::components::context::{LeafletMapContext, LeafletOverlayContainerContext};
 
-use super::{LeafletMapContext, LeafletOverlayContainerContext, Position};
+use super::Position;
 
 #[component]
 pub fn Tooltip(

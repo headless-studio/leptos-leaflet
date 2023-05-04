@@ -1,7 +1,7 @@
 use leaflet::TileLayerOptions;
 use leptos::*;
 
-use super::LeafletMapContext;
+use crate::components::context::LeafletMapContext;
 
 #[component(transparent)]
 pub fn TileLayer(cx: Scope,

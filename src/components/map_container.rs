@@ -1,13 +1,12 @@
-use std::cell::RefCell;
-use std::rc::Rc;
-use crate::components::{provide_leaflet_context, Position};
-use leaflet::{ErrorEvent, LocateOptions, LocationEvent};
-use leptos::{html::Div, *};
+use crate::components::Position;
+use leaflet::LocateOptions;
+use leptos::{*, html::Div};
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlDivElement;
+use crate::components::context::provide_leaflet_context;
 use crate::MapEvents;
 
-use super::LeafletMapContext;
+use crate::components::context::LeafletMapContext;
 
 #[component]
 pub fn MapContainer(

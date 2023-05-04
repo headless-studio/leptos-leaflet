@@ -1,11 +1,10 @@
-use leaflet::{to_lat_lng_array, PolylineOptions};
+use leaflet::{PolylineOptions, to_lat_lng_array};
 use leptos::*;
 
-use crate::components::{
-    extend_context_with_overlay, update_overlay_context, LeafletMapContext,
-    LeafletOverlayContainerContext, Position,
-};
-use crate::{FillRule, LineCap, LineJoin, MaybeSignalOption};
+use crate::components::Position;
+use crate::components::context::{extend_context_with_overlay, LeafletMapContext, LeafletOverlayContainerContext, update_overlay_context};
+use crate::MaybeSignalOption;
+use crate::components::path_options::{FillRule, LineCap, LineJoin};
 
 #[component(transparent)]
 pub fn Polygon(

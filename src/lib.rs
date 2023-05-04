@@ -1,12 +1,15 @@
-use leptos::{MaybeSignal, SignalGet, SignalGetUntracked, SignalWith, SignalWithUntracked};
+use leptos::{MaybeSignal, SignalGet, SignalGetUntracked};
 use std::ops::Deref;
 
 pub mod components;
 
+pub use components::extend_context_with_overlay;
+pub use components::provide_leaflet_context;
+pub use components::FillRule;
+pub use components::LineCap;
+pub use components::LineJoin;
 pub use components::{
-    extend_context_with_overlay, provide_leaflet_context, FillRule, LineCap, LineJoin,
-    MapContainer, MapEvents, Marker, Polygon, Polyline, PolylineOptions, Popup, Position,
-    TileLayer,
+    MapContainer, MapEvents, Marker, Polygon, Polyline, PolylineOptions, Popup, Position, TileLayer,
 };
 
 pub use leaflet::{ErrorEvent, Event, LocationEvent, PopupEvent};

@@ -1,7 +1,8 @@
-use super::{extend_context_with_overlay, Position};
+use super::Position;
 use leptos::*;
+use crate::components::context::extend_context_with_overlay;
 
-use super::LeafletMapContext;
+use crate::components::context::LeafletMapContext;
 
 macro_rules! option_effect {
     ($e:ident) => {};

@@ -1,4 +1,4 @@
-﻿use crate::components::LeafletMapContext;
+﻿use crate::components::context::LeafletMapContext;
 use leaflet::ImageOverlayOptions;
 use leptos::*;
 

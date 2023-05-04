@@ -1,8 +1,9 @@
-use super::{LeafletMapContext, LeafletOverlayContainerContext, Position};
+use super::Position;
 
 use leptos::*;
 use leptos::html::Div;
 use wasm_bindgen::prelude::*;
+use crate::components::context::{LeafletMapContext, LeafletOverlayContainerContext};
 use crate::MaybeSignalOption;
 
 #[component]
