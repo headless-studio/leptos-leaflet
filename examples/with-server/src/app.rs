@@ -1,8 +1,7 @@
 use leptos::*;
-use leptos_leaflet::{components::*, LocationEvent, MapEvents, pos_opt, position, positions};
+use leptos_leaflet::*;
 use leptos_meta::*;
 use leptos_router::*;
-use leptos_leaflet::components::position::Position;
 
 #[component]
 pub fn App(cx: Scope) -> impl IntoView {
