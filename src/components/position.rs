@@ -12,10 +12,33 @@ impl Position {
         Self { lat, lng }
     }
 
+    /// Determines the distance between two positions using the Haversine formula.
+    ///
+    /// The result is in meters
+    pub fn distance_haversine(&self, other: &Self) -> f64 {
+        const R: f64 = 6371e3; // Earth's radius in meters
+        let phi1 = self.lat.to_radians();
+        let phi2 = other.lat.to_radians();
+        let delta_phi = (other.lat - self.lat).to_radians();
+        let delta_lambda = (other.lng - self.lng).to_radians();
+
+        let a = (delta_phi / 2.0).sin().powi(2)
+            + phi1.cos() * phi2.cos() * (delta_lambda / 2.0).sin().powi(2);
+        let c = 2.0 * a.sqrt().atan2((1.0 - a).sqrt());
+        R * c
+    }
+
+    /// Checks if the position is inside a circle
+    ///
+    /// # Arguments
+    ///
+    /// * `center`: Center of the circle
+    /// * `radius`: Radius of the circle in meters
+    ///
+    /// returns: bool
     #[inline]
-    /// Check if the position is inside a circle
-    pub fn inside_circle(&self, other: &Self, radius: f64) -> bool {
-        (self.lat - other.lat).abs() <= radius && (self.lng - other.lng).abs() <= radius
+    pub fn inside_circle(&self, center: &Position, radius: f64) -> bool {
+        self.distance_haversine(center) < radius
     }
 
     #[inline]
