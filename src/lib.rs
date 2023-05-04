@@ -4,8 +4,9 @@ use std::ops::Deref;
 pub mod components;
 
 pub use components::{
-    extend_context_with_overlay, provide_leaflet_context, MapContainer, MapEvents, Marker, Polygon,
-    Polyline, PolylineOptions, Popup, Position, TileLayer,
+    extend_context_with_overlay, provide_leaflet_context, FillRule, LineCap, LineJoin,
+    MapContainer, MapEvents, Marker, Polygon, Polyline, PolylineOptions, Popup, Position,
+    TileLayer,
 };
 
 pub use leaflet::{ErrorEvent, Event, LocationEvent, PopupEvent};

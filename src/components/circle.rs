@@ -1,8 +1,9 @@
 ﻿use crate::components::{
-    extend_context_with_overlay, update_overlay_context, LeafletMapContext,
-    LeafletOverlayContainerContext, Position,
+    extend_context_with_overlay, update_overlay_context, FillRule, LeafletMapContext,
+    LeafletOverlayContainerContext, LineCap, LineJoin, Position,
 };
 use crate::MaybeSignalOption;
+use leaflet::CircleOptions;
 use leptos::*;
 
 #[component(transparent)]
@@ -13,14 +14,14 @@ pub fn Circle(
     #[prop(into, optional)] color: MaybeSignalOption<String>,
     #[prop(into, optional)] weight: MaybeSignalOption<f64>,
     #[prop(into, optional)] opacity: MaybeSignalOption<f64>,
-    #[prop(into, optional)] line_cap: MaybeSignalOption<String>,
-    #[prop(into, optional)] line_join: MaybeSignalOption<String>,
+    #[prop(into, optional)] line_cap: MaybeSignalOption<LineCap>,
+    #[prop(into, optional)] line_join: MaybeSignalOption<LineJoin>,
     #[prop(into, optional)] dash_array: MaybeSignalOption<String>,
     #[prop(into, optional)] dash_offset: MaybeSignalOption<String>,
     #[prop(into, optional)] fill: MaybeSignalOption<bool>,
     #[prop(into, optional)] fill_color: MaybeSignalOption<String>,
     #[prop(into, optional)] fill_opacity: MaybeSignalOption<f64>,
-    #[prop(into, optional)] fill_rule: MaybeSignalOption<String>,
+    #[prop(into, optional)] fill_rule: MaybeSignalOption<FillRule>,
     #[prop(into, optional)] bubbling_mouse_events: MaybeSignalOption<bool>,
     #[prop(into, optional)] class_name: MaybeSignalOption<String>,
     #[prop(into)] radius: MaybeSignal<f64>,
@@ -29,17 +30,19 @@ pub fn Circle(
     let (child, _) = cx.run_child_scope(|cx| {
         extend_context_with_overlay(cx);
 
+        let inner_color = color.clone();
+        let inner_fill_color = fill_color.clone();
         create_effect(cx, move |_| {
             if let Some(map) = use_context::<LeafletMapContext>(cx)
                 .expect("map context")
                 .map()
             {
-                let mut options = leaflet::CircleOptions::new();
+                let mut options = CircleOptions::new();
                 options.radius(radius.get_untracked());
                 if let Some(stroke) = stroke.get_untracked() {
                     options.stroke(stroke);
                 }
-                if let Some(color) = color.get_untracked() {
+                if let Some(color) = inner_color.get_untracked() {
                     options.color(&color);
                 }
                 if let Some(weight) = weight.get_untracked() {
@@ -49,10 +52,10 @@ pub fn Circle(
                     options.opacity(opacity);
                 }
                 if let Some(line_cap) = line_cap.get_untracked() {
-                    options.line_cap(&line_cap);
+                    options.line_cap(&format!("{}", line_cap));
                 }
                 if let Some(line_join) = line_join.get_untracked() {
-                    options.line_join(&line_join);
+                    options.line_join(&format!("{}", line_join));
                 }
                 if let Some(dash_array) = dash_array.get_untracked() {
                     options.dash_array(&dash_array);
@@ -63,14 +66,14 @@ pub fn Circle(
                 if let Some(fill) = fill.get_untracked() {
                     options.fill(fill);
                 }
-                if let Some(fill_color) = fill_color.get_untracked() {
+                if let Some(fill_color) = inner_fill_color.get_untracked() {
                     options.fill_color(&fill_color);
                 }
                 if let Some(fill_opacity) = fill_opacity.get_untracked() {
                     options.fill_opacity(fill_opacity);
                 }
                 if let Some(fill_rule) = fill_rule.get_untracked() {
-                    options.fill_rule(&fill_rule);
+                    options.fill_rule(&format!("{}", fill_rule));
                 }
                 if let Some(bubbling_mouse_events) = bubbling_mouse_events.get_untracked() {
                     options.bubbling_mouse_events(bubbling_mouse_events);
@@ -88,6 +91,7 @@ pub fn Circle(
             };
         });
 
+        // Radius
         create_effect(cx, move |_| {
             let overlay_context =
                 use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
@@ -96,15 +100,86 @@ pub fn Circle(
             }
         });
 
-        // children
-        //     .map(|children| {
-        //         children(cx)
-        //             .as_children()
-        //             .iter()
-        //             .map(|child| child.into_view(cx))
-        //             .collect::<Vec<_>>()
-        //     })
-        //     .unwrap_or_default();
+        // Stroke
+        create_effect(cx, move |_| {
+            let overlay_context =
+                use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
+            if let (Some(circle), Some(stroke)) =
+                (overlay_context.container::<leaflet::Circle>(), stroke.get())
+            {
+                let mut options = CircleOptions::new();
+                options.stroke(stroke);
+                circle.setStyle(&options);
+            }
+        });
+
+        // Weight
+        create_effect(cx, move |_| {
+            let overlay_context =
+                use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
+            if let (Some(circle), Some(weight)) =
+                (overlay_context.container::<leaflet::Circle>(), weight.get())
+            {
+                let mut options = CircleOptions::new();
+                options.weight(weight);
+                circle.setStyle(&options);
+            }
+        });
+
+        // Color
+        create_effect(cx, move |_| {
+            let overlay_context =
+                use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
+            if let (Some(circle), Some(color)) =
+                (overlay_context.container::<leaflet::Circle>(), color())
+            {
+                let mut options = CircleOptions::new();
+                options.color(&color);
+                circle.setStyle(&options);
+            }
+        });
+
+        // Fill color
+        create_effect(cx, move |_| {
+            let overlay_context =
+                use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
+            if let (Some(circle), Some(color)) =
+                (overlay_context.container::<leaflet::Circle>(), fill_color())
+            {
+                let mut options = CircleOptions::new();
+                options.fill_color(&color);
+                circle.setStyle(&options);
+            }
+        });
+
+        // Opacity
+        create_effect(cx, move |_| {
+            let overlay_context =
+                use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
+            if let (Some(circle), Some(opacity)) = (
+                overlay_context.container::<leaflet::Circle>(),
+                opacity.get(),
+            ) {
+                let mut options = CircleOptions::new();
+                options.opacity(opacity);
+                circle.setStyle(&options);
+            }
+        });
+
+        // Fill Opacity
+        create_effect(cx, move |_| {
+            let overlay_context =
+                use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
+            if let (Some(circle), Some(opacity)) = (
+                overlay_context.container::<leaflet::Circle>(),
+                fill_opacity.get(),
+            ) {
+                let mut options = CircleOptions::new();
+                options.fill_opacity(opacity);
+                circle.setStyle(&options);
+            }
+        });
+
         children.map(|child| child(cx))
     });
     child

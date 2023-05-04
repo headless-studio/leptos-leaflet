@@ -25,6 +25,8 @@ extern "C" {
     #[wasm_bindgen(constructor, js_namespace = L)]
     pub fn new_with_options(latlng: &LatLng, options: &CircleOptions) -> Circle;
 
+    #[wasm_bindgen(method)]
+    pub fn setStyle(this: &Circle, options: &CircleOptions) -> Circle;
     /// [`setRadius`](https://leafletjs.com/reference-1.7.1.html#circle-setradius)
     #[wasm_bindgen(method)]
     pub fn setRadius(this: &Circle, radius: f64);

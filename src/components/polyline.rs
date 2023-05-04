@@ -1,7 +1,7 @@
 use crate::components::{LeafletMapContext, LeafletOverlayContainerContext};
 use leaflet::{to_lat_lng_array, PolylineOptions};
 use leptos::*;
-use crate::MaybeSignalOption;
+use crate::{FillRule, LineCap, LineJoin, MaybeSignalOption};
 
 use super::{extend_context_with_overlay, update_overlay_context, Position};
 
@@ -13,14 +13,14 @@ pub fn Polyline(
     #[prop(into, optional)] color: MaybeSignalOption<String>,
     #[prop(into, optional)] weight: MaybeSignalOption<f64>,
     #[prop(into, optional)] opacity: MaybeSignalOption<f64>,
-    #[prop(into, optional)] line_cap: MaybeSignalOption<String>,
-    #[prop(into, optional)] line_join: MaybeSignalOption<String>,
+    #[prop(into, optional)] line_cap: MaybeSignalOption<LineCap>,
+    #[prop(into, optional)] line_join: MaybeSignalOption<LineJoin>,
     #[prop(into, optional)] dash_array: MaybeSignalOption<String>,
     #[prop(into, optional)] dash_offset: MaybeSignalOption<String>,
     #[prop(into, optional)] fill: MaybeSignalOption<bool>,
     #[prop(into, optional)] fill_color: MaybeSignalOption<String>,
     #[prop(into, optional)] fill_opacity: MaybeSignalOption<f64>,
-    #[prop(into, optional)] fill_rule: MaybeSignalOption<String>,
+    #[prop(into, optional)] fill_rule: MaybeSignalOption<FillRule>,
     #[prop(into, optional)] bubbling_mouse_events: MaybeSignalOption<bool>,
     #[prop(into, optional)] class_name: MaybeSignalOption<String>,
     #[prop(into, optional)] smooth_factor: MaybeSignalOption<f64>,
@@ -51,10 +51,10 @@ pub fn Polyline(
                     options.opacity(opacity);
                 }
                 if let Some(line_cap) = line_cap.get_untracked() {
-                    options.line_cap(&line_cap);
+                    options.line_cap(&format!("{}", line_cap));
                 }
                 if let Some(line_join) = line_join.get_untracked() {
-                    options.line_join(&line_join);
+                    options.line_join(&format!("{}", line_join));
                 }
                 if let Some(dash_array) = dash_array.get_untracked() {
                     options.dash_array(&dash_array);
@@ -72,7 +72,7 @@ pub fn Polyline(
                     options.fill_opacity(fill_opacity);
                 }
                 if let Some(fill_rule) = fill_rule.get_untracked() {
-                    options.fill_rule(&fill_rule);
+                    options.fill_rule(&format!("{}", fill_rule));
                 }
                 if let Some(bubbling_mouse_events) = bubbling_mouse_events.get_untracked() {
                     options.bubbling_mouse_events(bubbling_mouse_events);

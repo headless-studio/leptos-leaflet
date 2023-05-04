@@ -1,6 +1,7 @@
 mod circle;
 mod image_overlay;
 mod map_container;
+mod map_events;
 mod marker;
 mod polygon;
 mod polyline;
@@ -8,10 +9,10 @@ mod popup;
 mod tile_layer;
 mod tooltip;
 mod video_overlay;
-mod map_events;
 
 use leaflet::LatLng;
 use leptos::*;
+use std::fmt::{Display, Formatter};
 use wasm_bindgen::JsCast;
 
 pub use circle::Circle;
@@ -28,10 +29,6 @@ pub use tooltip::Tooltip;
 #[derive(Debug, Clone, Copy)]
 pub struct LeafletMapContext {
     map: RwSignal<Option<leaflet::Map>>,
-}
-
-pub fn provide_leaflet_context(cx: Scope) {
-    provide_context(cx, LeafletMapContext::new(cx));
 }
 
 impl LeafletMapContext {
@@ -55,10 +52,31 @@ impl LeafletMapContext {
     }
 }
 
+pub fn provide_leaflet_context(cx: Scope) {
+    provide_context(cx, LeafletMapContext::new(cx));
+}
+
+pub fn use_leaflet_context(cx: Scope) -> Option<LeafletMapContext> {
+    use_context::<LeafletMapContext>(cx)
+}
+
 pub fn extend_context_with_overlay(cx: Scope) -> LeafletOverlayContainerContext {
     let overlay_context = LeafletOverlayContainerContext::new(cx);
     provide_context(cx, overlay_context.clone());
     overlay_context
+}
+
+pub fn use_overlay_context(cx: Scope) -> Option<LeafletOverlayContainerContext> {
+    use_context::<LeafletOverlayContainerContext>(cx)
+}
+
+pub fn use_overlay_context_layer<T>(cx: Scope) -> Option<T>
+where
+    T: Into<leaflet::Layer> + Clone + JsCast,
+{
+    use_context::<LeafletOverlayContainerContext>(cx)
+        .expect("overlay context")
+        .container::<T>()
 }
 
 pub fn update_overlay_context<C: Into<leaflet::Layer> + Clone>(cx: Scope, layer: &C) {
@@ -124,5 +142,94 @@ impl From<Position> for (f64, f64) {
 impl From<Position> for [f64; 2] {
     fn from(value: Position) -> Self {
         [value.lat, value.lng]
+    }
+}
+
+#[derive(Debug, Copy, Clone)]
+pub enum LineJoin {
+    Arcs,
+    Bevel,
+    Miter,
+    MiterClip,
+    Round,
+}
+
+impl Default for LineJoin {
+    fn default() -> Self {
+        Self::Round
+    }
+}
+
+impl Display for LineJoin {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            LineJoin::Arcs => write!(f, "arcs"),
+            LineJoin::Bevel => write!(f, "bevel"),
+            LineJoin::Miter => write!(f, "miter"),
+            LineJoin::MiterClip => write!(f, "miter-clip"),
+            LineJoin::Round => write!(f, "round"),
+        }
+    }
+}
+
+impl From<LineJoin> for String {
+    fn from(value: LineJoin) -> Self {
+        format!("{}", value)
+    }
+}
+
+#[derive(Debug, Copy, Clone)]
+pub enum LineCap {
+    Butt,
+    Round,
+    Square,
+}
+
+impl Default for LineCap {
+    fn default() -> Self {
+        Self::Round
+    }
+}
+
+impl Display for LineCap {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            LineCap::Butt => write!(f, "butt"),
+            LineCap::Round => write!(f, "round"),
+            LineCap::Square => write!(f, "square"),
+        }
+    }
+}
+
+impl From<LineCap> for String {
+    fn from(value: LineCap) -> Self {
+        format!("{}", value)
+    }
+}
+
+#[derive(Debug, Copy, Clone)]
+pub enum FillRule {
+    NonZero,
+    EvenOdd,
+}
+
+impl Default for FillRule {
+    fn default() -> Self {
+        Self::EvenOdd
+    }
+}
+
+impl Display for FillRule {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            FillRule::NonZero => write!(f, "nonzero"),
+            FillRule::EvenOdd => write!(f, "evenodd"),
+        }
+    }
+}
+
+impl From<FillRule> for String {
+    fn from(value: FillRule) -> Self {
+        format!("{}", value)
     }
 }
