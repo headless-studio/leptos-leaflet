@@ -1,10 +1,14 @@
-use components::Position;
-use leptos::{
-    MaybeSignal, SignalGet, SignalGetUntracked, SignalWith, SignalWithUntracked,
-};
+use leptos::{MaybeSignal, SignalGet, SignalGetUntracked, SignalWith, SignalWithUntracked};
 use std::ops::Deref;
 
 pub mod components;
+
+pub use components::{
+    extend_context_with_overlay, provide_leaflet_context, MapContainer, MapEvents, Marker, Polygon,
+    Polyline, PolylineOptions, Popup, Position, TileLayer,
+};
+
+pub use leaflet::{ErrorEvent, Event, LocationEvent, PopupEvent};
 
 #[macro_export]
 macro_rules! position {
