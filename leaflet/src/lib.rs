@@ -1,5 +1,6 @@
 mod control;
 mod div_overlay;
+mod event;
 mod evented;
 mod grid_layer;
 mod handler;
@@ -20,13 +21,14 @@ use wasm_bindgen::prelude::*;
 
 pub use control::Control;
 pub use div_overlay::DivOverlay;
+pub use event::Event;
 pub use evented::Evented;
 pub use grid_layer::{GridLayer, GridLayerOptions};
 pub use handler::Handler;
 pub use icon::{setDefaultIconOptions, Icon, IconOptions};
 pub use layer::Layer;
 pub use layer_group::LayerGroup;
-pub use map::{LocateOptions, Map, MapOptions};
+pub use map::{ErrorEvent, LocateOptions, LocationEvent, Map, MapOptions, PopupEvent};
 pub use marker::{Marker, MarkerOptions};
 pub use popup::{Popup, PopupOptions};
 pub use raster::{
@@ -152,17 +154,6 @@ extern "C" {
 
     #[wasm_bindgen(method, getter)]
     pub fn originalEvent(this: &MouseEvent) -> web_sys::Event;
-
-    // Event
-
-    #[derive(Debug, Clone)]
-    pub type Event;
-
-    #[wasm_bindgen(method, getter)]
-    pub fn target(this: &Event) -> Object;
-
-    #[wasm_bindgen(method, getter)]
-    pub fn sourceTarget(this: &Event) -> Object;
 
     // FeatureGroup
 

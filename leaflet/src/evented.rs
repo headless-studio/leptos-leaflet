@@ -1,5 +1,6 @@
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
+use crate::Event;
 
 #[wasm_bindgen]
 extern "C" {
@@ -10,13 +11,13 @@ extern "C" {
     ///
     /// [`on`](https://leafletjs.com/reference.html#evented-on)
     #[wasm_bindgen(method)]
-    pub fn on(this: &Evented, kind: &str, handler: &Closure<dyn Fn(JsValue)>) -> Evented;
+    pub fn on(this: &Evented, kind: &str, handler: &JsValue) -> Evented;
 
     /// Removes an event listener.
     ///
     /// [`off`](https://leafletjs.com/reference.html#evented-off)
     #[wasm_bindgen(method)]
-    pub fn off(this: &Evented, kind: &str, handler: &Closure<dyn Fn(JsValue)>) -> Evented;
+    pub fn off(this: &Evented, kind: &str, handler: &JsValue) -> Evented;
 
     /// Removes all event listeners.
     ///
@@ -40,7 +41,7 @@ extern "C" {
     ///
     /// [`once`](https://leafletjs.com/reference.html#evented-once)
     #[wasm_bindgen(method)]
-    pub fn once(this: &Evented, kind: &str, handler: &Closure<dyn Fn(JsValue)>) -> Evented;
+    pub fn once(this: &Evented, kind: &str, handler: &JsValue) -> Evented;
 
     /// Returns true if the event has listeners.
     ///

@@ -1,22 +1,15 @@
 use js_sys::{Object, Reflect};
 use wasm_bindgen::prelude::*;
 
-use crate::Map;
+use crate::{Map, object_constructor};
 
 #[wasm_bindgen]
 extern "C" {
 
-    # [wasm_bindgen (extends = Object , js_name = LocateOptions)]
+    #[wasm_bindgen (extends = Object , js_name = LocateOptions)]
     #[derive(Debug, Clone, Eq, PartialEq)]
     pub type LocateOptions;
 
-    /// Tries to locate the user using the Geolocation API, firing a
-    /// locationfound event with location data on success or a `locationerror`
-    /// event on failure, and optionally sets the map view to the user's
-    /// location with respect to detection accuracy (or to the world view if
-    /// geolocation failed). Note that, if your page doesn't use HTTPS, this
-    /// method will fail in modern browsers (Chrome 50 and newer)
-    /// See `LocateOptions` for more details.
     #[wasm_bindgen(method, js_name = locate)]
     pub fn locate(this: &Map) -> Map;
 
@@ -28,20 +21,16 @@ extern "C" {
     /// method will fail in modern browsers (Chrome 50 and newer)
     /// See `LocateOptions` for more details.
     #[wasm_bindgen(method, js_name = locate)]
-    pub fn locate_with_options(this: &Map, options: &LocateOptions) -> Map;
+    pub fn locateWithOptions(this: &Map, options: &LocateOptions) -> Map;
 
     /// Stops watching location previously initiated by map.locate({watch: true})
     /// and aborts resetting the map view if map.locate was called with {setView: true}.
     #[wasm_bindgen(method, js_name = stopLocate)]
-    pub fn stop_locate(this: &Map) -> Map;
+    pub fn stopLocate(this: &Map) -> Map;
 }
 
 impl LocateOptions {
-    pub fn new() -> Self {
-        #[allow(unused_mut)]
-        let mut ret: Self = JsCast::unchecked_into(Object::new());
-        ret
-    }
+    object_constructor!();
 
     /// If true, starts continuous watching of location changes (instead of detecting it once)
     /// using W3C watchPosition method. You can later stop watching using map.stopLocate() method.

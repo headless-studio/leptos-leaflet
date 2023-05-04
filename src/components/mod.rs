@@ -8,6 +8,7 @@ mod popup;
 mod tile_layer;
 mod tooltip;
 mod video_overlay;
+mod map_events;
 
 use leaflet::LatLng;
 use leptos::*;
@@ -16,6 +17,7 @@ use wasm_bindgen::JsCast;
 pub use circle::Circle;
 pub use leaflet::{CircleOptions, PathOptions, PolylineOptions};
 pub use map_container::{LeafletMap, MapContainer};
+pub use map_events::MapEvents;
 pub use marker::Marker;
 pub use polygon::Polygon;
 pub use polyline::Polyline;
