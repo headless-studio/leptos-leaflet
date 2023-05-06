@@ -10,7 +10,7 @@ console_error_panic_hook = "0.1"
 leptos = { git = "https://github.com/leptos-rs/leptos", default-features = false, "features" = [
     "csr",
 ] }
-leptos-leaflet = { path = "../../", default-features = false, features = [
+leptos-leaflet = { path = "../../leptos-leaflet", default-features = false, features = [
     "csr",
 ] }
 

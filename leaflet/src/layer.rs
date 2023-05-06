@@ -86,7 +86,7 @@ extern "C" {
     /// [`bindTooltip`](https://leafletjs.com/reference.html#layer-bindtooltip)
     #[wasm_bindgen(method)]
     pub fn bindTooltip(this: &Layer, tooltip: &Tooltip) -> Layer;
-    
+
     #[wasm_bindgen(method)]
     pub fn bindTooltipWithContent(this: &Layer, content: &JsValue, options: &JsValue) -> Layer;
 

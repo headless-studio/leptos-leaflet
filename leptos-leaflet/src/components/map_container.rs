@@ -1,10 +1,10 @@
+use crate::components::context::provide_leaflet_context;
 use crate::components::position::Position;
+use crate::MapEvents;
 use leaflet::LocateOptions;
-use leptos::{*, html::Div};
+use leptos::{html::Div, *};
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlDivElement;
-use crate::components::context::provide_leaflet_context;
-use crate::MapEvents;
 
 use crate::components::context::LeafletMapContext;
 
@@ -15,7 +15,7 @@ pub fn MapContainer(
     #[prop(into, optional)] style: MaybeSignal<String>,
     /// Centers the map on the given location
     #[prop(into, optional)]
-    center: MaybeSignal<Option<Position>>,
+    center: Option<MaybeSignal<Position>>,
     /// Zoom level of the map. Defaults to 10.0
     #[prop(into, optional, default = 10.0.into())]
     zoom: MaybeSignal<f64>,
@@ -56,8 +56,8 @@ pub fn MapContainer(
                 let node = node.unchecked_ref::<HtmlDivElement>();
                 let mut options = leaflet::MapOptions::new();
                 options.zoom(zoom());
-                if let Some(center) = center.get() {
-                    options.center(&center.into());
+                if let Some(center) = center {
+                    options.center(&center.get().into());
                 }
                 log!("Map options: {:?}", options);
                 let leaflet_map = leaflet::Map::new(&node.id(), &options);
@@ -113,6 +113,9 @@ pub fn MapContainer(
 
                 log!("Map node: {:?}", node.id());
                 map_context.set_map(&leaflet_map);
+                // if let Some(map) = map {
+                //     map.update(|map| *map = leaflet_map);
+                // }
             });
         }
     });

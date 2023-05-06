@@ -1,7 +1,7 @@
+mod events;
 mod geolocation;
 mod location_event;
 mod other;
-mod events;
 
 use js_sys::{Array, Object};
 use wasm_bindgen::prelude::*;
@@ -11,9 +11,9 @@ use crate::{
     object_constructor, object_property_set, object_property_set_with, Control, Evented, LatLng,
     LatLngBounds, Layer, Point, Popup, Tooltip,
 };
+pub use events::*;
 pub use geolocation::*;
 pub use location_event::*;
-pub use events::*;
 pub use other::*;
 
 #[wasm_bindgen]

@@ -1,7 +1,7 @@
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
 
-use crate::{LatLng, Layer, object_constructor, object_property_set, Point, DivOverlay};
+use crate::{object_constructor, object_property_set, DivOverlay, LatLng, Layer, Point};
 
 #[wasm_bindgen]
 extern "C" {
@@ -34,7 +34,11 @@ impl PopupOptions {
     object_property_set!(max_height, maxHeight, f64);
     object_property_set!(auto_pan, autoPan, bool);
     object_property_set!(auto_pan_padding_top_left, autoPanPaddingTopLeft, Point);
-    object_property_set!(auto_pan_padding_bottom_right, autoPanPaddingBottomRight, Point);
+    object_property_set!(
+        auto_pan_padding_bottom_right,
+        autoPanPaddingBottomRight,
+        Point
+    );
     object_property_set!(auto_pan_padding, autoPanPadding, Point);
     object_property_set!(keep_in_view, keepInView, bool);
     object_property_set!(close_button, closeButton, bool);

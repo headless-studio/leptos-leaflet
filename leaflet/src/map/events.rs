@@ -1,5 +1,5 @@
-use wasm_bindgen::prelude::*;
 use crate::{Event, LocationEvent, Point, Popup};
+use wasm_bindgen::prelude::*;
 
 use super::Map;
 

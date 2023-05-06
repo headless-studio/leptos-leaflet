@@ -1,13 +1,13 @@
-﻿use js_sys::Object;
+use crate::{object_constructor, object_property_set, Handler, Icon, LatLng, Layer, Point};
+use js_sys::Object;
 use wasm_bindgen::prelude::*;
-use crate::{Handler, Icon, LatLng, Layer, object_constructor, object_property_set, Point};
 
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(extends = Object, js_name = MarkerOptions)]
     #[derive(Debug, Clone)]
     pub type MarkerOptions;
-    
+
     // Marker
     #[derive(Debug, Clone)]
     #[wasm_bindgen(extends = Layer)]
@@ -40,7 +40,7 @@ extern "C" {
     /// ['on'](https://leafletjs.com/reference.html#marker-on)
     #[wasm_bindgen(method)]
     pub fn on(this: &Marker, event_name: &str, handler: &JsValue);
-    
+
     /// ['dragging'](https://leafletjs.com/reference.html#marker-dragging)
     #[wasm_bindgen(method, getter)]
     pub fn dragging(this: &Marker) -> Handler;

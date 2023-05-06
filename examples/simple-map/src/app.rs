@@ -7,16 +7,21 @@ use leptos_leaflet::*;
 pub fn App(cx: Scope) -> impl IntoView {
     let (marker_position, set_marker_position) = create_signal(cx, Position::new(51.49, -0.08));
 
+    let (marker_opacity, set_marker_opacity) = create_signal(cx, 1.0_f64);
+
     create_effect(cx, move |_| {
         set_interval_with_handle(move || {
             set_marker_position.update(|pos| { pos.lat += 0.001; pos.lng += 0.001; });
+            set_marker_opacity.update(|opacity| *opacity += 0.1 );
         }, Duration::from_millis(200)).ok()
     });
 
+    let opacity = Signal::derive(cx, move || (marker_opacity.get().sin() + 1.0) * 0.5);
+
     view! { cx,
-          <MapContainer style="height: 400px" center=pos_opt!(51.505, -0.09) zoom=13.0 set_view=true>
+          <MapContainer style="height: 400px" center=position!(51.505, -0.09) zoom=13.0 set_view=true>
               <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"/>
-              <Marker position=marker_position >
+              <Marker position=marker_position opacity=opacity>
                   <Popup>
                       <strong>{"A pretty CSS3 popup"}</strong>
                   </Popup>

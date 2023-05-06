@@ -64,7 +64,7 @@ fn HomePage(cx: Scope) -> impl IntoView {
     let events = MapEvents::new().with_location_found(location_found);
 
     view! { cx,
-          <MapContainer style="height: 400px" center=pos_opt!(51.505, -0.09) zoom=13.0 set_view=true map=set_map locate=true watch=true events>
+          <MapContainer style="height: 400px" center=position!(51.505, -0.09) zoom=13.0 set_view=true map=set_map locate=true watch=true events>
               <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"/>
               <Marker position=marker_position >
                   <Popup>

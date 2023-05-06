@@ -1,6 +1,6 @@
+use crate::Event;
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
-use crate::Event;
 
 #[wasm_bindgen]
 extern "C" {

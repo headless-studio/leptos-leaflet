@@ -1,6 +1,6 @@
+use crate::Map;
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlElement;
-use crate::Map;
 
 #[wasm_bindgen]
 extern "C" {
