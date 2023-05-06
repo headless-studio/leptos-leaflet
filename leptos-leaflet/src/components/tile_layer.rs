@@ -1,14 +1,13 @@
 use leaflet::TileLayerOptions;
 use leptos::*;
 
-use super::LeafletMapContext;
+use crate::components::context::LeafletMapContext;
 
 #[component(transparent)]
-pub fn TileLayer(cx: Scope,
-    #[prop(into)]
-    url: String,
-    #[prop(into, optional)]
-    attribution: String,
+pub fn TileLayer(
+    cx: Scope,
+    #[prop(into)] url: String,
+    #[prop(into, optional)] attribution: String,
 ) -> impl IntoView {
     let map_context = use_context::<LeafletMapContext>(cx).expect("map context not found");
 
@@ -27,4 +26,3 @@ pub fn TileLayer(cx: Scope,
         }
     });
 }
-

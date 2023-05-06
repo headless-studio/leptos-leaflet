@@ -1,27 +1,27 @@
 use std::time::Duration;
 
 use leptos::*;
-use leptos_leaflet::{components::*, pos_opt, position, positions};
+use leptos_leaflet::*;
 
 #[component]
 pub fn App(cx: Scope) -> impl IntoView {
-    let mut purpleOptions = PolylineOptions::new();
-    purpleOptions.color("purple");
-    
     let (marker_position, set_marker_position) = create_signal(cx, Position::new(51.49, -0.08));
+
+    let (marker_opacity, set_marker_opacity) = create_signal(cx, 1.0_f64);
 
     create_effect(cx, move |_| {
         set_interval_with_handle(move || {
             set_marker_position.update(|pos| { pos.lat += 0.001; pos.lng += 0.001; });
+            set_marker_opacity.update(|opacity| *opacity += 0.1 );
         }, Duration::from_millis(200)).ok()
     });
-    
-    let mut blueOptions = CircleOptions::new();
-    blueOptions.color("blue");
+
+    let opacity = Signal::derive(cx, move || (marker_opacity.get().sin() + 1.0) * 0.5);
+
     view! { cx,
-          <MapContainer style="height: 400px" center=pos_opt!(51.505, -0.09) zoom=13.0 set_view=true>
+          <MapContainer style="height: 400px" center=position!(51.505, -0.09) zoom=13.0 set_view=true>
               <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"/>
-              <Marker position=marker_position >
+              <Marker position=marker_position opacity=opacity>
                   <Popup>
                       <strong>{"A pretty CSS3 popup"}</strong>
                   </Popup>
@@ -35,12 +35,12 @@ pub fn App(cx: Scope) -> impl IntoView {
                   <strong>{"And a tooltip"}</strong>
               </Tooltip>
               <Polyline positions=positions(&[(51.505, -0.09), (51.51, -0.1), (51.51, -0.12)])/>
-              <Polygon options=purpleOptions positions=positions(&[ (51.515, -0.09), (51.52, -0.1), (51.52, -0.12)]) >
+              <Polygon color="purple" positions=positions(&[ (51.515, -0.09), (51.52, -0.1), (51.52, -0.12)]) >
                 <Tooltip sticky=true direction="top">
                     <strong>{"I'm a polygon"}</strong>
                 </Tooltip>
             </Polygon>
-            <Circle center=position!(51.505, -0.09) options=blueOptions radius=200.0>
+            <Circle center=position!(51.505, -0.09) color="blue" radius=200.0>
                 <Tooltip sticky=true>{"I'm a circle"}</Tooltip>
             </Circle>
         </MapContainer>

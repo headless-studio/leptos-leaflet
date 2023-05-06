@@ -1,37 +1,12 @@
-mod circle;
-mod image_overlay;
-mod map_container;
-mod marker;
-mod polygon;
-mod polyline;
-mod popup;
-mod tile_layer;
-mod tooltip;
-mod video_overlay;
-mod map_events;
-
-use leaflet::LatLng;
-use leptos::*;
+use leptos::{
+    create_rw_signal, log, provide_context, use_context, ReadSignal, RwSignal, Scope, SignalGet,
+    SignalGetUntracked, SignalSet,
+};
 use wasm_bindgen::JsCast;
-
-pub use circle::Circle;
-pub use leaflet::{CircleOptions, PathOptions, PolylineOptions};
-pub use map_container::{LeafletMap, MapContainer};
-pub use map_events::MapEvents;
-pub use marker::Marker;
-pub use polygon::Polygon;
-pub use polyline::Polyline;
-pub use popup::Popup;
-pub use tile_layer::TileLayer;
-pub use tooltip::Tooltip;
 
 #[derive(Debug, Clone, Copy)]
 pub struct LeafletMapContext {
     map: RwSignal<Option<leaflet::Map>>,
-}
-
-pub fn provide_leaflet_context(cx: Scope) {
-    provide_context(cx, LeafletMapContext::new(cx));
 }
 
 impl LeafletMapContext {
@@ -55,10 +30,31 @@ impl LeafletMapContext {
     }
 }
 
+pub fn provide_leaflet_context(cx: Scope) {
+    provide_context(cx, LeafletMapContext::new(cx));
+}
+
+pub fn use_leaflet_context(cx: Scope) -> Option<LeafletMapContext> {
+    use_context::<LeafletMapContext>(cx)
+}
+
 pub fn extend_context_with_overlay(cx: Scope) -> LeafletOverlayContainerContext {
     let overlay_context = LeafletOverlayContainerContext::new(cx);
     provide_context(cx, overlay_context.clone());
     overlay_context
+}
+
+pub fn use_overlay_context(cx: Scope) -> Option<LeafletOverlayContainerContext> {
+    use_context::<LeafletOverlayContainerContext>(cx)
+}
+
+pub fn use_overlay_context_layer<T>(cx: Scope) -> Option<T>
+where
+    T: Into<leaflet::Layer> + Clone + JsCast,
+{
+    use_context::<LeafletOverlayContainerContext>(cx)
+        .expect("overlay context")
+        .container::<T>()
 }
 
 pub fn update_overlay_context<C: Into<leaflet::Layer> + Clone>(cx: Scope, layer: &C) {
@@ -94,35 +90,5 @@ impl LeafletOverlayContainerContext {
         self.container
             .get_untracked()
             .map(|layer| layer.unchecked_into())
-    }
-}
-
-#[derive(Debug, Default, Clone, Copy, PartialEq)]
-pub struct Position {
-    pub lat: f64,
-    pub lng: f64,
-}
-
-impl Position {
-    pub fn new(lat: f64, lng: f64) -> Self {
-        Self { lat, lng }
-    }
-}
-
-impl From<Position> for LatLng {
-    fn from(value: Position) -> Self {
-        LatLng::new(value.lat, value.lng)
-    }
-}
-
-impl From<Position> for (f64, f64) {
-    fn from(value: Position) -> Self {
-        (value.lat, value.lng)
-    }
-}
-
-impl From<Position> for [f64; 2] {
-    fn from(value: Position) -> Self {
-        [value.lat, value.lng]
     }
 }

@@ -1,5 +1,6 @@
 mod control;
 mod div_overlay;
+mod event;
 mod evented;
 mod grid_layer;
 mod handler;
@@ -14,15 +15,14 @@ mod popup;
 mod raster;
 mod shapes;
 mod tooltip;
-mod event;
 
 use js_sys::{Array, Object};
 use wasm_bindgen::prelude::*;
 
 pub use control::Control;
 pub use div_overlay::DivOverlay;
-pub use evented::Evented;
 pub use event::Event;
+pub use evented::Evented;
 pub use grid_layer::{GridLayer, GridLayerOptions};
 pub use handler::Handler;
 pub use icon::{setDefaultIconOptions, Icon, IconOptions};

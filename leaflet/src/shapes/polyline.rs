@@ -1,8 +1,10 @@
-use std::ops::DerefMut;
 use js_sys::{Array, Object};
+use std::ops::DerefMut;
 use wasm_bindgen::prelude::*;
 
-use crate::{object_constructor, object_property_set, LatLng, LatLngBounds, Path, Point, Layer, PathOptions};
+use crate::{
+    object_constructor, object_property_set, LatLng, LatLngBounds, Layer, Path, PathOptions, Point,
+};
 
 #[wasm_bindgen]
 extern "C" {

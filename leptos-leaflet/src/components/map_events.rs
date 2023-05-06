@@ -43,8 +43,18 @@ impl MapEvents {
 }
 
 leaflet_event!(with_zoom, take_zoom, zoom, Event);
-leaflet_event!(with_location_found, take_location_found, location_found, LocationEvent);
-leaflet_event!(with_location_error, take_location_error, location_error, ErrorEvent);
+leaflet_event!(
+    with_location_found,
+    take_location_found,
+    location_found,
+    LocationEvent
+);
+leaflet_event!(
+    with_location_error,
+    take_location_error,
+    location_error,
+    ErrorEvent
+);
 leaflet_event!(with_popup_open, take_popup_open, popup_open, PopupEvent);
 leaflet_event!(with_popup_close, take_popup_close, popup_close, PopupEvent);
 leaflet_event!(with_load, take_load, load, Event);

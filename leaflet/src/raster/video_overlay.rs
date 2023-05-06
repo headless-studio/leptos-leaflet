@@ -1,6 +1,6 @@
-﻿use std::ops::DerefMut;
-use crate::{object_constructor, object_property_set, LatLngBounds, ImageOverlay, Layer};
+use crate::{object_constructor, object_property_set, ImageOverlay, LatLngBounds, Layer};
 use js_sys::Object;
+use std::ops::DerefMut;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
