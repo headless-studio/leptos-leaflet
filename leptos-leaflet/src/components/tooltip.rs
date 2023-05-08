@@ -28,12 +28,10 @@ pub fn Tooltip(
         options.sticky(sticky());
 
         if let Some(overlay_context) = overlay_context.clone() {
-            debug!("we are in overlay");
             if let (Some(layer), Some(_map)) = (
                 overlay_context.container::<leaflet::Layer>(),
                 map_context.map(),
             ) {
-                debug!("Adding tooltip");
                 let tooltip = leaflet::Tooltip::new(&options, Some(layer.unchecked_ref()));
                 let content = content.get_untracked().expect("content ref");
                 tooltip.setContent(content.unchecked_ref());
@@ -43,7 +41,6 @@ pub fn Tooltip(
                 });
             }
         } else if let Some(map) = map_context.map() {
-            debug!("Adding tooltip");
             let tooltip = leaflet::Tooltip::newWithLatLng(&position().into(), &options);
             let content = content.get_untracked().expect("content ref");
             let html_view: &JsValue = content.unchecked_ref();

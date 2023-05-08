@@ -41,7 +41,6 @@ pub fn Marker(
         let overlay = extend_context_with_overlay(cx);
         create_effect(cx, move |_| {
             if let Some(map) = map_context.map() {
-                log!("Adding marker");
                 let mut options = leaflet::MarkerOptions::new();
                 let drag = draggable.get_untracked();
                 if drag {
@@ -117,14 +116,12 @@ pub fn Marker(
         create_effect(cx, move |_| {
             position_tracking.track();
             if let Some(marker) = overlay.container::<leaflet::Marker>() {
-                log!("Updating marker");
                 marker.setLatLng(&position_tracking.get_untracked().into());
             }
         });
 
         create_effect(cx, move |_| {
             if let Some(marker) = overlay.container::<leaflet::Marker>() {
-                log!("Updating marker");
                 if let Some(opacity) = &opacity {
                     marker.setOpacity(opacity.get());
                 }
@@ -133,7 +130,6 @@ pub fn Marker(
 
         create_effect(cx, move |_| {
             if let Some(marker) = overlay.container::<leaflet::Marker>() {
-                log!("Changing draggable");
                 if draggable.get() {
                     marker.dragging().enable();
                 } else {
