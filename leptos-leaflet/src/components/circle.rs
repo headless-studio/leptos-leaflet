@@ -6,6 +6,7 @@ use crate::components::path_options::{FillRule, LineCap, LineJoin};
 use crate::components::position::Position;
 use leaflet::CircleOptions;
 use leptos::*;
+use crate::{LayerEvents, MouseEvents, PopupEvents, TooltipEvents};
 
 #[component(transparent)]
 pub fn Circle(
@@ -25,6 +26,11 @@ pub fn Circle(
     #[prop(into, optional)] fill_rule: Option<MaybeSignal<FillRule>>,
     #[prop(into, optional)] bubbling_mouse_events: Option<MaybeSignal<bool>>,
     #[prop(into, optional)] class_name: Option<MaybeSignal<String>>,
+    #[prop(into, optional)] mouse_events: MouseEvents,
+    #[prop(into, optional)] layer_events: LayerEvents,
+    #[prop(into, optional)] popup_events: PopupEvents,
+    #[prop(into, optional)] tooltip_events: TooltipEvents,
+
     #[prop(into)] radius: MaybeSignal<f64>,
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
@@ -84,6 +90,12 @@ pub fn Circle(
                 }
                 let circle =
                     leaflet::Circle::new_with_options(&center.get_untracked().into(), &options);
+
+                mouse_events.setup(&circle);
+                popup_events.setup(&circle);
+                tooltip_events.setup(&circle);
+                layer_events.setup(&circle);
+
                 circle.addTo(&map);
                 update_overlay_context(cx, &circle);
                 on_cleanup(cx, move || {

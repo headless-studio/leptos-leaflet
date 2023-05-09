@@ -22,13 +22,16 @@ use wasm_bindgen::prelude::*;
 pub use control::Control;
 pub use div_overlay::DivOverlay;
 pub use event::Event;
-pub use evented::Evented;
+pub use evented::{DragEvents, Evented, LayerEvents, MouseEvents, PopupEvents, TooltipEvents};
 pub use grid_layer::{GridLayer, GridLayerOptions};
 pub use handler::Handler;
 pub use icon::{setDefaultIconOptions, Icon, IconOptions};
 pub use layer::Layer;
 pub use layer_group::LayerGroup;
-pub use map::{ErrorEvent, LocateOptions, LocationEvent, Map, MapOptions, PopupEvent};
+pub use map::{
+    DragEndEvent, ErrorEvent, LocateOptions, LocationEvent, Map, MapOptions, MouseEvent,
+    PopupEvent, TooltipEvent,
+};
 pub use marker::{Marker, MarkerOptions};
 pub use popup::{Popup, PopupOptions};
 pub use raster::{
@@ -142,18 +145,6 @@ extern "C" {
 
     #[wasm_bindgen(method)]
     pub fn contains(this: &LatLngBounds, latlng: &LatLng) -> bool;
-
-    // MouseEvent
-
-    #[derive(Debug, Clone)]
-    #[wasm_bindgen(extends = Event)]
-    pub type MouseEvent;
-
-    #[wasm_bindgen(method, getter)]
-    pub fn latlng(this: &MouseEvent) -> LatLng;
-
-    #[wasm_bindgen(method, getter)]
-    pub fn originalEvent(this: &MouseEvent) -> web_sys::Event;
 
     // FeatureGroup
 

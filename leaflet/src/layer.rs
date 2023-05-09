@@ -2,6 +2,7 @@ use js_sys::Object;
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlElement;
 
+use crate::evented::{LayerEvents, LeafletEventHandler, PopupEvents, TooltipEvents};
 use crate::{
     object_constructor, object_property_set, Evented, LatLng, LayerGroup, Map, Popup, Tooltip,
 };
@@ -124,3 +125,13 @@ impl LayerOptions {
     object_property_set!(pane, &str);
     object_property_set!(attribution, &str);
 }
+
+impl LeafletEventHandler for Layer {
+    fn on(&self, event: &str, callback: &JsValue) {
+        self.unchecked_ref::<Evented>().on(event, callback);
+    }
+}
+
+impl LayerEvents for Layer {}
+impl PopupEvents for Layer {}
+impl TooltipEvents for Layer {}

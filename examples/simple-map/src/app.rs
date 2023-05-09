@@ -18,6 +18,10 @@ pub fn App(cx: Scope) -> impl IntoView {
 
     let opacity = Signal::derive(cx, move || (marker_opacity.get().sin() + 1.0) * 0.5);
 
+    let mouse_events = MouseEvents::new().on_click(|e| {
+        log!("Clicked on {:?}", e);
+    });
+
     view! { cx,
           <MapContainer style="height: 400px" center=position!(51.505, -0.09) zoom=13.0 set_view=true>
               <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"/>
@@ -40,7 +44,7 @@ pub fn App(cx: Scope) -> impl IntoView {
                     <strong>{"I'm a polygon"}</strong>
                 </Tooltip>
             </Polygon>
-            <Circle center=position!(51.505, -0.09) color="blue" radius=200.0>
+            <Circle center=position!(51.505, -0.09) color="blue" radius=200.0 mouse_events=mouse_events>
                 <Tooltip sticky=true>{"I'm a circle"}</Tooltip>
             </Circle>
         </MapContainer>

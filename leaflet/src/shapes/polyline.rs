@@ -2,8 +2,10 @@ use js_sys::{Array, Object};
 use std::ops::DerefMut;
 use wasm_bindgen::prelude::*;
 
+use crate::evented::{LeafletEventHandler, MouseEvents, PopupEvents, TooltipEvents};
 use crate::{
-    object_constructor, object_property_set, LatLng, LatLngBounds, Layer, Path, PathOptions, Point,
+    object_constructor, object_property_set, Evented, LatLng, LatLngBounds, Layer, Path,
+    PathOptions, Point,
 };
 
 #[wasm_bindgen]
@@ -72,3 +74,13 @@ impl DerefMut for PolylineOptions {
         &mut self.obj
     }
 }
+
+impl LeafletEventHandler for Polyline {
+    fn on(&self, event: &str, callback: &JsValue) {
+        self.unchecked_ref::<Evented>().on(event, callback);
+    }
+}
+
+impl MouseEvents for Polyline {}
+impl PopupEvents for Polyline {}
+impl TooltipEvents for Polyline {}

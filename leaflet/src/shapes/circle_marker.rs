@@ -1,6 +1,7 @@
 use wasm_bindgen::prelude::*;
 
-use crate::{LatLng, Path};
+use crate::evented::{LeafletEventHandler, MouseEvents, MoveEvents, PopupEvents, TooltipEvents};
+use crate::{Evented, LatLng, Path};
 
 #[wasm_bindgen]
 extern "C" {
@@ -40,3 +41,14 @@ extern "C" {
     pub fn getRadius(this: &CircleMarker) -> f64;
 
 }
+
+impl LeafletEventHandler for CircleMarker {
+    fn on(&self, event: &str, callback: &JsValue) {
+        self.unchecked_ref::<Evented>().on(event, callback);
+    }
+}
+
+impl MoveEvents for CircleMarker {}
+impl MouseEvents for CircleMarker {}
+impl PopupEvents for CircleMarker {}
+impl TooltipEvents for CircleMarker {}

@@ -3,6 +3,7 @@ use crate::components::position::Position;
 use leptos::*;
 
 use crate::components::context::LeafletMapContext;
+use crate::{DragEvents, LayerEvents, MouseEvents, PopupEvents, TooltipEvents};
 
 macro_rules! option_effect {
     ($e:ident) => {};
@@ -32,6 +33,11 @@ pub fn Marker(
     #[prop(into, optional)] icon_url: Option<MaybeSignal<String>>,
     #[prop(into, optional)] icon_size: Option<MaybeSignal<(u32, u32)>>,
     #[prop(into, optional)] attribution: Option<MaybeSignal<String>>,
+    #[prop(into, optional)] mouse_events: MouseEvents,
+    #[prop(into, optional)] drag_events: DragEvents,
+    #[prop(into, optional)] layer_events: LayerEvents,
+    #[prop(into, optional)] popup_events: PopupEvents,
+    #[prop(into, optional)] tooltip_events: TooltipEvents,
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
     let position_tracking = position.clone();
@@ -104,6 +110,13 @@ pub fn Marker(
                 }
                 let marker =
                     leaflet::Marker::newWithOptions(&position.get_untracked().into(), &options);
+
+                mouse_events.setup(&marker);
+                drag_events.setup(&marker);
+                popup_events.setup(&marker);
+                tooltip_events.setup(&marker);
+                layer_events.setup(&marker);
+
                 marker.addTo(&map);
                 overlay.set_container(&marker);
 

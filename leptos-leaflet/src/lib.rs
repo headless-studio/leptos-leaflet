@@ -1,9 +1,8 @@
 mod components;
 pub use components::*;
-use leptos::{MaybeSignal, SignalGet, SignalGetUntracked};
-use std::ops::Deref;
-
-pub use leaflet::{ErrorEvent, Event, LocationEvent, PopupEvent};
+pub use leaflet::{
+    ErrorEvent, Event, LatLng, LatLngBounds, LocationEvent, MouseEvent, PopupEvent, TooltipEvent,
+};
 
 #[macro_export]
 macro_rules! position {

@@ -1,4 +1,11 @@
-use crate::{object_constructor, object_property_set, Handler, Icon, LatLng, Layer, Point};
+use crate::evented::{
+    DragEvents, LeafletEventHandler, MouseEvents, MoveEvents, PopupEvents, TooltipEvents,
+};
+use crate::map::{DragEndEvent, TooltipEvent};
+use crate::{
+    object_constructor, object_property_set, Event, Evented, Handler, Icon, LatLng, Layer,
+    LayerEvents, MouseEvent, Point, PopupEvent,
+};
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
 
@@ -36,10 +43,6 @@ extern "C" {
     /// ['setLatLng'](https://leafletjs.com/reference.html#marker-setlatlng)
     #[wasm_bindgen(method)]
     pub fn setLatLng(this: &Marker, latlng: &LatLng);
-
-    /// ['on'](https://leafletjs.com/reference.html#marker-on)
-    #[wasm_bindgen(method)]
-    pub fn on(this: &Marker, event_name: &str, handler: &JsValue);
 
     /// ['dragging'](https://leafletjs.com/reference.html#marker-dragging)
     #[wasm_bindgen(method, getter)]
@@ -92,3 +95,16 @@ impl Default for MarkerOptions {
         Self::new()
     }
 }
+
+impl LeafletEventHandler for Marker {
+    fn on(&self, event: &str, callback: &JsValue) {
+        self.unchecked_ref::<Evented>().on(event, callback);
+    }
+}
+
+impl MoveEvents for Marker {}
+impl MouseEvents for Marker {}
+impl DragEvents for Marker {}
+impl LayerEvents for Marker {}
+impl PopupEvents for Marker {}
+impl TooltipEvents for Marker {}

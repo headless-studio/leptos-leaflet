@@ -1,7 +1,8 @@
 use js_sys::Array;
 use wasm_bindgen::prelude::*;
 
-use crate::{LatLng, Layer, Polyline, PolylineOptions};
+use crate::{Evented, LatLng, Layer, Polyline, PolylineOptions};
+use crate::evented::{LeafletEventHandler, MouseEvents, MoveEvents, PopupEvents, TooltipEvents};
 
 #[wasm_bindgen]
 extern "C" {
@@ -25,3 +26,13 @@ impl From<Polygon> for Layer {
         value.unchecked_into()
     }
 }
+
+impl LeafletEventHandler for Polygon {
+    fn on(&self, event: &str, callback: &JsValue) {
+        self.unchecked_ref::<Evented>().on(event, callback);
+    }
+}
+
+impl MouseEvents for Polygon {}
+impl PopupEvents for Polygon {}
+impl TooltipEvents for Polygon {}

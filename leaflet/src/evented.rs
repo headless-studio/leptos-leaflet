@@ -1,4 +1,5 @@
-use crate::Event;
+use crate::map::{DragEndEvent, TooltipEvent};
+use crate::{Circle, Event, MouseEvent, PopupEvent};
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
 
@@ -10,7 +11,7 @@ extern "C" {
     /// Creates a new Evented object.
     ///
     /// [`on`](https://leafletjs.com/reference.html#evented-on)
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, js_name = on)]
     pub fn on(this: &Evented, kind: &str, handler: &JsValue) -> Evented;
 
     /// Removes an event listener.
@@ -103,4 +104,133 @@ extern "C" {
     /// [`hasEventListeners`](https://leafletjs.com/reference.html#evented-haseventlisteners)
     #[wasm_bindgen(method)]
     pub fn hasEventListeners(this: &Evented, kind: &str, propagate: Option<bool>) -> bool;
+}
+
+pub trait LeafletEventHandler {
+    fn on(&self, event: &str, callback: &JsValue);
+}
+
+pub trait MoveEvents
+where
+    Self: LeafletEventHandler,
+{
+    fn on_move(&self, callback: Box<dyn Fn(Event)>) {
+        let closure = Closure::wrap(callback);
+        self.on("move", &closure.into_js_value());
+    }
+}
+
+pub trait MouseEvents
+where
+    Self: LeafletEventHandler,
+{
+    fn on_click(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("click", &closure.into_js_value());
+    }
+
+    fn on_double_click(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("dblclick", &closure.into_js_value());
+    }
+
+    fn on_mouse_down(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("mousedown", &closure.into_js_value());
+    }
+
+    fn on_mouse_up(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("mouseup", &closure.into_js_value());
+    }
+
+    fn on_mouse_over(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("mouseover", &closure.into_js_value());
+    }
+
+    fn on_mouse_out(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("mouseout", &closure.into_js_value());
+    }
+
+    fn on_context_menu(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("contextmenu", &closure.into_js_value());
+    }
+}
+
+pub trait DragEvents
+where
+    Self: LeafletEventHandler,
+{
+    fn on_drag_start(&self, callback: Box<dyn Fn(Event)>) {
+        let closure = Closure::wrap(callback);
+        self.on("dragstart", &closure.into_js_value());
+    }
+
+    fn on_move_start(&self, callback: Box<dyn Fn(Event)>) {
+        let closure = Closure::wrap(callback);
+        self.on("movestart", &closure.into_js_value());
+    }
+
+    fn on_drag(&self, callback: Box<dyn Fn(Event)>) {
+        let closure = Closure::wrap(callback);
+        self.on("drag", &closure.into_js_value());
+    }
+
+    fn on_drag_end(&self, callback: Box<dyn Fn(DragEndEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("dragend", &closure.into_js_value());
+    }
+
+    fn on_move_end(&self, callback: Box<dyn Fn(Event)>) {
+        let closure = Closure::wrap(callback);
+        self.on("moveend", &closure.into_js_value());
+    }
+}
+
+pub trait LayerEvents
+where
+    Self: LeafletEventHandler,
+{
+    fn on_add(&self, callback: Box<dyn Fn(Event)>) {
+        let closure = Closure::wrap(callback);
+        self.on("add", &closure.into_js_value());
+    }
+
+    fn on_remove(&self, callback: Box<dyn Fn(Event)>) {
+        let closure = Closure::wrap(callback);
+        self.on("remove", &closure.into_js_value());
+    }
+}
+
+pub trait PopupEvents
+where
+    Self: LeafletEventHandler,
+{
+    fn on_popup_open(&self, callback: Box<dyn Fn(PopupEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("popupopen", &closure.into_js_value());
+    }
+
+    fn on_popup_close(&self, callback: Box<dyn Fn(PopupEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("popupclose", &closure.into_js_value());
+    }
+}
+
+pub trait TooltipEvents
+where
+    Self: LeafletEventHandler,
+{
+    fn on_tooltip_open(&self, callback: Box<dyn Fn(TooltipEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("tooltipopen", &closure.into_js_value());
+    }
+
+    fn on_tooltip_close(&self, callback: Box<dyn Fn(TooltipEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("tooltipclose", &closure.into_js_value());
+    }
 }
