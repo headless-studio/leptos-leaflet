@@ -1,8 +1,10 @@
 mod components;
 pub use components::*;
-pub use leaflet::{
-    ErrorEvent, Event, LatLng, LatLngBounds, LocationEvent, MouseEvent, PopupEvent, TooltipEvent,
-};
+
+/// Leaflet re-exports
+pub mod leaflet {
+    pub use leaflet::*;
+}
 
 #[macro_export]
 macro_rules! position {
