@@ -15,7 +15,9 @@ mod video_overlay;
 
 pub use circle::Circle;
 pub use context::*;
-pub use events::{DragEvents, LayerEvents, MapEvents, MouseEvents, PopupEvents, TooltipEvents};
+pub use events::{
+    DragEvents, LayerEvents, MapEvents, MouseEvents, MoveEvents, PopupEvents, TooltipEvents,
+};
 pub use leaflet::{CircleOptions, PathOptions, PolylineOptions};
 pub use map_container::{LeafletMap, MapContainer};
 pub use marker::Marker;

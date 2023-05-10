@@ -3,7 +3,7 @@ use crate::components::position::Position;
 use leptos::*;
 
 use crate::components::context::LeafletMapContext;
-use crate::{DragEvents, LayerEvents, MouseEvents, PopupEvents, TooltipEvents};
+use crate::{DragEvents, LayerEvents, MouseEvents, MoveEvents, PopupEvents, TooltipEvents};
 
 macro_rules! option_effect {
     ($e:ident) => {};
@@ -33,6 +33,7 @@ pub fn Marker(
     #[prop(into, optional)] icon_url: Option<MaybeSignal<String>>,
     #[prop(into, optional)] icon_size: Option<MaybeSignal<(u32, u32)>>,
     #[prop(into, optional)] attribution: Option<MaybeSignal<String>>,
+    #[prop(into, optional)] move_events: MoveEvents,
     #[prop(into, optional)] mouse_events: MouseEvents,
     #[prop(into, optional)] drag_events: DragEvents,
     #[prop(into, optional)] layer_events: LayerEvents,
@@ -112,6 +113,7 @@ pub fn Marker(
                     leaflet::Marker::newWithOptions(&position.get_untracked().into(), &options);
 
                 mouse_events.setup(&marker);
+                move_events.setup(&marker);
                 drag_events.setup(&marker);
                 popup_events.setup(&marker);
                 tooltip_events.setup(&marker);

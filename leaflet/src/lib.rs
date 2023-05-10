@@ -22,7 +22,9 @@ use wasm_bindgen::prelude::*;
 pub use control::Control;
 pub use div_overlay::DivOverlay;
 pub use event::Event;
-pub use evented::{DragEvents, Evented, LayerEvents, MouseEvents, PopupEvents, TooltipEvents};
+pub use evented::{
+    DragEvents, Evented, LayerEvents, MouseEvents, MoveEvents, PopupEvents, TooltipEvents,
+};
 pub use grid_layer::{GridLayer, GridLayerOptions};
 pub use handler::Handler;
 pub use icon::{setDefaultIconOptions, Icon, IconOptions};
