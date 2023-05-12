@@ -1,8 +1,8 @@
 use js_sys::Array;
 use wasm_bindgen::prelude::*;
 
-use crate::{Evented, LatLng, Layer, Polyline, PolylineOptions};
-use crate::evented::{LeafletEventHandler, MouseEvents, MoveEvents, PopupEvents, TooltipEvents};
+use crate::evented::{LeafletEventHandler, MouseEvents, PopupEvents, TooltipEvents};
+use crate::{Evented, LatLng, Layer, LayerEvents, Polyline, PolylineOptions};
 
 #[wasm_bindgen]
 extern "C" {
@@ -34,5 +34,6 @@ impl LeafletEventHandler for Polygon {
 }
 
 impl MouseEvents for Polygon {}
+impl LayerEvents for Polygon {}
 impl PopupEvents for Polygon {}
 impl TooltipEvents for Polygon {}

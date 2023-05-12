@@ -153,15 +153,6 @@ pub fn Marker(
             }
         });
 
-        // children
-        //     .map(|children| {
-        //         children(cx)
-        //             .as_children()
-        //             .iter()
-        //             .map(|child| child.into_view(cx))
-        //             .collect::<Vec<_>>()
-        //     })
-        //     .unwrap_or_default();
         children.map(|child| child(cx))
     });
     child

@@ -1,12 +1,13 @@
-use crate::components::context::provide_leaflet_context;
-use crate::components::position::Position;
-use crate::{MapEvents, PopupEvents, TooltipEvents};
-use leaflet::LocateOptions;
 use leptos::{html::Div, *};
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlDivElement;
 
+use leaflet::LocateOptions;
+
+use crate::components::context::provide_leaflet_context;
 use crate::components::context::LeafletMapContext;
+use crate::components::position::Position;
+use crate::{MapEvents, PopupEvents, TooltipEvents};
 
 #[component]
 pub fn MapContainer(

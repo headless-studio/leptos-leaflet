@@ -1,11 +1,12 @@
-use js_sys::{Array, Object};
 use std::ops::DerefMut;
+
+use js_sys::{Array, Object};
 use wasm_bindgen::prelude::*;
 
 use crate::evented::{LeafletEventHandler, MouseEvents, PopupEvents, TooltipEvents};
 use crate::{
-    object_constructor, object_property_set, Evented, LatLng, LatLngBounds, Layer, Path,
-    PathOptions, Point,
+    object_constructor, object_property_set, Evented, LatLng, LatLngBounds, Layer, LayerEvents,
+    Path, PathOptions, Point,
 };
 
 #[wasm_bindgen]
@@ -82,5 +83,6 @@ impl LeafletEventHandler for Polyline {
 }
 
 impl MouseEvents for Polyline {}
+impl LayerEvents for Polyline {}
 impl PopupEvents for Polyline {}
 impl TooltipEvents for Polyline {}

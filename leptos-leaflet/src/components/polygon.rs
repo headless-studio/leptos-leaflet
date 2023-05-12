@@ -1,9 +1,11 @@
-use leaflet::{to_lat_lng_array, PolylineOptions};
 use leptos::*;
 
+use leaflet::{PolylineOptions, to_lat_lng_array};
+
+use crate::{effect_update_on_change, effect_update_on_change_ref, LayerEvents, MouseEvents, PopupEvents, setup_layer_option, setup_layer_option_ref, setup_layer_option_str, TooltipEvents};
 use crate::components::context::{
-    extend_context_with_overlay, update_overlay_context, LeafletMapContext,
-    LeafletOverlayContainerContext,
+    extend_context_with_overlay, LeafletMapContext, LeafletOverlayContainerContext,
+    update_overlay_context,
 };
 use crate::components::path_options::{FillRule, LineCap, LineJoin};
 use crate::components::position::Position;
@@ -28,74 +30,59 @@ pub fn Polygon(
     #[prop(into, optional)] class_name: Option<MaybeSignal<String>>,
     #[prop(into, optional)] smooth_factor: Option<MaybeSignal<f64>>,
     #[prop(into, optional)] no_clip: Option<MaybeSignal<bool>>,
+    #[prop(into, optional)] mouse_events: MouseEvents,
+    #[prop(into, optional)] layer_events: LayerEvents,
+    #[prop(into, optional)] popup_events: PopupEvents,
+    #[prop(into, optional)] tooltip_events: TooltipEvents,
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
     let (child, _) = cx.run_child_scope(|cx| {
         extend_context_with_overlay(cx);
 
         let positions_for_effect = positions.clone();
-        create_effect(cx, move |_| {
+        let color_clone = color.clone();
+        let fill_color_clone = fill_color.clone();
+        // This effect just setups the polygon when we get a map
+        create_effect(cx, move |done| {
             if let Some(map) = use_context::<LeafletMapContext>(cx)
                 .expect("map context")
                 .map()
             {
                 let lat_lngs = to_lat_lng_array(&positions.get_untracked());
                 let mut options = PolylineOptions::new();
-                if let Some(stroke) = stroke {
-                    options.stroke(stroke.get_untracked());
-                }
-                if let Some(color) = &color {
-                    options.color(&color.get_untracked());
-                }
-                if let Some(weight) = weight {
-                    options.weight(weight.get_untracked());
-                }
-                if let Some(opacity) = opacity {
-                    options.opacity(opacity.get_untracked());
-                }
-                if let Some(line_cap) = line_cap {
-                    options.line_cap(&format!("{}", line_cap.get_untracked()));
-                }
-                if let Some(line_join) = line_join {
-                    options.line_join(&format!("{}", line_join.get_untracked()));
-                }
-                if let Some(dash_array) = &dash_array {
-                    options.dash_array(&dash_array.get_untracked());
-                }
-                if let Some(dash_offset) = &dash_offset {
-                    options.dash_offset(&dash_offset.get_untracked());
-                }
-                if let Some(fill) = &fill {
-                    options.fill(fill.get_untracked());
-                }
-                if let Some(fill_color) = &fill_color {
-                    options.fill_color(&fill_color.get_untracked());
-                }
-                if let Some(fill_opacity) = fill_opacity {
-                    options.fill_opacity(fill_opacity.get_untracked());
-                }
-                if let Some(fill_rule) = fill_rule {
-                    options.fill_rule(&format!("{}", fill_rule.get_untracked()));
-                }
-                if let Some(bubbling_mouse_events) = bubbling_mouse_events {
-                    options.bubbling_mouse_events(bubbling_mouse_events.get_untracked());
-                }
-                if let Some(class_name) = &class_name {
-                    options.class_name(&class_name.get_untracked());
-                }
-                if let Some(smooth_factor) = smooth_factor {
-                    options.smooth_factor(smooth_factor.get_untracked());
-                }
-                if let Some(no_clip) = &no_clip {
-                    options.no_clip(no_clip.get_untracked());
-                }
+                setup_layer_option!(stroke, options);
+                setup_layer_option_ref!(color, options);
+                setup_layer_option!(weight, options);
+                setup_layer_option!(opacity, options);
+                setup_layer_option_str!(line_cap, options);
+                setup_layer_option_str!(line_join, options);
+                setup_layer_option_ref!(dash_array, options);
+                setup_layer_option_ref!(dash_offset, options);
+                setup_layer_option!(fill, options);
+                setup_layer_option_ref!(fill_color, options);
+                setup_layer_option!(fill_opacity, options);
+                setup_layer_option_str!(fill_rule, options);
+                setup_layer_option!(bubbling_mouse_events, options);
+                setup_layer_option_str!(class_name, options);
+                setup_layer_option!(smooth_factor, options);
+                setup_layer_option!(no_clip, options);
+
                 let polygon = leaflet::Polygon::new_with_options(&lat_lngs, &options);
+
+                mouse_events.setup(&polygon);
+                layer_events.setup(&polygon);
+                popup_events.setup(&polygon);
+                tooltip_events.setup(&polygon);
+
                 polygon.addTo(&map);
                 update_overlay_context(cx, &polygon);
                 on_cleanup(cx, move || {
                     polygon.remove();
                 });
-            };
+                true
+            } else {
+                false
+            }
         });
 
         create_effect(cx, move |_| {
@@ -108,15 +95,14 @@ pub fn Polygon(
             }
         });
 
-        // children
-        //     .map(|children| {
-        //         children(cx)
-        //             .as_children()
-        //             .iter()
-        //             .map(|child| child.into_view(cx))
-        //             .collect::<Vec<_>>()
-        //     })
-        //     .unwrap_or_default();
+        effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, stroke);
+        effect_update_on_change_ref!(cx, leaflet::Polygon, leaflet::PolylineOptions, color, color_clone);
+        effect_update_on_change_ref!(cx, leaflet::Polygon, leaflet::PolylineOptions, fill_color, fill_color_clone);
+        effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, opacity);
+        effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, fill_opacity);
+        effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, weight);
+        effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, smooth_factor);
+
         children.map(|child| child(cx))
     });
     child

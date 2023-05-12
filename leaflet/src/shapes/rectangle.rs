@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::*;
 
-use crate::{Evented, LatLngBounds, Polygon, PolylineOptions};
-use crate::evented::{LeafletEventHandler, MouseEvents, MoveEvents, PopupEvents, TooltipEvents};
+use crate::evented::{LeafletEventHandler, MouseEvents, PopupEvents, TooltipEvents};
+use crate::{Evented, LatLngBounds, LayerEvents, Polygon, PolylineOptions};
 
 #[wasm_bindgen]
 extern "C" {
@@ -28,5 +28,6 @@ impl LeafletEventHandler for Rectangle {
 }
 
 impl MouseEvents for Rectangle {}
+impl LayerEvents for Rectangle {}
 impl PopupEvents for Rectangle {}
 impl TooltipEvents for Rectangle {}

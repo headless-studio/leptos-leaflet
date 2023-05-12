@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::*;
 
 use crate::evented::{LeafletEventHandler, MouseEvents, MoveEvents, PopupEvents, TooltipEvents};
-use crate::{Evented, LatLng, Path};
+use crate::{Evented, LatLng, LayerEvents, Path};
 
 #[wasm_bindgen]
 extern "C" {
@@ -50,5 +50,6 @@ impl LeafletEventHandler for CircleMarker {
 
 impl MoveEvents for CircleMarker {}
 impl MouseEvents for CircleMarker {}
+impl LayerEvents for CircleMarker {}
 impl PopupEvents for CircleMarker {}
 impl TooltipEvents for CircleMarker {}

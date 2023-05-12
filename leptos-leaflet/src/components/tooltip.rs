@@ -1,10 +1,8 @@
 use leptos::html::Div;
-use leptos::tracing::debug;
 use leptos::*;
-
-use crate::components::context::{LeafletMapContext, LeafletOverlayContainerContext};
 use wasm_bindgen::prelude::*;
 
+use crate::components::context::{LeafletMapContext, LeafletOverlayContainerContext};
 use crate::components::position::Position;
 
 #[component]
