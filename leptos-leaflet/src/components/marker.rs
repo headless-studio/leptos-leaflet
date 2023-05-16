@@ -136,7 +136,6 @@ pub fn Marker(
         });
 
         create_effect(cx, move |_| {
-            opacity.track();
             if let Some(marker) = overlay.container::<leaflet::Marker>() {
                 if let Some(opacity) = &opacity {
                     marker.setOpacity(opacity.get());
