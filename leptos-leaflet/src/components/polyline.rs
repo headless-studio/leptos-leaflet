@@ -80,6 +80,7 @@ pub fn Polyline(
         });
 
         create_effect(cx, move |_| {
+            positions_for_effect.track();
             if let Some(polyline) = use_context::<LeafletOverlayContainerContext>(cx)
                 .expect("overlay context")
                 .container::<leaflet::Polyline>()

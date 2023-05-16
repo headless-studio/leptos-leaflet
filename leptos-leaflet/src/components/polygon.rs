@@ -86,6 +86,7 @@ pub fn Polygon(
         });
 
         create_effect(cx, move |_| {
+            positions_for_effect.track();
             if let Some(polygon) = use_context::<LeafletOverlayContainerContext>(cx)
                 .expect("overlay context")
                 .container::<leaflet::Polygon>()
