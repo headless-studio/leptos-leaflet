@@ -32,7 +32,6 @@ pub fn Popup(
     let content = create_node_ref::<Div>(cx);
     // let content = view! {cx, <div>{children(cx)}</div>};
     create_effect(cx, move |_| {
-        log!("Popup context {:?}", map_context);
         let inner_content = content.clone();
         let mut options = leaflet::PopupOptions::default();
         if let Some(pane) = &pane {
@@ -86,7 +85,6 @@ pub fn Popup(
                 overlay_context.container::<leaflet::Layer>(),
                 map_context.map(),
             ) {
-                log!("Adding popup");
                 let popup = leaflet::Popup::new(&options, Some(marker.unchecked_ref()));
                 let content = inner_content.get_untracked().expect("content ref");
                 let html_view: &JsValue = content.unchecked_ref();
@@ -97,7 +95,6 @@ pub fn Popup(
                 });
             }
         } else if let Some(map) = map_context.map() {
-            log!("Adding popup");
             let popup = leaflet::Popup::newWithLatLng(&position().into(), &options);
             let content = inner_content.get_untracked().expect("content ref");
             let html_view: &JsValue = content.unchecked_ref();

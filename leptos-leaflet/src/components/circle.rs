@@ -6,6 +6,7 @@ use crate::components::path_options::{FillRule, LineCap, LineJoin};
 use crate::components::position::Position;
 use leaflet::CircleOptions;
 use leptos::*;
+use crate::{effect_update_on_change, effect_update_on_change_ref, LayerEvents, MouseEvents, PopupEvents, setup_layer_option, setup_layer_option_ref, setup_layer_option_str, TooltipEvents};
 
 #[component(transparent)]
 pub fn Circle(
@@ -25,65 +26,47 @@ pub fn Circle(
     #[prop(into, optional)] fill_rule: Option<MaybeSignal<FillRule>>,
     #[prop(into, optional)] bubbling_mouse_events: Option<MaybeSignal<bool>>,
     #[prop(into, optional)] class_name: Option<MaybeSignal<String>>,
+    #[prop(into, optional)] mouse_events: MouseEvents,
+    #[prop(into, optional)] layer_events: LayerEvents,
+    #[prop(into, optional)] popup_events: PopupEvents,
+    #[prop(into, optional)] tooltip_events: TooltipEvents,
+
     #[prop(into)] radius: MaybeSignal<f64>,
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
     let (child, _) = cx.run_child_scope(|cx| {
         extend_context_with_overlay(cx);
 
-        let start_color = color.clone();
-        let start_fill_color = fill_color.clone();
+        let color_clone = color.clone();
+        let fill_color_clone = fill_color.clone();
         create_effect(cx, move |_| {
             if let Some(map) = use_context::<LeafletMapContext>(cx)
                 .expect("map context")
                 .map()
             {
                 let mut options = CircleOptions::new();
-                options.radius(radius.get_untracked());
-                if let Some(stroke) = stroke {
-                    options.stroke(stroke.get_untracked());
-                }
-                if let Some(color) = &start_color {
-                    options.color(&color.get_untracked());
-                }
-                if let Some(weight) = weight {
-                    options.weight(weight.get_untracked());
-                }
-                if let Some(opacity) = opacity {
-                    options.opacity(opacity.get_untracked());
-                }
-                if let Some(line_cap) = line_cap {
-                    options.line_cap(&format!("{}", line_cap.get_untracked()));
-                }
-                if let Some(line_join) = line_join {
-                    options.line_join(&format!("{}", line_join.get_untracked()));
-                }
-                if let Some(dash_array) = &dash_array {
-                    options.dash_array(&dash_array.get_untracked());
-                }
-                if let Some(dash_offset) = &dash_offset {
-                    options.dash_offset(&dash_offset.get_untracked());
-                }
-                if let Some(fill) = fill {
-                    options.fill(fill.get_untracked());
-                }
-                if let Some(fill_color) = &start_fill_color {
-                    options.fill_color(&fill_color.get_untracked());
-                }
-                if let Some(fill_opacity) = fill_opacity {
-                    options.fill_opacity(fill_opacity.get_untracked());
-                }
-                if let Some(fill_rule) = fill_rule {
-                    options.fill_rule(&format!("{}", fill_rule.get_untracked()));
-                }
-                if let Some(bubbling_mouse_events) = bubbling_mouse_events {
-                    options.bubbling_mouse_events(bubbling_mouse_events.get_untracked());
-                }
-                if let Some(class_name) = &class_name {
-                    options.class_name(&class_name.get_untracked());
-                }
+                setup_layer_option!(stroke, options);
+                setup_layer_option_ref!(color, options);
+                setup_layer_option!(weight, options);
+                setup_layer_option!(opacity, options);
+                setup_layer_option_str!(line_cap, options);
+                setup_layer_option_str!(line_join, options);
+                setup_layer_option_ref!(dash_array, options);
+                setup_layer_option_ref!(dash_offset, options);
+                setup_layer_option!(fill, options);
+                setup_layer_option_ref!(fill_color, options);
+                setup_layer_option!(fill_opacity, options);
+                setup_layer_option_str!(fill_rule, options);
+                setup_layer_option!(bubbling_mouse_events, options);
+                setup_layer_option_str!(class_name, options);
                 let circle =
                     leaflet::Circle::new_with_options(&center.get_untracked().into(), &options);
+
+                mouse_events.setup(&circle);
+                popup_events.setup(&circle);
+                tooltip_events.setup(&circle);
+                layer_events.setup(&circle);
+
                 circle.addTo(&map);
                 update_overlay_context(cx, &circle);
                 on_cleanup(cx, move || {
@@ -101,84 +84,12 @@ pub fn Circle(
             }
         });
 
-        // Stroke
-        create_effect(cx, move |_| {
-            let overlay_context =
-                use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
-            if let (Some(circle), Some(stroke)) =
-                (overlay_context.container::<leaflet::Circle>(), &stroke)
-            {
-                let mut options = CircleOptions::new();
-                options.stroke(stroke.get());
-                circle.setStyle(&options);
-            }
-        });
-
-        // Weight
-        create_effect(cx, move |_| {
-            let overlay_context =
-                use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
-            if let (Some(circle), Some(weight)) =
-                (overlay_context.container::<leaflet::Circle>(), &weight)
-            {
-                let mut options = CircleOptions::new();
-                options.weight(weight.get());
-                circle.setStyle(&options);
-            }
-        });
-
-        // Color
-        create_effect(cx, move |_| {
-            let overlay_context =
-                use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
-            if let (Some(circle), Some(color)) =
-                (overlay_context.container::<leaflet::Circle>(), &color)
-            {
-                let mut options = CircleOptions::new();
-                options.color(&color.get());
-                circle.setStyle(&options);
-            }
-        });
-
-        // Fill color
-        create_effect(cx, move |_| {
-            let overlay_context =
-                use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
-            if let (Some(circle), Some(color)) =
-                (overlay_context.container::<leaflet::Circle>(), &fill_color)
-            {
-                let mut options = CircleOptions::new();
-                options.fill_color(&color.get());
-                circle.setStyle(&options);
-            }
-        });
-
-        // Opacity
-        create_effect(cx, move |_| {
-            let overlay_context =
-                use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
-            if let (Some(circle), Some(opacity)) =
-                (overlay_context.container::<leaflet::Circle>(), &opacity)
-            {
-                let mut options = CircleOptions::new();
-                options.opacity(opacity.get());
-                circle.setStyle(&options);
-            }
-        });
-
-        // Fill Opacity
-        create_effect(cx, move |_| {
-            let overlay_context =
-                use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
-            if let (Some(circle), Some(fill_opacity)) = (
-                overlay_context.container::<leaflet::Circle>(),
-                &fill_opacity,
-            ) {
-                let mut options = CircleOptions::new();
-                options.fill_opacity(fill_opacity.get());
-                circle.setStyle(&options);
-            }
-        });
+        effect_update_on_change!(cx, leaflet::Circle, leaflet::CircleOptions, stroke);
+        effect_update_on_change!(cx, leaflet::Circle, leaflet::CircleOptions, weight);
+        effect_update_on_change_ref!(cx, leaflet::Circle, leaflet::CircleOptions, color, color_clone);
+        effect_update_on_change_ref!(cx, leaflet::Circle, leaflet::CircleOptions, fill_color, fill_color_clone);
+        effect_update_on_change!(cx, leaflet::Circle, leaflet::CircleOptions, opacity);
+        effect_update_on_change!(cx, leaflet::Circle, leaflet::CircleOptions, fill_opacity);
 
         children.map(|child| child(cx))
     });

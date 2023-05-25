@@ -1,4 +1,3 @@
-use leaflet::TileLayerOptions;
 use leptos::*;
 
 use crate::components::context::LeafletMapContext;

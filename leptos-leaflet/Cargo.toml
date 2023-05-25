@@ -4,11 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+js-sys = "0.3"
 leaflet = { path = "../leaflet" }
 leptos = { git = "https://github.com/leptos-rs/leptos", default-features = false }
 leptos_meta = { git = "https://github.com/leptos-rs/leptos", default-features = false }
 getrandom = { version = "0.2", features = ["js"] }
 rand = "0.8"
+regex = "1.8"
 
 [dependencies.wasm-bindgen]
 version = "0.2"

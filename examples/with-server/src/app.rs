@@ -61,7 +61,7 @@ fn HomePage(cx: Scope) -> impl IntoView {
         log!("hello from {:?}", loc.latlng());
     };
 
-    let events = MapEvents::new().with_location_found(location_found);
+    let events = MapEvents::new().location_found(location_found);
 
     view! { cx,
           <MapContainer style="height: 400px" center=position!(51.505, -0.09) zoom=13.0 set_view=true map=set_map locate=true watch=true events>

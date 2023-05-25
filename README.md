@@ -7,6 +7,8 @@ For now only a few of the components are ported, and events must be set in the S
 
 ## Features
 - CSR/HYDRATE/SSR support
+- Leaflet Events
+- Signals for leaflet component properties
 
 ### Components
 - MapContainer
@@ -21,6 +23,4 @@ For now only a few of the components are ported, and events must be set in the S
 - Popup
 
 ## TODO
-- Better way to handle events
-- Add all the options as signals for all components
 - Implement missing components

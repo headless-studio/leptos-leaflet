@@ -1,12 +1,13 @@
-use crate::components::context::provide_leaflet_context;
-use crate::components::position::Position;
-use crate::MapEvents;
-use leaflet::LocateOptions;
 use leptos::{html::Div, *};
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlDivElement;
 
+use leaflet::LocateOptions;
+
+use crate::components::context::provide_leaflet_context;
 use crate::components::context::LeafletMapContext;
+use crate::components::position::Position;
+use crate::{MapEvents, PopupEvents, TooltipEvents};
 
 #[component]
 pub fn MapContainer(
@@ -33,6 +34,8 @@ pub fn MapContainer(
     set_view: MaybeSignal<bool>,
     #[prop(optional)] map: Option<WriteSignal<LeafletMap>>,
     #[prop(optional)] events: MapEvents,
+    #[prop(optional)] popup_events: PopupEvents,
+    #[prop(optional)] tooltip_events: TooltipEvents,
     /// Inner map child nodes
     #[prop(optional)]
     children: Option<Children>,
@@ -51,6 +54,8 @@ pub fn MapContainer(
                 node.clone().id(id);
             }
             let events = events.clone();
+            let popup_events = popup_events.clone();
+            let tooltip_events = tooltip_events.clone();
             node.on_mount(move |node| {
                 let map_context = expect_context::<LeafletMapContext>(cx);
                 let node = node.unchecked_ref::<HtmlDivElement>();
@@ -71,34 +76,9 @@ pub fn MapContainer(
                 }
 
                 // Setup events
-                let events_clone = events.clone();
-                if let Some(location_found) = events_clone.take_location_found() {
-                    leaflet_map.on_location_found(location_found);
-                }
-                let events_clone = events.clone();
-                if let Some(location_error) = events_clone.take_location_error() {
-                    leaflet_map.on_location_error(location_error);
-                }
-                let events_clone = events.clone();
-                if let Some(popup_open) = events_clone.take_popup_open() {
-                    leaflet_map.on_popup_open(popup_open);
-                }
-                let events_clone = events.clone();
-                if let Some(popup_close) = events_clone.take_popup_close() {
-                    leaflet_map.on_popup_close(popup_close);
-                }
-                let events_clone = events.clone();
-                if let Some(load) = events_clone.take_load() {
-                    leaflet_map.on_load(load);
-                }
-                let events_clone = events.clone();
-                if let Some(unload) = events_clone.take_unload() {
-                    leaflet_map.on_unload(unload);
-                }
-                let events_clone = events.clone();
-                if let Some(resize) = events_clone.take_resize() {
-                    leaflet_map.on_resize(resize);
-                }
+                events.setup(&leaflet_map);
+                popup_events.setup(&leaflet_map);
+                tooltip_events.setup(&leaflet_map);
 
                 if locate() {
                     let mut locate_options = LocateOptions::new();
@@ -113,9 +93,6 @@ pub fn MapContainer(
 
                 log!("Map node: {:?}", node.id());
                 map_context.set_map(&leaflet_map);
-                // if let Some(map) = map {
-                //     map.update(|map| *map = leaflet_map);
-                // }
             });
         }
     });
