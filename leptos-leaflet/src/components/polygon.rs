@@ -43,7 +43,7 @@ pub fn Polygon(
         let color_clone = color.clone();
         let fill_color_clone = fill_color.clone();
         // This effect just setups the polygon when we get a map
-        create_effect(cx, move |done| {
+        create_effect(cx, move |_| {
             if let Some(map) = use_context::<LeafletMapContext>(cx)
                 .expect("map context")
                 .map()

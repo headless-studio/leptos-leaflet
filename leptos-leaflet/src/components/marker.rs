@@ -1,6 +1,7 @@
 use crate::components::context::extend_context_with_overlay;
 use crate::components::position::Position;
 use leptos::*;
+use wasm_bindgen::JsCast;
 
 use crate::components::context::LeafletMapContext;
 use crate::{DragEvents, LayerEvents, MouseEvents, MoveEvents, PopupEvents, TooltipEvents};
@@ -33,6 +34,7 @@ pub fn Marker(
     #[prop(into, optional)] icon_url: Option<MaybeSignal<String>>,
     #[prop(into, optional)] icon_size: Option<MaybeSignal<(u32, u32)>>,
     #[prop(into, optional)] attribution: Option<MaybeSignal<String>>,
+    #[prop(into, optional)] rotation: Option<MaybeSignal<f64>>,
     #[prop(into, optional)] move_events: MoveEvents,
     #[prop(into, optional)] mouse_events: MouseEvents,
     #[prop(into, optional)] drag_events: DragEvents,
@@ -46,6 +48,7 @@ pub fn Marker(
 
     let (child, _) = cx.run_child_scope(|cx| {
         let overlay = extend_context_with_overlay(cx);
+        let rotation_clone = rotation.clone();
         create_effect(cx, move |_| {
             if let Some(map) = map_context.map() {
                 let mut options = leaflet::MarkerOptions::new();
@@ -149,6 +152,23 @@ pub fn Marker(
                     marker.dragging().enable();
                 } else {
                     marker.dragging().disable();
+                }
+            }
+        });
+
+        let t_re = regex::Regex::new("\\s*rotate\\(\\d+deg\\)\\s*").unwrap();
+        create_effect(cx, move |_| {
+            if let (Some(marker), Some(rotation)) = (overlay.container::<leaflet::Marker>(), rotation) {
+                if let Ok(internal_icon) = js_sys::Reflect::get(&marker, &"_icon".into()) {
+                    let internal_icon = internal_icon.unchecked_ref::<web_sys::HtmlElement>();
+                    let t = internal_icon.style().get_property_value("transform").unwrap_or_default();
+                    if t.is_empty() {
+                        let _ = internal_icon.style().set_property("transform", &format!("rotate({}deg)", rotation.get()));
+                    } else {
+                        let t = format!("{} rotate({}deg)", t_re.replace(&t,""), rotation.get());
+                        let _ = internal_icon.style().set_property("transform", &t);
+                    }
+                    let _ = internal_icon.style().set_property("transform-origin", "center");
                 }
             }
         });
