@@ -1,4 +1,4 @@
-use crate::{object_constructor, object_property_set, Icon, IconOptions};
+use crate::{object_constructor, object_property_set, Icon, IconOptions, Point};
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
 
