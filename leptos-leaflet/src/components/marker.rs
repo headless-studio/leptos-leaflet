@@ -168,17 +168,26 @@ pub fn Marker(
 
         let t_re = regex::Regex::new("\\s*rotate\\(\\d+deg\\)\\s*").unwrap();
         create_effect(cx, move |_| {
-            if let (Some(marker), Some(rotation)) = (overlay.container::<leaflet::Marker>(), rotation) {
+            if let (Some(marker), Some(rotation)) =
+                (overlay.container::<leaflet::Marker>(), rotation)
+            {
                 if let Ok(internal_icon) = js_sys::Reflect::get(&marker, &"_icon".into()) {
                     let internal_icon = internal_icon.unchecked_ref::<web_sys::HtmlElement>();
-                    let t = internal_icon.style().get_property_value("transform").unwrap_or_default();
+                    let t = internal_icon
+                        .style()
+                        .get_property_value("transform")
+                        .unwrap_or_default();
                     if t.is_empty() {
-                        let _ = internal_icon.style().set_property("transform", &format!("rotate({}deg)", rotation.get()));
+                        let _ = internal_icon
+                            .style()
+                            .set_property("transform", &format!("rotate({}deg)", rotation.get()));
                     } else {
-                        let t = format!("{} rotate({}deg)", t_re.replace(&t,""), rotation.get());
+                        let t = format!("{} rotate({}deg)", t_re.replace(&t, ""), rotation.get());
                         let _ = internal_icon.style().set_property("transform", &t);
                     }
-                    let _ = internal_icon.style().set_property("transform-origin", "center");
+                    let _ = internal_icon
+                        .style()
+                        .set_property("transform-origin", "center");
                 }
             }
         });

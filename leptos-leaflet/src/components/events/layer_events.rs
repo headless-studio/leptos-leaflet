@@ -29,13 +29,5 @@ impl LayerEvents {
     }
 }
 
-leaflet_event!(
-    LayerEvents,
-    on_add,
-    Event
-);
-leaflet_event!(
-    LayerEvents,
-    on_remove,
-    Event
-);
+leaflet_event!(LayerEvents, on_add, Event);
+leaflet_event!(LayerEvents, on_remove, Event);

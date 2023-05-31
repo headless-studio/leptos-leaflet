@@ -29,13 +29,5 @@ impl TooltipEvents {
     }
 }
 
-leaflet_event!(
-    TooltipEvents,
-    on_tooltip_open,
-    TooltipEvent
-);
-leaflet_event!(
-    TooltipEvents,
-    on_tooltip_close,
-    TooltipEvent
-);
+leaflet_event!(TooltipEvents, on_tooltip_open, TooltipEvent);
+leaflet_event!(TooltipEvents, on_tooltip_close, TooltipEvent);

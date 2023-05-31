@@ -25,8 +25,4 @@ impl MoveEvents {
     }
 }
 
-leaflet_event!(
-    MoveEvents,
-    on_move,
-    Event
-);
+leaflet_event!(MoveEvents, on_move, Event);

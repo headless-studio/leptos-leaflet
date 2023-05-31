@@ -26,15 +26,15 @@ impl LeafletMapContext {
         self.map.read_only()
     }
 
-    pub fn add_layer<L: Into<leaflet::Layer>>(&self, layer: &L) {
+    pub fn add_layer<L: Into<leaflet::Layer> + Clone>(&self, layer: &L) {
         let map = self.map.get_untracked().expect("Map to be available");
-        let layer: leaflet::Layer = layer.into();
+        let layer: leaflet::Layer = layer.to_owned().into();
         layer.addTo(&map);
     }
 
-    pub fn remove_layer<L: Into<leaflet::Layer>>(&self, layer: &L) {
+    pub fn remove_layer<L: Into<leaflet::Layer> + Clone>(&self, layer: &L) {
         let map = self.map.get_untracked().expect("Map to be available");
-        let layer: leaflet::Layer = layer.into();
+        let layer: leaflet::Layer = layer.to_owned().into();
         layer.removeFrom(&map);
     }
 }

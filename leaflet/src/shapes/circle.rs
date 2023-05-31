@@ -2,8 +2,11 @@ use js_sys::Object;
 use std::ops::DerefMut;
 use wasm_bindgen::prelude::*;
 
-use crate::{object_constructor, object_property_set, CircleMarker, LatLng, LatLngBounds, Layer, PathOptions, Evented, LayerEvents};
 use crate::evented::{LeafletEventHandler, MouseEvents, MoveEvents, PopupEvents, TooltipEvents};
+use crate::{
+    object_constructor, object_property_set, CircleMarker, Evented, LatLng, LatLngBounds, Layer,
+    LayerEvents, PathOptions,
+};
 
 #[wasm_bindgen]
 extern "C" {
@@ -68,8 +71,8 @@ impl LeafletEventHandler for Circle {
     }
 }
 
-impl MoveEvents for Circle{}
-impl MouseEvents for Circle{}
-impl LayerEvents for Circle{}
-impl PopupEvents for Circle{}
-impl TooltipEvents for Circle{}
+impl MoveEvents for Circle {}
+impl MouseEvents for Circle {}
+impl LayerEvents for Circle {}
+impl PopupEvents for Circle {}
+impl TooltipEvents for Circle {}
