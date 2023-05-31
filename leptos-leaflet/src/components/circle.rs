@@ -19,6 +19,7 @@ pub fn Circle(
     #[prop(into, optional)] stroke: Option<MaybeSignal<bool>>,
     #[prop(into, optional)] color: Option<MaybeSignal<String>>,
     #[prop(into, optional)] weight: Option<MaybeSignal<f64>>,
+    #[prop(into, optional)] interactive: Option<MaybeSignal<bool>>,
     #[prop(into, optional)] opacity: Option<MaybeSignal<f64>>,
     #[prop(into, optional)] line_cap: Option<MaybeSignal<LineCap>>,
     #[prop(into, optional)] line_join: Option<MaybeSignal<LineJoin>>,
@@ -53,6 +54,7 @@ pub fn Circle(
                 setup_layer_option_ref!(color, options);
                 setup_layer_option!(weight, options);
                 setup_layer_option!(opacity, options);
+                setup_layer_option!(interactive, options);
                 setup_layer_option_str!(line_cap, options);
                 setup_layer_option_str!(line_join, options);
                 setup_layer_option_ref!(dash_array, options);
