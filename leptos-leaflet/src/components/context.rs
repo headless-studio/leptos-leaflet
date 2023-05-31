@@ -1,7 +1,4 @@
-use leptos::{
-    create_rw_signal, log, provide_context, use_context, ReadSignal, RwSignal, Scope, SignalGet,
-    SignalGetUntracked, SignalSet,
-};
+use leptos::*;
 use wasm_bindgen::JsCast;
 
 #[derive(Debug, Clone, Copy)]
@@ -28,6 +25,18 @@ impl LeafletMapContext {
     pub fn map_signal(&self) -> ReadSignal<Option<leaflet::Map>> {
         self.map.read_only()
     }
+
+    pub fn add_layer<L: Into<leaflet::Layer>>(&self, layer: &L) {
+        let map = self.map.get_untracked().expect("Map to be available");
+        let layer: leaflet::Layer = layer.into();
+        layer.addTo(&map);
+    }
+
+    pub fn remove_layer<L: Into<leaflet::Layer>>(&self, layer: &L) {
+        let map = self.map.get_untracked().expect("Map to be available");
+        let layer: leaflet::Layer = layer.into();
+        layer.removeFrom(&map);
+    }
 }
 
 pub fn provide_leaflet_context(cx: Scope) {
@@ -52,9 +61,7 @@ pub fn use_overlay_context_layer<T>(cx: Scope) -> Option<T>
 where
     T: Into<leaflet::Layer> + Clone + JsCast,
 {
-    use_context::<LeafletOverlayContainerContext>(cx)
-        .expect("overlay context")
-        .container::<T>()
+    expect_context::<LeafletOverlayContainerContext>(cx).container::<T>()
 }
 
 pub fn update_overlay_context<C: Into<leaflet::Layer> + Clone>(cx: Scope, layer: &C) {

@@ -1,4 +1,5 @@
 mod control;
+mod div_icon;
 mod div_overlay;
 mod event;
 mod evented;
@@ -20,6 +21,7 @@ use js_sys::{Array, Object};
 use wasm_bindgen::prelude::*;
 
 pub use control::Control;
+pub use div_icon::{DivIcon, DivIconOptions};
 pub use div_overlay::DivOverlay;
 pub use event::Event;
 pub use evented::{

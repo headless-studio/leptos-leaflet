@@ -31,6 +31,7 @@ pub fn Marker(
     #[prop(into, optional)] auto_pan: Option<MaybeSignal<bool>>,
     #[prop(into, optional)] auto_pan_padding: Option<MaybeSignal<(u32, u32)>>,
     #[prop(into, optional)] auto_pan_speed: Option<MaybeSignal<f64>>,
+    #[prop(into, optional)] icon_class: Option<MaybeSignal<String>>,
     #[prop(into, optional)] icon_url: Option<MaybeSignal<String>>,
     #[prop(into, optional)] icon_size: Option<MaybeSignal<(u32, u32)>>,
     #[prop(into, optional)] attribution: Option<MaybeSignal<String>>,
@@ -108,6 +109,15 @@ pub fn Marker(
                     }
                     let icon = leaflet::Icon::new(&icon_options);
                     options.icon(icon);
+                } else if let Some(icon_class) = &icon_class {
+                    let mut icon_options = leaflet::DivIconOptions::new();
+                    icon_options.class(&icon_class.get_untracked());
+                    if let Some(size) = icon_size {
+                        let (x, y) = size.get_untracked();
+                        icon_options.icon_size(leaflet::Point::new(x, y));
+                    }
+                    let icon = leaflet::DivIcon::new(&icon_options);
+                    options.icon(icon.into());
                 }
                 if let Some(attribution) = &attribution {
                     options.attribution(&attribution.get_untracked());
