@@ -1,5 +1,5 @@
 use crate::leaflet_event;
-use leaflet::{ErrorEvent, Event, LocationEvent, Map, MouseEvent, PopupEvent};
+use leaflet::{ErrorEvent, Event, LocationEvent, Map, MouseEvent};
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -15,6 +15,7 @@ struct InnerMapEvents {
     load: Option<Box<dyn Fn(Event)>>,
     unload: Option<Box<dyn Fn(Event)>>,
     resize: Option<Box<dyn Fn(Event)>>,
+    zoom: Option<Box<dyn Fn(Event)>>,
     zoom_start: Option<Box<dyn Fn(Event)>>,
     zoom_end: Option<Box<dyn Fn(Event)>>,
     move_: Option<Box<dyn Fn(Event)>>,
@@ -102,3 +103,16 @@ leaflet_event!(MapEvents, load, Event);
 leaflet_event!(MapEvents, unload, Event);
 leaflet_event!(MapEvents, resize, Event);
 leaflet_event!(MapEvents, zoom, Event);
+leaflet_event!(MapEvents, zoom_start, Event);
+leaflet_event!(MapEvents, zoom_end, Event);
+leaflet_event!(MapEvents, move_start, Event);
+leaflet_event!(MapEvents, move_end, Event);
+leaflet_event!(MapEvents, move_, Event);
+leaflet_event!(MapEvents, mouse_click, MouseEvent);
+leaflet_event!(MapEvents, mouse_double_click, MouseEvent);
+leaflet_event!(MapEvents, mouse_context_menu, MouseEvent);
+leaflet_event!(MapEvents, mouse_move, MouseEvent);
+leaflet_event!(MapEvents, mouse_over, MouseEvent);
+leaflet_event!(MapEvents, mouse_out, MouseEvent);
+leaflet_event!(MapEvents, mouse_down, MouseEvent);
+leaflet_event!(MapEvents, mouse_up, MouseEvent);
