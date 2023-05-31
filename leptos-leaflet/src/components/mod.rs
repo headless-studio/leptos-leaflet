@@ -91,7 +91,7 @@ macro_rules! setup_layer_option_str {
     };
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 pub struct LayerData {
     layer: leaflet::Layer,
 }
