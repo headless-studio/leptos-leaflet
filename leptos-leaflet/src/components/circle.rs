@@ -4,9 +4,13 @@ use crate::components::context::{
 };
 use crate::components::path_options::{FillRule, LineCap, LineJoin};
 use crate::components::position::Position;
+use crate::{
+    effect_update_on_change, effect_update_on_change_ref, setup_layer_option,
+    setup_layer_option_ref, setup_layer_option_str, LayerEvents, MouseEvents, PopupEvents,
+    TooltipEvents,
+};
 use leaflet::CircleOptions;
 use leptos::*;
-use crate::{effect_update_on_change, effect_update_on_change_ref, LayerEvents, MouseEvents, PopupEvents, setup_layer_option, setup_layer_option_ref, setup_layer_option_str, TooltipEvents};
 
 #[component(transparent)]
 pub fn Circle(
@@ -70,6 +74,7 @@ pub fn Circle(
                 circle.addTo(&map);
                 update_overlay_context(cx, &circle);
                 on_cleanup(cx, move || {
+                    log!("removing circle inner cx");
                     circle.remove();
                 });
             };
@@ -86,10 +91,31 @@ pub fn Circle(
 
         effect_update_on_change!(cx, leaflet::Circle, leaflet::CircleOptions, stroke);
         effect_update_on_change!(cx, leaflet::Circle, leaflet::CircleOptions, weight);
-        effect_update_on_change_ref!(cx, leaflet::Circle, leaflet::CircleOptions, color, color_clone);
-        effect_update_on_change_ref!(cx, leaflet::Circle, leaflet::CircleOptions, fill_color, fill_color_clone);
+        effect_update_on_change_ref!(
+            cx,
+            leaflet::Circle,
+            leaflet::CircleOptions,
+            color,
+            color_clone
+        );
+        effect_update_on_change_ref!(
+            cx,
+            leaflet::Circle,
+            leaflet::CircleOptions,
+            fill_color,
+            fill_color_clone
+        );
         effect_update_on_change!(cx, leaflet::Circle, leaflet::CircleOptions, opacity);
         effect_update_on_change!(cx, leaflet::Circle, leaflet::CircleOptions, fill_opacity);
+
+        on_cleanup(cx, move || {
+            if let Some(circle) = use_context::<LeafletOverlayContainerContext>(cx)
+                .and_then(|c| c.container::<leaflet::Circle>())
+            {
+                log!("removing circle cx");
+                circle.remove();
+            }
+        });
 
         children.map(|child| child(cx))
     });

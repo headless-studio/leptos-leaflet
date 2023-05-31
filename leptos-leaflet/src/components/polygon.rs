@@ -1,14 +1,18 @@
 use leptos::*;
 
-use leaflet::{PolylineOptions, to_lat_lng_array};
+use leaflet::{to_lat_lng_array, PolylineOptions};
 
-use crate::{effect_update_on_change, effect_update_on_change_ref, LayerEvents, MouseEvents, PopupEvents, setup_layer_option, setup_layer_option_ref, setup_layer_option_str, TooltipEvents};
 use crate::components::context::{
-    extend_context_with_overlay, LeafletMapContext, LeafletOverlayContainerContext,
-    update_overlay_context,
+    extend_context_with_overlay, update_overlay_context, LeafletMapContext,
+    LeafletOverlayContainerContext,
 };
 use crate::components::path_options::{FillRule, LineCap, LineJoin};
 use crate::components::position::Position;
+use crate::{
+    effect_update_on_change, effect_update_on_change_ref, setup_layer_option,
+    setup_layer_option_ref, setup_layer_option_str, LayerEvents, MouseEvents, PopupEvents,
+    TooltipEvents,
+};
 
 #[component(transparent)]
 pub fn Polygon(
@@ -97,12 +101,37 @@ pub fn Polygon(
         });
 
         effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, stroke);
-        effect_update_on_change_ref!(cx, leaflet::Polygon, leaflet::PolylineOptions, color, color_clone);
-        effect_update_on_change_ref!(cx, leaflet::Polygon, leaflet::PolylineOptions, fill_color, fill_color_clone);
+        effect_update_on_change_ref!(
+            cx,
+            leaflet::Polygon,
+            leaflet::PolylineOptions,
+            color,
+            color_clone
+        );
+        effect_update_on_change_ref!(
+            cx,
+            leaflet::Polygon,
+            leaflet::PolylineOptions,
+            fill_color,
+            fill_color_clone
+        );
         effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, opacity);
         effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, fill_opacity);
         effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, weight);
-        effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, smooth_factor);
+        effect_update_on_change!(
+            cx,
+            leaflet::Polygon,
+            leaflet::PolylineOptions,
+            smooth_factor
+        );
+
+        on_cleanup(cx, move || {
+            if let Some(polygon) = use_context::<LeafletOverlayContainerContext>(cx)
+                .and_then(|c| c.container::<leaflet::Polygon>())
+            {
+                polygon.remove();
+            }
+        });
 
         children.map(|child| child(cx))
     });
