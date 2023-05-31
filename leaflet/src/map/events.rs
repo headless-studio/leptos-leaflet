@@ -197,6 +197,46 @@ impl Map {
         let closure = Closure::wrap(callback);
         self.on("popupclose", &closure.into_js_value());
     }
+
+    pub fn on_mouse_click(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("click", &closure.into_js_value());
+    }
+
+    pub fn on_mouse_double_click(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("dblclick", &closure.into_js_value());
+    }
+
+    pub fn on_mouse_context_menu(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("contextmenu", &closure.into_js_value());
+    }
+
+    pub fn on_mouse_move(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("mousemove", &closure.into_js_value());
+    }
+
+    pub fn on_mouse_over(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("mouseover", &closure.into_js_value());
+    }
+
+    pub fn on_mouse_out(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("mouseout", &closure.into_js_value());
+    }
+
+    pub fn on_mouse_down(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("mousedown", &closure.into_js_value());
+    }
+
+    pub fn on_mouse_up(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("mouseup", &closure.into_js_value());
+    }
 }
 
 impl LeafletEventHandler for Map{

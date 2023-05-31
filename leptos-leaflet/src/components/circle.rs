@@ -108,15 +108,6 @@ pub fn Circle(
         effect_update_on_change!(cx, leaflet::Circle, leaflet::CircleOptions, opacity);
         effect_update_on_change!(cx, leaflet::Circle, leaflet::CircleOptions, fill_opacity);
 
-        on_cleanup(cx, move || {
-            if let Some(circle) = use_context::<LeafletOverlayContainerContext>(cx)
-                .and_then(|c| c.container::<leaflet::Circle>())
-            {
-                log!("removing circle cx");
-                circle.remove();
-            }
-        });
-
         children.map(|child| child(cx))
     });
     child

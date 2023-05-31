@@ -119,14 +119,6 @@ pub fn Polyline(
             smooth_factor
         );
 
-        on_cleanup(cx, move || {
-            if let Some(polyline) = use_context::<LeafletOverlayContainerContext>(cx)
-                .and_then(|c| c.container::<leaflet::Polyline>())
-            {
-                polyline.remove();
-            }
-        });
-
         children.map(|child| child(cx))
     });
     child

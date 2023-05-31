@@ -125,14 +125,6 @@ pub fn Polygon(
             smooth_factor
         );
 
-        on_cleanup(cx, move || {
-            if let Some(polygon) = use_context::<LeafletOverlayContainerContext>(cx)
-                .and_then(|c| c.container::<leaflet::Polygon>())
-            {
-                polygon.remove();
-            }
-        });
-
         children.map(|child| child(cx))
     });
     child

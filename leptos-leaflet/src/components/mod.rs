@@ -90,3 +90,18 @@ macro_rules! setup_layer_option_str {
         }
     };
 }
+
+#[derive(Copy, Clone, Debug)]
+pub struct LayerData {
+    layer: leaflet::Layer,
+}
+
+impl LayerData {
+    pub(crate) fn new(layer: leaflet::Layer) -> Self {
+        Self { layer }
+    }
+
+    pub fn remove(&self) {
+        self.layer.remove();
+    }
+}
