@@ -111,7 +111,7 @@ pub fn Marker(
                     options.icon(icon);
                 } else if let Some(icon_class) = &icon_class {
                     let mut icon_options = leaflet::DivIconOptions::new();
-                    icon_options.class(&icon_class.get_untracked());
+                    icon_options.class_name(&icon_class.get_untracked());
                     if let Some(size) = icon_size {
                         let (x, y) = size.get_untracked();
                         icon_options.icon_size(leaflet::Point::new(x, y));
