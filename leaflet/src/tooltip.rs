@@ -1,7 +1,7 @@
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
 
-use crate::{LatLng, object_constructor, DivOverlay, Layer, object_property_set, Point};
+use crate::{object_constructor, object_property_set, DivOverlay, LatLng, Layer, Point};
 
 #[wasm_bindgen]
 extern "C" {

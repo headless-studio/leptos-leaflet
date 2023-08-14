@@ -1,6 +1,6 @@
-﻿use js_sys::Object;
-use wasm_bindgen::prelude::*;
 use crate::{object_constructor, object_property_set, Point};
+use js_sys::Object;
+use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
@@ -14,11 +14,6 @@ extern "C" {
 
     #[wasm_bindgen(constructor, js_namespace = L)]
     pub fn new(options: &IconOptions) -> Icon;
-}
-
-#[wasm_bindgen(inline_js = "export function setDefaultIconOptions(options) { L.Marker.prototype.options.icon = L.icon(options); }")]
-extern "C" {
-    pub fn setDefaultIconOptions(options: &IconOptions);
 }
 
 impl IconOptions {

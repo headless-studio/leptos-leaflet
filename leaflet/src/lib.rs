@@ -1,34 +1,43 @@
 mod control;
+mod div_icon;
 mod div_overlay;
+mod event;
 mod evented;
 mod grid_layer;
 mod handler;
 mod icon;
+mod lat_lng;
 mod layer;
 mod layer_control;
 mod layer_group;
 mod map;
 mod marker;
-pub mod plugins;
 mod popup;
 mod raster;
 mod shapes;
 mod tooltip;
-mod event;
 
-use js_sys::{Array, Object};
+use js_sys::Array;
 use wasm_bindgen::prelude::*;
 
 pub use control::Control;
+pub use div_icon::{DivIcon, DivIconOptions};
 pub use div_overlay::DivOverlay;
-pub use evented::Evented;
 pub use event::Event;
+pub use evented::{
+    DragEvents, Evented, EventedHandle, LayerEvents, MouseEvents, MoveEvents, PopupEvents,
+    TooltipEvents,
+};
 pub use grid_layer::{GridLayer, GridLayerOptions};
 pub use handler::Handler;
-pub use icon::{setDefaultIconOptions, Icon, IconOptions};
+pub use icon::{Icon, IconOptions};
+pub use lat_lng::LatLng;
 pub use layer::Layer;
 pub use layer_group::LayerGroup;
-pub use map::{ErrorEvent, LocateOptions, LocationEvent, Map, MapOptions, PopupEvent};
+pub use map::{
+    DragEndEvent, ErrorEvent, LocateOptions, LocationEvent, Map, MapOptions, MouseEvent,
+    PopupEvent, TooltipEvent,
+};
 pub use marker::{Marker, MarkerOptions};
 pub use popup::{Popup, PopupOptions};
 pub use raster::{
@@ -101,30 +110,52 @@ extern "C" {
     pub type Point;
 
     #[wasm_bindgen(constructor, js_namespace = L)]
-    pub fn new(x: u32, y: u32) -> Point;
+    pub fn new(x: f64, y: f64) -> Point;
 
     #[wasm_bindgen(method, getter)]
-    pub fn x(this: &Point) -> u32;
+    pub fn x(this: &Point) -> f64;
 
     #[wasm_bindgen(method, getter)]
-    pub fn y(this: &Point) -> u32;
-
-    // LatLng
-
-    #[derive(Debug, Default, Clone)]
-    pub type LatLng;
-
-    #[wasm_bindgen(constructor, js_namespace = L)]
-    pub fn new(lat: f64, lng: f64) -> LatLng;
-
-    #[wasm_bindgen(method, getter)]
-    pub fn lat(this: &LatLng) -> f64;
-
-    #[wasm_bindgen(method, getter)]
-    pub fn lng(this: &LatLng) -> f64;
+    pub fn y(this: &Point) -> f64;
 
     #[wasm_bindgen(method)]
-    pub fn distanceTo(this: &LatLng, otherLatLng: &LatLng) -> f64;
+    pub fn add(this: &Point, other: &Point) -> Point;
+
+    #[wasm_bindgen(method)]
+    pub fn subtract(this: &Point, other: &Point) -> Point;
+
+    #[wasm_bindgen(method)]
+    pub fn multiplyBy(this: &Point, scalar: f64) -> Point;
+
+    #[wasm_bindgen(method)]
+    pub fn divideBy(this: &Point, scalar: f64) -> Point;
+
+    #[wasm_bindgen(method)]
+    pub fn scaleBy(this: &Point, other: &Point) -> Point;
+
+    #[wasm_bindgen(method)]
+    pub fn unscaleByTo(this: &Point, other: &Point) -> Point;
+
+    #[wasm_bindgen(method)]
+    pub fn round(this: &Point) -> Point;
+
+    #[wasm_bindgen(method)]
+    pub fn floor(this: &Point) -> Point;
+
+    #[wasm_bindgen(method)]
+    pub fn ceil(this: &Point) -> Point;
+
+    #[wasm_bindgen(method)]
+    pub fn trunc(this: &Point) -> bool;
+
+    #[wasm_bindgen(method)]
+    pub fn equals(this: &Point, other: &Point) -> bool;
+
+    #[wasm_bindgen(method)]
+    pub fn contains(this: &Point, other: &Point) -> f64;
+
+    #[wasm_bindgen(method)]
+    pub fn distanceTo(this: &Point, other: &Point) -> f64;
 
     // LatLngBounds
 
@@ -142,18 +173,6 @@ extern "C" {
 
     #[wasm_bindgen(method)]
     pub fn contains(this: &LatLngBounds, latlng: &LatLng) -> bool;
-
-    // MouseEvent
-
-    #[derive(Debug, Clone)]
-    #[wasm_bindgen(extends = Event)]
-    pub type MouseEvent;
-
-    #[wasm_bindgen(method, getter)]
-    pub fn latlng(this: &MouseEvent) -> LatLng;
-
-    #[wasm_bindgen(method, getter)]
-    pub fn originalEvent(this: &MouseEvent) -> web_sys::Event;
 
     // FeatureGroup
 
@@ -202,27 +221,16 @@ extern "C" {
     pub fn setStyle(this: &GeoJSON, style: &JsValue);
 }
 
-impl Into<LatLng> for (f64, f64) {
-    fn into(self) -> LatLng {
-        LatLng::new(self.0, self.1)
-    }
-}
-
-impl Into<LatLng> for [f64; 2] {
-    fn into(self) -> LatLng {
-        LatLng::new(self[0], self[1])
-    }
-}
-
+#[allow(clippy::from_over_into)]
 impl Into<LatLngBounds> for (LatLng, LatLng) {
     fn into(self) -> LatLngBounds {
         LatLngBounds::new(&self.0, &self.1)
     }
 }
 
-pub fn to_lat_lng_array<T: Into<LatLng> + Copy>(lat_lngs: &[T]) -> Array {
+pub fn to_lat_lng_array<T: Into<LatLng> + Clone>(lat_lngs: &[T]) -> Array {
     let array = Array::new();
-    for &lat_lng in lat_lngs {
+    for lat_lng in lat_lngs.iter().cloned() {
         array.push(&lat_lng.into());
     }
     array
@@ -230,6 +238,12 @@ pub fn to_lat_lng_array<T: Into<LatLng> + Copy>(lat_lngs: &[T]) -> Array {
 
 impl From<(u32, u32)> for Point {
     fn from((x, y): (u32, u32)) -> Point {
+        Point::new(x as f64, y as f64)
+    }
+}
+
+impl From<(f64, f64)> for Point {
+    fn from((x, y): (f64, f64)) -> Point {
         Point::new(x, y)
     }
 }

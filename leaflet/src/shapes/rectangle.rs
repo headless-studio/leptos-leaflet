@@ -1,6 +1,7 @@
 use wasm_bindgen::prelude::*;
 
-use crate::{LatLngBounds, Polygon, PolylineOptions};
+use crate::evented::{LeafletEventHandler, MouseEvents, PopupEvents, TooltipEvents};
+use crate::{Evented, LatLngBounds, LayerEvents, Polygon, PolylineOptions};
 
 #[wasm_bindgen]
 extern "C" {
@@ -19,3 +20,14 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn setBounds(this: &Rectangle, bounds: &LatLngBounds) -> Rectangle;
 }
+
+impl LeafletEventHandler for Rectangle {
+    fn on(&self, event: &str, callback: &JsValue) {
+        self.unchecked_ref::<Evented>().on(event, callback);
+    }
+}
+
+impl MouseEvents for Rectangle {}
+impl LayerEvents for Rectangle {}
+impl PopupEvents for Rectangle {}
+impl TooltipEvents for Rectangle {}

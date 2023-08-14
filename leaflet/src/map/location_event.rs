@@ -1,12 +1,12 @@
-use wasm_bindgen::prelude::*;
 use crate::{Event, LatLng, LatLngBounds};
+use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen (extends = Event, js_name = LocationEvent)]
     #[derive(Debug, Clone, Eq, PartialEq)]
     pub type LocationEvent;
-    
+
     #[wasm_bindgen(constructor)]
     pub fn new() -> LocationEvent;
 

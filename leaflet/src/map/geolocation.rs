@@ -1,7 +1,7 @@
 use js_sys::{Object, Reflect};
 use wasm_bindgen::prelude::*;
 
-use crate::{Map, object_constructor};
+use crate::{object_constructor, Map};
 
 #[wasm_bindgen]
 extern "C" {

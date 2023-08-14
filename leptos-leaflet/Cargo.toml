@@ -1,0 +1,26 @@
+[package]
+name = "leptos-leaflet"
+version = "0.6.1-beta"
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+js-sys.workspace = true
+leaflet.workspace = true
+leptos = { workspace = true }
+leptos_meta = { workspace = true }
+getrandom = { workspace = true, features = ["js"] }
+paste.workspace = true
+rand.workspace = true
+regex.workspace = true
+wasm-bindgen = { workspace = true, features = ["serde-serialize"] }
+web-sys = { workspace = true, features = [
+    "console",
+    "HtmlElement",
+    "HtmlDivElement",
+] }
+
+[features]
+hydrate = ["leptos/hydrate", "leptos_meta/hydrate"]
+csr = ["leptos/csr", "leptos_meta/csr"]
+ssr = ["leptos/ssr", "leptos_meta/ssr"]

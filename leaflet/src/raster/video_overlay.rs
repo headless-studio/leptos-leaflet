@@ -1,5 +1,4 @@
-﻿use std::ops::DerefMut;
-use crate::{object_constructor, object_property_set, LatLngBounds, ImageOverlay, Layer};
+use crate::{object_constructor, object_property_set, ImageOverlay, LatLngBounds, Layer};
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
 
@@ -52,8 +51,8 @@ impl Default for VideoOverlayOptions {
     }
 }
 
-impl Into<Layer> for VideoOverlay {
-    fn into(self) -> Layer {
-        self.unchecked_into()
+impl From<VideoOverlay> for Layer {
+    fn from(value: VideoOverlay) -> Self {
+        value.unchecked_into()
     }
 }
