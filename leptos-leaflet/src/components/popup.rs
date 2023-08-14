@@ -7,7 +7,6 @@ use wasm_bindgen::prelude::*;
 
 #[component]
 pub fn Popup(
-    cx: Scope,
     #[prop(into, optional)] position: MaybeSignal<Position>,
     #[prop(into, optional)] pane: Option<MaybeSignal<String>>,
     #[prop(into, optional)] offset: Option<MaybeSignal<(u32, u32)>>,
@@ -25,14 +24,14 @@ pub fn Popup(
     #[prop(into, optional)] class_name: Option<MaybeSignal<String>>,
     children: Children,
 ) -> impl IntoView {
-    let map_context = use_context::<LeafletMapContext>(cx).expect("Map context not found");
-    let overlay_context = use_context::<LeafletOverlayContainerContext>(cx);
+    let map_context = use_context::<LeafletMapContext>().expect("Map context not found");
+    let overlay_context = use_context::<LeafletOverlayContainerContext>();
 
     // Render popup content to a html element
-    let content = create_node_ref::<Div>(cx);
-    // let content = view! {cx, <div>{children(cx)}</div>};
-    create_effect(cx, move |_| {
-        let inner_content = content.clone();
+    let content = create_node_ref::<Div>();
+
+    create_effect(move |_| {
+        let inner_content = content;
         let mut options = leaflet::PopupOptions::default();
         if let Some(pane) = &pane {
             options.pane(&pane.get_untracked());
@@ -90,21 +89,21 @@ pub fn Popup(
                 let html_view: &JsValue = content.unchecked_ref();
                 popup.setContent(html_view);
                 marker.bindPopup(&popup);
-                on_cleanup(cx, move || {
+                on_cleanup(move || {
                     popup.remove();
                 });
             }
         } else if let Some(map) = map_context.map() {
-            let popup = leaflet::Popup::newWithLatLng(&position().into(), &options);
+            let popup = leaflet::Popup::newWithLatLng(&position.get_untracked().into(), &options);
             let content = inner_content.get_untracked().expect("content ref");
             let html_view: &JsValue = content.unchecked_ref();
             popup.setContent(html_view);
             popup.openOn(&map);
-            on_cleanup(cx, move || {
+            on_cleanup(move || {
                 popup.remove();
             });
         }
     });
 
-    view! {cx, <div style="visibility:collapse"><div _ref=content>{children(cx)}</div></div> }
+    view! { <div style="visibility:collapse"><div _ref=content>{children()}</div></div> }
 }

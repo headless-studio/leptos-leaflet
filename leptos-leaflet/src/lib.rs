@@ -1,4 +1,6 @@
 mod components;
+pub(crate) mod core;
+
 pub use components::*;
 
 /// Leaflet re-exports

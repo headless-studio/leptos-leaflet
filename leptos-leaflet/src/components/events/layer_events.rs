@@ -1,5 +1,5 @@
 use crate::leaflet_event;
-use leaflet::{Event, PopupEvent};
+use leaflet::Event;
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -29,13 +29,5 @@ impl LayerEvents {
     }
 }
 
-leaflet_event!(
-    LayerEvents,
-    on_add,
-    Event
-);
-leaflet_event!(
-    LayerEvents,
-    on_remove,
-    Event
-);
+leaflet_event!(LayerEvents, on_add, Event);
+leaflet_event!(LayerEvents, on_remove, Event);

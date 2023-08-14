@@ -37,6 +37,7 @@ impl PathOptions {
     object_property_set!(stroke, bool);
     object_property_set!(color, &str);
     object_property_set!(weight, f64);
+    object_property_set!(interactive, bool);
     object_property_set!(opacity, f64);
     object_property_set!(line_cap, lineCap, &str);
     object_property_set!(line_join, lineJoin, &str);

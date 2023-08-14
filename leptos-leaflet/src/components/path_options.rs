@@ -27,6 +27,18 @@ impl Display for LineJoin {
     }
 }
 
+impl AsRef<str> for LineJoin {
+    fn as_ref(&self) -> &str {
+        match self {
+            LineJoin::Arcs => "arcs",
+            LineJoin::Bevel => "bevel",
+            LineJoin::Miter => "miter",
+            LineJoin::MiterClip => "miter-clip",
+            LineJoin::Round => "round",
+        }
+    }
+}
+
 #[derive(Debug, Copy, Clone)]
 pub enum LineCap {
     Butt,
@@ -50,6 +62,16 @@ impl Display for LineCap {
     }
 }
 
+impl AsRef<str> for LineCap {
+    fn as_ref(&self) -> &str {
+        match self {
+            LineCap::Butt => "butt",
+            LineCap::Round => "round",
+            LineCap::Square => "square",
+        }
+    }
+}
+
 #[derive(Debug, Copy, Clone)]
 pub enum FillRule {
     NonZero,
@@ -67,6 +89,15 @@ impl Display for FillRule {
         match self {
             FillRule::NonZero => write!(f, "nonzero"),
             FillRule::EvenOdd => write!(f, "evenodd"),
+        }
+    }
+}
+
+impl AsRef<str> for FillRule {
+    fn as_ref(&self) -> &str {
+        match self {
+            FillRule::NonZero => "nonzero",
+            FillRule::EvenOdd => "evenodd",
         }
     }
 }

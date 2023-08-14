@@ -49,38 +49,10 @@ impl MouseEvents {
     }
 }
 
-leaflet_event!(
-    MouseEvents,
-    on_click,
-    MouseEvent
-);
-leaflet_event!(
-    MouseEvents,
-    on_double_click,
-    MouseEvent
-);
-leaflet_event!(
-    MouseEvents,
-    on_mouse_down,
-    MouseEvent
-);
-leaflet_event!(
-    MouseEvents,
-    on_mouse_up,
-    MouseEvent
-);
-leaflet_event!(
-    MouseEvents,
-    on_mouse_over,
-    MouseEvent
-);
-leaflet_event!(
-    MouseEvents,
-    on_mouse_out,
-    MouseEvent
-);
-leaflet_event!(
-    MouseEvents,
-    on_context_menu,
-    MouseEvent
-);
+leaflet_event!(MouseEvents, on_click, MouseEvent);
+leaflet_event!(MouseEvents, on_double_click, MouseEvent);
+leaflet_event!(MouseEvents, on_mouse_down, MouseEvent);
+leaflet_event!(MouseEvents, on_mouse_up, MouseEvent);
+leaflet_event!(MouseEvents, on_mouse_over, MouseEvent);
+leaflet_event!(MouseEvents, on_mouse_out, MouseEvent);
+leaflet_event!(MouseEvents, on_context_menu, MouseEvent);

@@ -52,8 +52,8 @@ impl Default for VideoOverlayOptions {
     }
 }
 
-impl Into<Layer> for VideoOverlay {
-    fn into(self) -> Layer {
-        self.unchecked_into()
+impl From<VideoOverlay> for Layer {
+    fn from(value: VideoOverlay) -> Self {
+        value.unchecked_into()
     }
 }

@@ -1,5 +1,5 @@
 use crate::leaflet_event;
-use leaflet::{PopupEvent, TooltipEvent};
+use leaflet::TooltipEvent;
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -29,13 +29,5 @@ impl TooltipEvents {
     }
 }
 
-leaflet_event!(
-    TooltipEvents,
-    on_tooltip_open,
-    TooltipEvent
-);
-leaflet_event!(
-    TooltipEvents,
-    on_tooltip_close,
-    TooltipEvent
-);
+leaflet_event!(TooltipEvents, on_tooltip_open, TooltipEvent);
+leaflet_event!(TooltipEvents, on_tooltip_close, TooltipEvent);

@@ -1,6 +1,12 @@
+use std::borrow::Cow;
+
 use crate::map::{DragEndEvent, TooltipEvent};
-use crate::{Circle, Event, MouseEvent, PopupEvent};
+use crate::{
+    Circle, CircleMarker, Event, Layer, Map, Marker, MouseEvent, Path, Polygon, Polyline,
+    PopupEvent,
+};
 use js_sys::Object;
+use wasm_bindgen::convert::FromWasmAbi;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -19,6 +25,9 @@ extern "C" {
     /// [`off`](https://leafletjs.com/reference.html#evented-off)
     #[wasm_bindgen(method)]
     pub fn off(this: &Evented, kind: &str, handler: &JsValue) -> Evented;
+
+    #[wasm_bindgen(method, js_name = off)]
+    pub fn offByName(this: &Evented, kind: &str) -> Evented;
 
     /// Removes all event listeners.
     ///
@@ -104,6 +113,148 @@ extern "C" {
     /// [`hasEventListeners`](https://leafletjs.com/reference.html#evented-haseventlisteners)
     #[wasm_bindgen(method)]
     pub fn hasEventListeners(this: &Evented, kind: &str, propagate: Option<bool>) -> bool;
+}
+
+pub trait FromLeafletEvent: FromWasmAbi {
+    type EventType;
+    fn from_leaflet_event(event: Self::EventType) -> Self;
+}
+
+impl FromLeafletEvent for Event {
+    type EventType = Event;
+    fn from_leaflet_event(event: Self::EventType) -> Self {
+        event
+    }
+}
+
+impl FromLeafletEvent for MouseEvent {
+    type EventType = Event;
+    fn from_leaflet_event(event: Self::EventType) -> Self {
+        event.unchecked_into()
+    }
+}
+
+impl FromLeafletEvent for DragEndEvent {
+    type EventType = Event;
+    fn from_leaflet_event(event: Self::EventType) -> Self {
+        event.unchecked_into()
+    }
+}
+
+impl FromLeafletEvent for TooltipEvent {
+    type EventType = Event;
+    fn from_leaflet_event(event: Self::EventType) -> Self {
+        event.unchecked_into()
+    }
+}
+
+pub struct EventedHandle<T: FromLeafletEvent> {
+    target: Evented,
+    event_type: Cow<'static, str>,
+    callback: Closure<dyn FnMut(T)>,
+}
+
+impl<T: FromLeafletEvent> EventedHandle<T> {
+    pub fn callback(&self) -> &Closure<dyn FnMut(T)> {
+        &self.callback
+    }
+}
+
+impl<T: FromLeafletEvent> Drop for EventedHandle<T> {
+    fn drop(&mut self) {
+        self.target
+            .off(&self.event_type, self.callback.as_ref().unchecked_ref());
+    }
+}
+
+impl Evented {
+    pub fn on_leaflet_event<E, F, S, T>(target: &T, event: S, callback: F) -> EventedHandle<E>
+    where
+        T: EventedTarget,
+        E: FromLeafletEvent + 'static,
+        F: FnMut(E) + 'static,
+        S: Into<Cow<'static, str>>,
+    {
+        let callback = Closure::wrap(Box::new(callback) as Box<dyn FnMut(E)>);
+        let event_type = event.into();
+        let target = target.as_evented();
+        target.on(&event_type, callback.as_ref().unchecked_ref());
+        EventedHandle {
+            target,
+            event_type,
+            callback,
+        }
+    }
+}
+
+pub trait EventedTarget {
+    fn as_evented(&self) -> Evented;
+}
+
+impl EventedTarget for Layer {
+    fn as_evented(&self) -> Evented {
+        self.unchecked_ref::<Evented>().clone()
+    }
+}
+
+impl EventedTarget for &Layer {
+    fn as_evented(&self) -> Evented {
+        self.unchecked_ref::<Evented>().clone()
+    }
+}
+
+impl EventedTarget for &Evented {
+    fn as_evented(&self) -> Evented {
+        self.unchecked_ref::<Evented>().clone()
+    }
+}
+
+impl EventedTarget for &Map {
+    fn as_evented(&self) -> Evented {
+        self.unchecked_ref::<Evented>().clone()
+    }
+}
+
+impl EventedTarget for Marker {
+    fn as_evented(&self) -> Evented {
+        self.unchecked_ref::<Evented>().clone()
+    }
+}
+
+impl EventedTarget for &Marker {
+    fn as_evented(&self) -> Evented {
+        self.unchecked_ref::<Evented>().clone()
+    }
+}
+
+impl EventedTarget for &Path {
+    fn as_evented(&self) -> Evented {
+        self.unchecked_ref::<Evented>().clone()
+    }
+}
+
+impl EventedTarget for &Polygon {
+    fn as_evented(&self) -> Evented {
+        self.unchecked_ref::<Evented>().clone()
+    }
+}
+
+impl EventedTarget for &Polyline {
+    fn as_evented(&self) -> Evented {
+        self.unchecked_ref::<Evented>().clone()
+    }
+}
+
+impl EventedTarget for &Circle {
+    fn as_evented(&self) -> Evented {
+        self.unchecked_ref::<Evented>().clone()
+    }
+}
+
+impl EventedTarget for &CircleMarker {
+    fn as_evented(&self) -> Evented {
+        self.unchecked_ref::<Evented>().clone()
+    }
 }
 
 pub trait LeafletEventHandler {

@@ -1,4 +1,0 @@
-[build]
-
-[watch]
-watch = ["../../leaflet", "../../leptos-leaflet", "./"]

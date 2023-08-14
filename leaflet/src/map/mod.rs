@@ -217,6 +217,33 @@ extern "C" {
 
     #[wasm_bindgen(method)]
     pub fn stop(this: &Map) -> Map;
+
+    #[wasm_bindgen(method)]
+    pub fn project(this: &Map, point: &LatLng) -> Point;
+
+    #[wasm_bindgen(method)]
+    pub fn unproject(this: &Map, point: &Point) -> LatLng;
+
+    #[wasm_bindgen(method, js_name = project)]
+    pub fn project_with_zoom(this: &Map, point: &LatLng, zoom: f64) -> Point;
+
+    #[wasm_bindgen(method, js_name = unproject)]
+    pub fn unproject_with_zoom(this: &Map, point: &Point, zoom: f64) -> LatLng;
+
+    #[wasm_bindgen(method)]
+    pub fn distance(this: &Map, latlng1: &LatLng, latlng2: &LatLng) -> f64;
+
+    #[wasm_bindgen(method)]
+    pub fn latLngToContainerPoint(this: &Map, latlng: &LatLng) -> Point;
+
+    #[wasm_bindgen(method)]
+    pub fn containerPointToLatLng(this: &Map, point: &Point) -> LatLng;
+
+    #[wasm_bindgen(method)]
+    pub fn layerPointToLatLng(this: &Map, point: &Point) -> LatLng;
+
+    #[wasm_bindgen(method)]
+    pub fn latLngToLayerPoint(this: &Map, latlng: &LatLng) -> Point;
 }
 
 impl MapOptions {

@@ -13,7 +13,6 @@ mod tile_layer;
 mod tooltip;
 mod video_overlay;
 
-use leptos::{create_effect, Scope};
 pub use circle::Circle;
 pub use context::*;
 pub use events::{
@@ -32,13 +31,12 @@ pub use tooltip::Tooltip;
 
 #[macro_export]
 macro_rules! effect_update_on_change {
-    ($cx:ident, $class:ty, $option_class:ty, $name:ident) => {
-        create_effect($cx, move |_| {
+    ($class:ty, $option_class:ty, $name:ident) => {
+        create_effect(move |_| {
+            use leaflet;
             let overlay_context =
-                leptos::use_context::<LeafletOverlayContainerContext>($cx).expect("overlay context");
-            if let (Some(layer), Some(setting)) =
-                (overlay_context.container::<$class>(), $name)
-            {
+                leptos::use_context::<LeafletOverlayContainerContext>().expect("overlay context");
+            if let (Some(layer), Some(setting)) = (overlay_context.container::<$class>(), $name) {
                 let mut options = <$option_class>::new();
                 options.$name(setting.get());
                 layer.setStyle(&options);
@@ -49,13 +47,12 @@ macro_rules! effect_update_on_change {
 
 #[macro_export]
 macro_rules! effect_update_on_change_ref {
-    ($cx:ident, $class:ty, $option_class:ty, $name:ident, $value:expr) => {
-        create_effect($cx, move |_| {
+    ($class:ty, $option_class:ty, $name:ident, $value:expr) => {
+        create_effect(move |_| {
+            use leaflet;
             let overlay_context =
-                leptos::use_context::<LeafletOverlayContainerContext>($cx).expect("overlay context");
-            if let (Some(layer), Some(setting)) =
-                (overlay_context.container::<$class>(), &$value)
-            {
+                leptos::use_context::<LeafletOverlayContainerContext>().expect("overlay context");
+            if let (Some(layer), Some(setting)) = (overlay_context.container::<$class>(), &$value) {
                 let mut options = <$option_class>::new();
                 options.$name(&setting.get());
                 layer.setStyle(&options);
@@ -87,6 +84,24 @@ macro_rules! setup_layer_option_str {
     ($name:ident, $options:ident) => {
         if let Some($name) = &$name {
             $options.$name(&format!("{}", &$name.get_untracked()));
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! setup_layer_leaflet_option {
+    ($name:ident, $options:ident) => {
+        if let Some($name) = $name.get_untracked() {
+            $options.$name($name);
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! setup_layer_leaflet_option_ref {
+    ($name:ident, $options:ident) => {
+        if let Some($name) = $name.get_untracked() {
+            $options.$name($name.as_ref());
         }
     };
 }

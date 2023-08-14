@@ -1,4 +1,3 @@
-use crate::{FillRule, LineCap, LineJoin};
 use leaflet::LatLng;
 
 #[derive(Debug, Default, Clone, Copy, PartialEq)]
@@ -44,16 +43,38 @@ impl Position {
     #[inline]
     /// Check if the position is inside a polygon
     pub fn inside_polygon(&self, polygon: &[Position]) -> bool {
-        winding_number(polygon, self) > 0
+        let x = self.lat;
+        let y = self.lng;
+
+        let mut inside = false;
+        for i in 0..polygon.len() {
+            let j = if i == 0 { polygon.len() - 1 } else { i - 1 };
+            let xi = polygon[i].lat;
+            let yi = polygon[i].lng;
+            let xj = polygon[j].lat;
+            let yj = polygon[j].lng;
+
+            let intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+            if intersect {
+                inside = !inside;
+            }
+        }
+
+        inside
     }
 
     /// Distance between two positions using pytagore theorem
     pub fn distance(&self, other: &Self) -> f64 {
         ((self.lat - other.lat).powi(2) + (self.lng - other.lng).powi(2)).sqrt()
     }
+
+    pub fn is_zero(&self) -> bool {
+        self.lat.abs() <= f64::EPSILON && self.lng.abs() <= f64::EPSILON
+    }
 }
 
 /// Winding number of a polygon
+#[allow(unused)]
 fn winding_number(poly: &[Position], point: &Position) -> i32 {
     let mut wn = 0;
     let n = poly.len();
@@ -71,12 +92,19 @@ fn winding_number(poly: &[Position], point: &Position) -> i32 {
 }
 
 /// Check if the point is on the left of the line
+#[allow(unused)]
 fn is_left(p0: &Position, p1: &Position, p2: &Position) -> f64 {
     (p1.lat - p0.lat) * (p2.lng - p0.lng) - (p2.lat - p0.lat) * (p1.lng - p0.lng)
 }
 
 impl From<Position> for LatLng {
     fn from(value: Position) -> Self {
+        LatLng::new(value.lat, value.lng)
+    }
+}
+
+impl From<&Position> for LatLng {
+    fn from(value: &Position) -> Self {
         LatLng::new(value.lat, value.lng)
     }
 }

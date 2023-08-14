@@ -1,7 +1,4 @@
-use leptos::{
-    create_rw_signal, log, provide_context, use_context, ReadSignal, RwSignal, Scope, SignalGet,
-    SignalGetUntracked, SignalSet,
-};
+use leptos::*;
 use wasm_bindgen::JsCast;
 
 #[derive(Debug, Clone, Copy)]
@@ -10,10 +7,9 @@ pub struct LeafletMapContext {
 }
 
 impl LeafletMapContext {
-    pub fn new(cx: Scope) -> Self {
-        log!("Creating map context");
+    pub fn new() -> Self {
         Self {
-            map: create_rw_signal(cx, None),
+            map: create_rw_signal(None),
         }
     }
 
@@ -28,38 +24,49 @@ impl LeafletMapContext {
     pub fn map_signal(&self) -> ReadSignal<Option<leaflet::Map>> {
         self.map.read_only()
     }
+
+    pub fn add_layer<L: Into<leaflet::Layer> + Clone>(&self, layer: &L) {
+        let map = self.map.get_untracked().expect("Map to be available");
+        let layer: leaflet::Layer = layer.to_owned().into();
+        layer.addTo(&map);
+    }
+
+    pub fn remove_layer<L: Into<leaflet::Layer> + Clone>(&self, layer: &L) {
+        let map = self.map.get_untracked().expect("Map to be available");
+        let layer: leaflet::Layer = layer.to_owned().into();
+        layer.removeFrom(&map);
+    }
 }
 
-pub fn provide_leaflet_context(cx: Scope) {
-    provide_context(cx, LeafletMapContext::new(cx));
+pub fn provide_leaflet_context() -> LeafletMapContext {
+    let context = LeafletMapContext::new();
+    provide_context(context);
+    context
 }
 
-pub fn use_leaflet_context(cx: Scope) -> Option<LeafletMapContext> {
-    use_context::<LeafletMapContext>(cx)
+pub fn use_leaflet_context() -> Option<LeafletMapContext> {
+    use_context::<LeafletMapContext>()
 }
 
-pub fn extend_context_with_overlay(cx: Scope) -> LeafletOverlayContainerContext {
-    let overlay_context = LeafletOverlayContainerContext::new(cx);
-    provide_context(cx, overlay_context.clone());
+pub fn extend_context_with_overlay() -> LeafletOverlayContainerContext {
+    let overlay_context = LeafletOverlayContainerContext::new();
+    provide_context(overlay_context);
     overlay_context
 }
 
-pub fn use_overlay_context(cx: Scope) -> Option<LeafletOverlayContainerContext> {
-    use_context::<LeafletOverlayContainerContext>(cx)
+pub fn use_overlay_context() -> Option<LeafletOverlayContainerContext> {
+    use_context::<LeafletOverlayContainerContext>()
 }
 
-pub fn use_overlay_context_layer<T>(cx: Scope) -> Option<T>
+pub fn use_overlay_context_layer<T>() -> Option<T>
 where
     T: Into<leaflet::Layer> + Clone + JsCast,
 {
-    use_context::<LeafletOverlayContainerContext>(cx)
-        .expect("overlay context")
-        .container::<T>()
+    expect_context::<LeafletOverlayContainerContext>().container::<T>()
 }
 
-pub fn update_overlay_context<C: Into<leaflet::Layer> + Clone>(cx: Scope, layer: &C) {
-    let overlay_context =
-        use_context::<LeafletOverlayContainerContext>(cx).expect("overlay context");
+pub fn update_overlay_context<C: Into<leaflet::Layer> + Clone>(layer: &C) {
+    let overlay_context = use_context::<LeafletOverlayContainerContext>().expect("overlay context");
     overlay_context.set_container(layer);
 }
 
@@ -69,9 +76,9 @@ pub struct LeafletOverlayContainerContext {
 }
 
 impl LeafletOverlayContainerContext {
-    pub fn new(cx: Scope) -> Self {
+    pub fn new() -> Self {
         Self {
-            container: create_rw_signal(cx, None),
+            container: create_rw_signal(None),
         }
     }
 

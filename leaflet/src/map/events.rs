@@ -1,6 +1,6 @@
-use crate::{Event, LatLng, LayerEvents, LocationEvent, Point, Popup, PopupEvents, Tooltip, TooltipEvents};
-use wasm_bindgen::prelude::*;
 use crate::evented::LeafletEventHandler;
+use crate::{Event, LatLng, LocationEvent, Point, Popup, PopupEvents, Tooltip, TooltipEvents};
+use wasm_bindgen::prelude::*;
 
 use super::Map;
 
@@ -33,10 +33,13 @@ extern "C" {
     pub fn setContainerPoint(this: &MouseEvent, value: &Point) -> MouseEvent;
 
     #[wasm_bindgen(method, getter, js_name = originalEvent)]
-    pub fn originalEvent(this: &MouseEvent) -> JsValue;
+    pub fn originalEvent(this: &MouseEvent) -> web_sys::MouseEvent;
 
     #[wasm_bindgen(method, setter, js_name = originalEvent)]
-    pub fn setOriginalEvent(this: &MouseEvent, value: &JsValue) -> crate::map::events::MouseEvent;
+    pub fn setOriginalEvent(
+        this: &MouseEvent,
+        value: &web_sys::MouseEvent,
+    ) -> crate::map::events::MouseEvent;
 
     /// Error Event
     #[wasm_bindgen (extends = Event, js_name = ErrorEvent)]
@@ -197,13 +200,53 @@ impl Map {
         let closure = Closure::wrap(callback);
         self.on("popupclose", &closure.into_js_value());
     }
+
+    pub fn on_mouse_click(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("click", &closure.into_js_value());
+    }
+
+    pub fn on_mouse_double_click(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("dblclick", &closure.into_js_value());
+    }
+
+    pub fn on_mouse_context_menu(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("contextmenu", &closure.into_js_value());
+    }
+
+    pub fn on_mouse_move(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("mousemove", &closure.into_js_value());
+    }
+
+    pub fn on_mouse_over(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("mouseover", &closure.into_js_value());
+    }
+
+    pub fn on_mouse_out(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("mouseout", &closure.into_js_value());
+    }
+
+    pub fn on_mouse_down(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("mousedown", &closure.into_js_value());
+    }
+
+    pub fn on_mouse_up(&self, callback: Box<dyn Fn(MouseEvent)>) {
+        let closure = Closure::wrap(callback);
+        self.on("mouseup", &closure.into_js_value());
+    }
 }
 
-impl LeafletEventHandler for Map{
+impl LeafletEventHandler for Map {
     fn on(&self, event: &str, callback: &JsValue) {
         self.obj.on(event, callback);
     }
 }
 
-impl TooltipEvents for Map{}
-impl PopupEvents for Map{}
+impl TooltipEvents for Map {}
+impl PopupEvents for Map {}

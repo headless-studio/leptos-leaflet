@@ -29,13 +29,5 @@ impl PopupEvents {
     }
 }
 
-leaflet_event!(
-    PopupEvents,
-    on_popup_open,
-    PopupEvent
-);
-leaflet_event!(
-    PopupEvents,
-    on_popup_close,
-    PopupEvent
-);
+leaflet_event!(PopupEvents, on_popup_open, PopupEvent);
+leaflet_event!(PopupEvents, on_popup_close, PopupEvent);

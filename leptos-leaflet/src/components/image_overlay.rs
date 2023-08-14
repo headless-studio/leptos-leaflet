@@ -3,7 +3,6 @@ use leptos::*;
 
 #[component(transparent)]
 pub fn ImageOverlay(
-    cx: Scope,
     #[prop(into)] url: String,
     #[prop(into)] bounds: leaflet::LatLngBounds,
     #[prop(into, optional)] opacity: Option<MaybeSignal<f64>>,
@@ -18,8 +17,8 @@ pub fn ImageOverlay(
     #[prop(into, optional)] pane: Option<MaybeSignal<String>>,
     #[prop(into, optional)] attribution: Option<MaybeSignal<String>>,
 ) -> impl IntoView {
-    let map_context = use_context::<LeafletMapContext>(cx).expect("map context not found");
-    create_effect(cx, move |_| {
+    let map_context = use_context::<LeafletMapContext>().expect("map context not found");
+    create_effect(move |_| {
         if let Some(map) = map_context.map() {
             log!("Adding image layer: {}", url);
             let mut options = leaflet::ImageOverlayOptions::new();
@@ -59,7 +58,7 @@ pub fn ImageOverlay(
 
             let map_layer = leaflet::ImageOverlay::new_with_options(&url, &bounds, &options);
             map_layer.addTo(&map);
-            on_cleanup(cx, move || {
+            on_cleanup(move || {
                 map_layer.remove();
             });
         }

@@ -1,10 +1,9 @@
 use crate::evented::{
     DragEvents, LeafletEventHandler, MouseEvents, MoveEvents, PopupEvents, TooltipEvents,
 };
-use crate::map::{DragEndEvent, TooltipEvent};
 use crate::{
-    object_constructor, object_property_set, Event, Evented, Handler, Icon, LatLng, Layer,
-    LayerEvents, MouseEvent, Point, PopupEvent,
+    object_constructor, object_property_set, Evented, Handler, Icon, LatLng, Layer, LayerEvents,
+    Point,
 };
 use js_sys::Object;
 use wasm_bindgen::prelude::*;
@@ -16,7 +15,7 @@ extern "C" {
     pub type MarkerOptions;
 
     // Marker
-    #[derive(Debug, Clone)]
+    #[derive(Debug, Clone, PartialEq)]
     #[wasm_bindgen(extends = Layer)]
     pub type Marker;
 
@@ -47,6 +46,12 @@ extern "C" {
     /// ['dragging'](https://leafletjs.com/reference.html#marker-dragging)
     #[wasm_bindgen(method, getter)]
     pub fn dragging(this: &Marker) -> Handler;
+
+    #[wasm_bindgen(method)]
+    pub fn update(this: &Marker) -> Marker;
+
+    #[wasm_bindgen(method)]
+    pub fn setZIndexOffset(this: &Marker, offset: f64) -> Marker;
 }
 
 impl MarkerOptions {

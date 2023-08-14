@@ -1,110 +1,197 @@
 use leptos::*;
 
-use leaflet::{PolylineOptions, to_lat_lng_array};
+use leaflet::{to_lat_lng_array, PolylineOptions};
 
-use crate::{effect_update_on_change, effect_update_on_change_ref, LayerEvents, MouseEvents, PopupEvents, setup_layer_option, setup_layer_option_ref, setup_layer_option_str, TooltipEvents};
 use crate::components::context::{
-    extend_context_with_overlay, LeafletMapContext, LeafletOverlayContainerContext,
-    update_overlay_context,
+    extend_context_with_overlay, update_overlay_context, LeafletMapContext,
 };
 use crate::components::path_options::{FillRule, LineCap, LineJoin};
 use crate::components::position::Position;
+use crate::core::LeafletMaybeSignal;
+use crate::{
+    setup_layer_leaflet_option, setup_layer_leaflet_option_ref, LayerEvents, MouseEvents,
+    PopupEvents, TooltipEvents,
+};
 
 #[component(transparent)]
 pub fn Polygon(
-    cx: Scope,
     #[prop(into)] positions: MaybeSignal<Vec<Position>>,
-    #[prop(into, optional)] stroke: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] color: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] weight: Option<MaybeSignal<f64>>,
-    #[prop(into, optional)] opacity: Option<MaybeSignal<f64>>,
-    #[prop(into, optional)] line_cap: Option<MaybeSignal<LineCap>>,
-    #[prop(into, optional)] line_join: Option<MaybeSignal<LineJoin>>,
-    #[prop(into, optional)] dash_array: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] dash_offset: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] fill: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] fill_color: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] fill_opacity: Option<MaybeSignal<f64>>,
-    #[prop(into, optional)] fill_rule: Option<MaybeSignal<FillRule>>,
-    #[prop(into, optional)] bubbling_mouse_events: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] class_name: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] smooth_factor: Option<MaybeSignal<f64>>,
-    #[prop(into, optional)] no_clip: Option<MaybeSignal<bool>>,
+    #[prop(into, optional)] stroke: LeafletMaybeSignal<bool>,
+    #[prop(into, optional)] color: LeafletMaybeSignal<String>,
+    #[prop(into, optional)] weight: LeafletMaybeSignal<f64>,
+    #[prop(into, optional)] opacity: LeafletMaybeSignal<f64>,
+    #[prop(into, optional)] interactive: LeafletMaybeSignal<bool>,
+    #[prop(into, optional)] line_cap: LeafletMaybeSignal<LineCap>,
+    #[prop(into, optional)] line_join: LeafletMaybeSignal<LineJoin>,
+    #[prop(into, optional)] dash_array: LeafletMaybeSignal<String>,
+    #[prop(into, optional)] dash_offset: LeafletMaybeSignal<String>,
+    #[prop(into, optional)] fill: LeafletMaybeSignal<bool>,
+    #[prop(into, optional)] fill_color: LeafletMaybeSignal<String>,
+    #[prop(into, optional)] fill_opacity: LeafletMaybeSignal<f64>,
+    #[prop(into, optional)] fill_rule: LeafletMaybeSignal<FillRule>,
+    #[prop(into, optional)] bubbling_mouse_events: LeafletMaybeSignal<bool>,
+    #[prop(into, optional)] class_name: LeafletMaybeSignal<String>,
+    #[prop(into, optional)] smooth_factor: LeafletMaybeSignal<f64>,
+    #[prop(into, optional)] no_clip: LeafletMaybeSignal<bool>,
     #[prop(into, optional)] mouse_events: MouseEvents,
     #[prop(into, optional)] layer_events: LayerEvents,
     #[prop(into, optional)] popup_events: PopupEvents,
     #[prop(into, optional)] tooltip_events: TooltipEvents,
-    #[prop(optional)] children: Option<Children>,
+    #[prop(optional)] children: Option<ChildrenFn>,
 ) -> impl IntoView {
-    let (child, _) = cx.run_child_scope(|cx| {
-        extend_context_with_overlay(cx);
+    extend_context_with_overlay();
+    let overlay = store_value(None::<leaflet::Polygon>);
 
-        let positions_for_effect = positions.clone();
-        let color_clone = color.clone();
-        let fill_color_clone = fill_color.clone();
-        // This effect just setups the polygon when we get a map
-        create_effect(cx, move |_| {
-            if let Some(map) = use_context::<LeafletMapContext>(cx)
-                .expect("map context")
-                .map()
-            {
-                let lat_lngs = to_lat_lng_array(&positions.get_untracked());
-                let mut options = PolylineOptions::new();
-                setup_layer_option!(stroke, options);
-                setup_layer_option_ref!(color, options);
-                setup_layer_option!(weight, options);
-                setup_layer_option!(opacity, options);
-                setup_layer_option_str!(line_cap, options);
-                setup_layer_option_str!(line_join, options);
-                setup_layer_option_ref!(dash_array, options);
-                setup_layer_option_ref!(dash_offset, options);
-                setup_layer_option!(fill, options);
-                setup_layer_option_ref!(fill_color, options);
-                setup_layer_option!(fill_opacity, options);
-                setup_layer_option_str!(fill_rule, options);
-                setup_layer_option!(bubbling_mouse_events, options);
-                setup_layer_option_str!(class_name, options);
-                setup_layer_option!(smooth_factor, options);
-                setup_layer_option!(no_clip, options);
+    let positions_for_effect = positions.clone();
+    let color_clone = color.clone();
+    let fill_color_clone = fill_color.clone();
+    // This effect just setups the polygon when we get a map
+    create_effect(move |_| {
+        if let Some(map) = use_context::<LeafletMapContext>()
+            .expect("map context")
+            .map()
+        {
+            let lat_lngs = to_lat_lng_array(&positions.get_untracked());
+            let mut options = PolylineOptions::new();
+            setup_layer_leaflet_option!(stroke, options);
+            setup_layer_leaflet_option_ref!(color, options);
+            setup_layer_leaflet_option!(weight, options);
+            setup_layer_leaflet_option!(opacity, options);
+            setup_layer_leaflet_option!(interactive, options);
+            setup_layer_leaflet_option_ref!(line_cap, options);
+            setup_layer_leaflet_option_ref!(line_join, options);
+            setup_layer_leaflet_option_ref!(dash_array, options);
+            setup_layer_leaflet_option_ref!(dash_offset, options);
+            setup_layer_leaflet_option!(fill, options);
+            setup_layer_leaflet_option_ref!(fill_color, options);
+            setup_layer_leaflet_option!(fill_opacity, options);
+            setup_layer_leaflet_option_ref!(fill_rule, options);
+            setup_layer_leaflet_option!(bubbling_mouse_events, options);
+            setup_layer_leaflet_option_ref!(class_name, options);
+            setup_layer_leaflet_option!(smooth_factor, options);
+            setup_layer_leaflet_option!(no_clip, options);
 
-                let polygon = leaflet::Polygon::new_with_options(&lat_lngs, &options);
+            let polygon = leaflet::Polygon::new_with_options(&lat_lngs, &options);
 
-                mouse_events.setup(&polygon);
-                layer_events.setup(&polygon);
-                popup_events.setup(&polygon);
-                tooltip_events.setup(&polygon);
+            mouse_events.setup(&polygon);
+            layer_events.setup(&polygon);
+            popup_events.setup(&polygon);
+            tooltip_events.setup(&polygon);
 
-                polygon.addTo(&map);
-                update_overlay_context(cx, &polygon);
-                on_cleanup(cx, move || {
-                    polygon.remove();
-                });
-                true
-            } else {
-                false
-            }
-        });
+            polygon.addTo(&map);
+            update_overlay_context(&polygon);
+            overlay.set_value(Some(polygon));
+        }
+    });
 
-        create_effect(cx, move |_| {
-            positions_for_effect.track();
-            if let Some(polygon) = use_context::<LeafletOverlayContainerContext>(cx)
-                .expect("overlay context")
-                .container::<leaflet::Polygon>()
-            {
-                let lat_lngs = to_lat_lng_array(&positions_for_effect());
+    let position_stop = watch(
+        move || positions_for_effect.get(),
+        move |pos, _, _| {
+            if let Some(polygon) = overlay.get_value() {
+                let lat_lngs = to_lat_lng_array(pos);
                 polygon.setLatLngs(&lat_lngs);
             }
-        });
+        },
+        false,
+    );
 
-        effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, stroke);
-        effect_update_on_change_ref!(cx, leaflet::Polygon, leaflet::PolylineOptions, color, color_clone);
-        effect_update_on_change_ref!(cx, leaflet::Polygon, leaflet::PolylineOptions, fill_color, fill_color_clone);
-        effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, opacity);
-        effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, fill_opacity);
-        effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, weight);
-        effect_update_on_change!(cx, leaflet::Polygon, leaflet::PolylineOptions, smooth_factor);
+    let stroke_stop = watch(
+        move || stroke.get(),
+        move |stroke, _, _| {
+            if let (Some(stroke), Some(overlay)) = (stroke, overlay.get_value()) {
+                let mut options = PolylineOptions::new();
+                options.stroke(*stroke);
+                overlay.setStyle(&options.into())
+            }
+        },
+        false,
+    );
 
-        children.map(|child| child(cx))
+    let color_stop = watch(
+        move || color_clone.get(),
+        move |color, _, _| {
+            if let (Some(color), Some(overlay)) = (color, overlay.get_value()) {
+                let mut options = PolylineOptions::new();
+                options.color(color);
+                overlay.setStyle(&options.into())
+            }
+        },
+        false,
+    );
+
+    let fill_color_stop = watch(
+        move || fill_color_clone.get(),
+        move |color, _, _| {
+            if let (Some(color), Some(overlay)) = (color, overlay.get_value()) {
+                let mut options = PolylineOptions::new();
+                options.fill_color(color);
+                overlay.setStyle(&options.into())
+            }
+        },
+        false,
+    );
+
+    let opacity_stop = watch(
+        move || opacity.get(),
+        move |opacity, _, _| {
+            if let (Some(opacity), Some(overlay)) = (opacity, overlay.get_value()) {
+                let mut options = PolylineOptions::new();
+                options.opacity(*opacity);
+                overlay.setStyle(&options.into())
+            }
+        },
+        false,
+    );
+
+    let fill_opacity_stop = watch(
+        move || fill_opacity.get(),
+        move |opacity, _, _| {
+            if let (Some(opacity), Some(overlay)) = (opacity, overlay.get_value()) {
+                let mut options = PolylineOptions::new();
+                options.fill_opacity(*opacity);
+                overlay.setStyle(&options.into())
+            }
+        },
+        false,
+    );
+
+    let weight_stop = watch(
+        move || weight.get(),
+        move |weight, _, _| {
+            if let (Some(weight), Some(overlay)) = (weight, overlay.get_value()) {
+                let mut options = PolylineOptions::new();
+                options.weight(*weight);
+                overlay.setStyle(&options.into())
+            }
+        },
+        false,
+    );
+
+    let smooth_factor_stop = watch(
+        move || smooth_factor.get(),
+        move |smooth_factor, _, _| {
+            if let (Some(smooth_factor), Some(overlay)) = (smooth_factor, overlay.get_value()) {
+                let mut options = PolylineOptions::new();
+                options.smooth_factor(*smooth_factor);
+                overlay.setStyle(&options.into())
+            }
+        },
+        false,
+    );
+
+    on_cleanup(move || {
+        position_stop();
+        stroke_stop();
+        color_stop();
+        fill_color_stop();
+        opacity_stop();
+        fill_opacity_stop();
+        weight_stop();
+        smooth_factor_stop();
+        if let Some(overlay) = overlay.get_value() {
+            overlay.remove();
+        }
     });
-    child
+
+    children.map(|child| child())
 }

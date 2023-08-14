@@ -3,7 +3,6 @@ use leptos::*;
 
 #[component(transparent)]
 pub fn VideoOverlay(
-    cx: Scope,
     #[prop(into)] url: String,
     #[prop(into)] bounds: leaflet::LatLngBounds,
     #[prop(into, optional)] opacity: Option<MaybeSignal<f64>>,
@@ -23,8 +22,8 @@ pub fn VideoOverlay(
     #[prop(into, optional)] muted: Option<MaybeSignal<bool>>,
     #[prop(into, optional)] plays_inline: Option<MaybeSignal<bool>>,
 ) -> impl IntoView {
-    let map_context = use_context::<LeafletMapContext>(cx).expect("map context not found");
-    create_effect(cx, move |_| {
+    let map_context = use_context::<LeafletMapContext>().expect("map context not found");
+    create_effect(move |_| {
         if let Some(map) = map_context.map() {
             log!("Adding image layer: {}", url);
             let mut options = leaflet::VideoOverlayOptions::new();
@@ -79,7 +78,7 @@ pub fn VideoOverlay(
 
             let map_layer = leaflet::VideoOverlay::new_with_options(&url, &bounds, &options);
             map_layer.addTo(&map);
-            on_cleanup(cx, move || {
+            on_cleanup(move || {
                 map_layer.remove();
             });
         }

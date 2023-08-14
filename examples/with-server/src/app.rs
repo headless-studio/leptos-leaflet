@@ -1,16 +1,15 @@
 use leptos::*;
+use leptos_leaflet::leaflet::{LocationEvent, Map};
 use leptos_leaflet::*;
 use leptos_meta::*;
 use leptos_router::*;
 
 #[component]
-pub fn App(cx: Scope) -> impl IntoView {
+pub fn App() -> impl IntoView {
     // Provides context that manages stylesheets, titles, meta tags, etc.
-    provide_meta_context(cx);
+    provide_meta_context();
 
     view! {
-        cx,
-
         // injects a stylesheet into the document <head>
         // id=leptos means cargo-leptos will hot-reload this stylesheet
         <Stylesheet href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
@@ -24,7 +23,7 @@ pub fn App(cx: Scope) -> impl IntoView {
         <Router>
             <main>
                 <Routes>
-                    <Route path="" view=|cx| view! { cx, <HomePage/> }/>
+                    <Route path="" view=HomePage/>
                 </Routes>
             </main>
         </Router>
@@ -33,11 +32,11 @@ pub fn App(cx: Scope) -> impl IntoView {
 
 /// Renders the home page of your application.
 #[component]
-fn HomePage(cx: Scope) -> impl IntoView {
-    let (marker_position, set_marker_position) = create_signal(cx, Position::new(51.49, -0.08));
-    let (map, set_map) = create_signal(cx, LeafletMap::new());
-    
-    create_effect(cx, move |_| {
+fn HomePage() -> impl IntoView {
+    let (marker_position, set_marker_position) = create_signal(Position::new(51.49, -0.08));
+    let (map, set_map) = create_signal(None::<Map>);
+
+    create_effect(move |_| {
         // set_interval_with_handle(
         //     move || {
         //         set_marker_position.update(|pos| {
@@ -49,10 +48,9 @@ fn HomePage(cx: Scope) -> impl IntoView {
         // )
         // .ok()
     });
-    
-    create_effect(cx, move |_| {
-        #[cfg(not(feature = "ssr"))]
-        if let LeafletMap { map: Some(map) } = map.get() {
+
+    create_effect(move |_| {
+        if let Some(map) = map.get() {
             log!("Map context {:?}", map);
         }
     });
@@ -63,8 +61,8 @@ fn HomePage(cx: Scope) -> impl IntoView {
 
     let events = MapEvents::new().location_found(location_found);
 
-    view! { cx,
-          <MapContainer style="height: 400px" center=position!(51.505, -0.09) zoom=13.0 set_view=true map=set_map locate=true watch=true events>
+    view! {
+          <MapContainer style="height: 400px" center=Position::new(51.505, -0.09) zoom=13.0 set_view=true map=set_map locate=true watch=true events>
               <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"/>
               <Marker position=marker_position >
                   <Popup>
