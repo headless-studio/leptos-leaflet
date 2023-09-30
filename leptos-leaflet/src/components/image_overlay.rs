@@ -1,5 +1,7 @@
 use crate::components::context::LeafletMapContext;
 use leptos::*;
+use leptos::logging::log;
+
 
 #[component(transparent)]
 pub fn ImageOverlay(
