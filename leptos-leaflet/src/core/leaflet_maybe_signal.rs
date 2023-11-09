@@ -23,18 +23,19 @@ impl<T> Default for LeafletMaybeSignal<T>
     }
 }
 
-impl<T> SignalGet<Option<T>> for LeafletMaybeSignal<T>
+impl<T> SignalGet for LeafletMaybeSignal<T>
     where
         T: Clone + 'static,
 {
-    fn get(&self) -> Option<T> {
+    type Value = Option<T>;
+    fn get(&self) -> Self::Value {
         match self {
             LeafletMaybeSignal::Static(v) => v.get_value(),
             LeafletMaybeSignal::Dynamic(v) => v.get(),
         }
     }
 
-    fn try_get(&self) -> Option<Option<T>> {
+    fn try_get(&self) -> Option<Self::Value> {
         match self {
             LeafletMaybeSignal::Static(v) => v.try_get_value(),
             LeafletMaybeSignal::Dynamic(v) => v.try_get(),
@@ -42,18 +43,19 @@ impl<T> SignalGet<Option<T>> for LeafletMaybeSignal<T>
     }
 }
 
-impl<T> SignalWith<Option<T>> for LeafletMaybeSignal<T>
+impl<T> SignalWith for LeafletMaybeSignal<T>
     where
         T: Clone + 'static,
 {
-    fn with<O>(&self, f: impl FnOnce(&Option<T>) -> O) -> O {
+    type Value = Option<T>;
+    fn with<O>(&self, f: impl FnOnce(&Self::Value) -> O) -> O {
         match self {
             LeafletMaybeSignal::Static(v) => f(&v.get_value()),
             LeafletMaybeSignal::Dynamic(v) => v.with(f),
         }
     }
 
-    fn try_with<O>(&self, f: impl FnOnce(&Option<T>) -> O) -> Option<O> {
+    fn try_with<O>(&self, f: impl FnOnce(&Self::Value) -> O) -> Option<O> {
         match self {
             LeafletMaybeSignal::Static(v) => Some(f(&v.get_value())),
             LeafletMaybeSignal::Dynamic(v) => v.try_with(f),
@@ -61,18 +63,19 @@ impl<T> SignalWith<Option<T>> for LeafletMaybeSignal<T>
     }
 }
 
-impl<T> SignalWithUntracked<Option<T>> for LeafletMaybeSignal<T>
+impl<T> SignalWithUntracked for LeafletMaybeSignal<T>
     where
         T: Clone + 'static,
 {
-    fn with_untracked<O>(&self, f: impl FnOnce(&Option<T>) -> O) -> O {
+    type Value = Option<T>;
+    fn with_untracked<O>(&self, f: impl FnOnce(&Self::Value) -> O) -> O {
         match self {
             LeafletMaybeSignal::Static(v) => f(&v.get_value()),
             LeafletMaybeSignal::Dynamic(v) => v.with_untracked(f),
         }
     }
 
-    fn try_with_untracked<O>(&self, f: impl FnOnce(&Option<T>) -> O) -> Option<O> {
+    fn try_with_untracked<O>(&self, f: impl FnOnce(&Self::Value) -> O) -> Option<O> {
         match self {
             LeafletMaybeSignal::Static(v) => Some(f(&v.get_value())),
             LeafletMaybeSignal::Dynamic(v) => v.try_with_untracked(f),
@@ -80,18 +83,19 @@ impl<T> SignalWithUntracked<Option<T>> for LeafletMaybeSignal<T>
     }
 }
 
-impl<T> SignalGetUntracked<Option<T>> for LeafletMaybeSignal<T>
+impl<T> SignalGetUntracked for LeafletMaybeSignal<T>
     where
         T: Clone + 'static,
 {
-    fn get_untracked(&self) -> Option<T> {
+    type Value = Option<T>;
+    fn get_untracked(&self) -> Self::Value {
         match self {
             LeafletMaybeSignal::Static(v) => v.get_value(),
             LeafletMaybeSignal::Dynamic(v) => v.get_untracked(),
         }
     }
 
-    fn try_get_untracked(&self) -> Option<Option<T>> {
+    fn try_get_untracked(&self) -> Option<Self::Value> {
         match self {
             LeafletMaybeSignal::Static(v) => v.try_get_value(),
             LeafletMaybeSignal::Dynamic(v) => v.try_get_untracked(),
