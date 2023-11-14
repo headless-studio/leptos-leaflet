@@ -2,21 +2,20 @@
  * Copyright (c) HeadlessStudio  2023.
  */
 
-
 use leptos::*;
 
 #[derive(Copy, Clone)]
 pub enum LeafletMaybeSignal<T>
-    where
-        T: Clone + 'static,
+where
+    T: Clone + 'static,
 {
     Static(StoredValue<Option<T>>),
     Dynamic(Signal<Option<T>>),
 }
 
 impl<T> Default for LeafletMaybeSignal<T>
-    where
-        T: Clone + 'static,
+where
+    T: Clone + 'static,
 {
     fn default() -> Self {
         Self::Static(store_value(None))
@@ -24,8 +23,8 @@ impl<T> Default for LeafletMaybeSignal<T>
 }
 
 impl<T> SignalGet for LeafletMaybeSignal<T>
-    where
-        T: Clone + 'static,
+where
+    T: Clone + 'static,
 {
     type Value = Option<T>;
     fn get(&self) -> Self::Value {
@@ -44,8 +43,8 @@ impl<T> SignalGet for LeafletMaybeSignal<T>
 }
 
 impl<T> SignalWith for LeafletMaybeSignal<T>
-    where
-        T: Clone + 'static,
+where
+    T: Clone + 'static,
 {
     type Value = Option<T>;
     fn with<O>(&self, f: impl FnOnce(&Self::Value) -> O) -> O {
@@ -64,8 +63,8 @@ impl<T> SignalWith for LeafletMaybeSignal<T>
 }
 
 impl<T> SignalWithUntracked for LeafletMaybeSignal<T>
-    where
-        T: Clone + 'static,
+where
+    T: Clone + 'static,
 {
     type Value = Option<T>;
     fn with_untracked<O>(&self, f: impl FnOnce(&Self::Value) -> O) -> O {
@@ -84,8 +83,8 @@ impl<T> SignalWithUntracked for LeafletMaybeSignal<T>
 }
 
 impl<T> SignalGetUntracked for LeafletMaybeSignal<T>
-    where
-        T: Clone + 'static,
+where
+    T: Clone + 'static,
 {
     type Value = Option<T>;
     fn get_untracked(&self) -> Self::Value {
@@ -104,8 +103,8 @@ impl<T> SignalGetUntracked for LeafletMaybeSignal<T>
 }
 
 impl<T> From<Option<T>> for LeafletMaybeSignal<T>
-    where
-        T: Clone + 'static,
+where
+    T: Clone + 'static,
 {
     fn from(target: Option<T>) -> Self {
         LeafletMaybeSignal::Static(store_value(target))
@@ -113,8 +112,8 @@ impl<T> From<Option<T>> for LeafletMaybeSignal<T>
 }
 
 impl<T> From<T> for LeafletMaybeSignal<T>
-    where
-        T: Clone + 'static,
+where
+    T: Clone + 'static,
 {
     fn from(target: T) -> Self {
         LeafletMaybeSignal::Static(store_value(Some(target)))
