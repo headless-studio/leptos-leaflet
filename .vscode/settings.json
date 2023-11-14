@@ -1,9 +1,9 @@
 {
     "rust-analyzer.linkedProjects": [
         ".\\examples\\simple-map\\Cargo.toml",
+        ".\\examples\\with-server\\Cargo.toml",
         ".\\Cargo.toml"
     ],
-    "rust-analyzer.server.path": "rust-analyzer",
     // "rust-analyzer.server.extraEnv": {"RA_LOG":"project_model=debug"},
     // "rust-analyzer.trace.server": "messages",
     "rust-analyzer.check.allTargets": false,
@@ -14,7 +14,7 @@
     "rust-analyzer.workspace.symbol.search.kind": "all_symbols",
     "rust-analyzer.workspace.symbol.search.limit": 512,
     "rust-analyzer.cargo.noDefaultFeatures": true,
-    "rust-analyzer.cargo.features": ["csr"],
+    "rust-analyzer.cargo.features": [],
     "rust-analyzer.procMacro.enable": true,
     "rust-analyzer.procMacro.attributes.enable": true
 }
