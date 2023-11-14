@@ -41,8 +41,8 @@ pub use map::{
 pub use marker::{Marker, MarkerOptions};
 pub use popup::{Popup, PopupOptions};
 pub use raster::{
-    ImageOverlay, ImageOverlayOptions, TileLayer, TileLayerOptions, VideoOverlay,
-    VideoOverlayOptions,
+    ImageOverlay, ImageOverlayOptions, TileLayer, TileLayerOptions, TileLayerWms,
+    TileLayerWmsOptions, VideoOverlay, VideoOverlayOptions,
 };
 pub use shapes::{
     Circle, CircleMarker, CircleOptions, Path, PathOptions, Polygon, Polyline, PolylineOptions,
