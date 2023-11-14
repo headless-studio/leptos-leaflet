@@ -62,7 +62,7 @@ pub use tooltip::{Tooltip, TooltipOptions};
 #[macro_export]
 macro_rules! object_property_set {
     ($a:ident, $b:ty) => {
-        pub unsafe fn $a(&mut self, val: $b) -> &mut Self {
+        pub fn $a(&mut self, val: $b) -> &mut Self {
             let r = js_sys::Reflect::set(
                 self.as_ref(),
                 &wasm_bindgen::JsValue::from(stringify!($a)),
@@ -73,7 +73,7 @@ macro_rules! object_property_set {
         }
     };
     ($a:ident, $b:ident, $c:ty) => {
-        pub unsafe fn $a(&mut self, val: $c) -> &mut Self {
+        pub fn $a(&mut self, val: $c) -> &mut Self {
             let r = js_sys::Reflect::set(
                 self.as_ref(),
                 &wasm_bindgen::JsValue::from(stringify!($b)),
