@@ -157,7 +157,9 @@ pub fn Marker(
                 }
                 if let Ok(internal_icon) = js_sys::Reflect::get(&marker, &"_icon".into()) {
                     let internal_icon = internal_icon.unchecked_ref::<web_sys::HtmlElement>();
-                    _ = internal_icon.style().set_property("--gps_rotation", &format!("{}deg", rotation));
+                    _ = internal_icon
+                        .style()
+                        .set_property("--gps_rotation", &format!("{}deg", rotation));
                     let t = internal_icon
                         .style()
                         .get_property_value("transform")

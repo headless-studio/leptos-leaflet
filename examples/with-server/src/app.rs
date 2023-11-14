@@ -1,5 +1,5 @@
-use leptos::*;
 use leptos::logging::log;
+use leptos::*;
 use leptos_leaflet::leaflet::{LocationEvent, Map};
 use leptos_leaflet::*;
 use leptos_meta::*;

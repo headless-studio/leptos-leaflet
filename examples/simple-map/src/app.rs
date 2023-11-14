@@ -8,9 +8,16 @@ pub fn App() -> impl IntoView {
     let (marker_position, set_marker_position) = create_signal(Position::new(51.49, -0.08));
 
     create_effect(move |_| {
-        set_interval_with_handle(move || {
-            set_marker_position.update(|pos| { pos.lat += 0.001; pos.lng += 0.001; });
-        }, Duration::from_millis(200)).ok()
+        set_interval_with_handle(
+            move || {
+                set_marker_position.update(|pos| {
+                    pos.lat += 0.001;
+                    pos.lng += 0.001;
+                });
+            },
+            Duration::from_millis(200),
+        )
+        .ok()
     });
 
     view! {

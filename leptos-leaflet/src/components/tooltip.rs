@@ -38,7 +38,8 @@ pub fn Tooltip(
                 });
             }
         } else if let Some(map) = map_context.map() {
-            let tooltip = leaflet::Tooltip::newWithLatLng(&position.get_untracked().into(), &options);
+            let tooltip =
+                leaflet::Tooltip::newWithLatLng(&position.get_untracked().into(), &options);
             let content = content.get_untracked().expect("content ref");
             let html_view: &JsValue = content.unchecked_ref();
             tooltip.setContent(html_view);
