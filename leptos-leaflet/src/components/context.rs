@@ -28,13 +28,13 @@ impl LeafletMapContext {
     pub fn add_layer<L: Into<leaflet::Layer> + Clone>(&self, layer: &L) {
         let map = self.map.get_untracked().expect("Map to be available");
         let layer: leaflet::Layer = layer.to_owned().into();
-        layer.addTo(&map);
+        layer.add_to(&map);
     }
 
     pub fn remove_layer<L: Into<leaflet::Layer> + Clone>(&self, layer: &L) {
         let map = self.map.get_untracked().expect("Map to be available");
         let layer: leaflet::Layer = layer.to_owned().into();
-        layer.removeFrom(&map);
+        layer.remove_from(&map);
     }
 }
 

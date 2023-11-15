@@ -78,7 +78,7 @@ pub fn Polygon(
             popup_events.setup(&polygon);
             tooltip_events.setup(&polygon);
 
-            polygon.addTo(&map);
+            polygon.add_to(&map);
             update_overlay_context(&polygon);
             overlay.set_value(Some(polygon));
         }
@@ -89,7 +89,7 @@ pub fn Polygon(
         move |pos, _, _| {
             if let Some(polygon) = overlay.get_value() {
                 let lat_lngs = to_lat_lng_array(pos);
-                polygon.setLatLngs(&lat_lngs);
+                polygon.set_lat_lngs(&lat_lngs);
             }
         },
         false,
@@ -100,8 +100,8 @@ pub fn Polygon(
         move |stroke, _, _| {
             if let (Some(stroke), Some(overlay)) = (stroke, overlay.get_value()) {
                 let mut options = PolylineOptions::new();
-                options.stroke(*stroke);
-                overlay.setStyle(&options.into())
+                options.set_stroke(*stroke);
+                overlay.set_style(&options.into())
             }
         },
         false,
@@ -112,8 +112,8 @@ pub fn Polygon(
         move |color, _, _| {
             if let (Some(color), Some(overlay)) = (color, overlay.get_value()) {
                 let mut options = PolylineOptions::new();
-                options.color(color);
-                overlay.setStyle(&options.into())
+                options.set_color(color);
+                overlay.set_style(&options.into())
             }
         },
         false,
@@ -124,8 +124,8 @@ pub fn Polygon(
         move |color, _, _| {
             if let (Some(color), Some(overlay)) = (color, overlay.get_value()) {
                 let mut options = PolylineOptions::new();
-                options.fill_color(color);
-                overlay.setStyle(&options.into())
+                options.set_fill_color(color);
+                overlay.set_style(&options.into())
             }
         },
         false,
@@ -136,8 +136,8 @@ pub fn Polygon(
         move |opacity, _, _| {
             if let (Some(opacity), Some(overlay)) = (opacity, overlay.get_value()) {
                 let mut options = PolylineOptions::new();
-                options.opacity(*opacity);
-                overlay.setStyle(&options.into())
+                options.set_opacity(*opacity);
+                overlay.set_style(&options.into())
             }
         },
         false,
@@ -148,8 +148,8 @@ pub fn Polygon(
         move |opacity, _, _| {
             if let (Some(opacity), Some(overlay)) = (opacity, overlay.get_value()) {
                 let mut options = PolylineOptions::new();
-                options.fill_opacity(*opacity);
-                overlay.setStyle(&options.into())
+                options.set_fill_opacity(*opacity);
+                overlay.set_style(&options.into())
             }
         },
         false,
@@ -160,8 +160,8 @@ pub fn Polygon(
         move |weight, _, _| {
             if let (Some(weight), Some(overlay)) = (weight, overlay.get_value()) {
                 let mut options = PolylineOptions::new();
-                options.weight(*weight);
-                overlay.setStyle(&options.into())
+                options.set_weight(*weight);
+                overlay.set_style(&options.into())
             }
         },
         false,
@@ -172,8 +172,8 @@ pub fn Polygon(
         move |smooth_factor, _, _| {
             if let (Some(smooth_factor), Some(overlay)) = (smooth_factor, overlay.get_value()) {
                 let mut options = PolylineOptions::new();
-                options.smooth_factor(*smooth_factor);
-                overlay.setStyle(&options.into())
+                options.set_smooth_factor(*smooth_factor);
+                overlay.set_style(&options.into())
             }
         },
         false,

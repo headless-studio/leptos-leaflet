@@ -4,9 +4,9 @@ pub(crate) mod core;
 pub use components::*;
 
 /// Leaflet re-exports
-pub mod leaflet {
-    pub use leaflet::*;
-}
+pub use leaflet;
+
+use paste::paste;
 
 #[macro_export]
 macro_rules! position {

@@ -20,9 +20,9 @@ pub fn Tooltip(
     // let content = view! { <div>{children()}</div>};
     create_effect(move |_| {
         let mut options = leaflet::TooltipOptions::default();
-        options.permanent(permanent.get_untracked());
-        options.direction(&direction.get_untracked());
-        options.sticky(sticky.get_untracked());
+        options.set_permanent(permanent.get_untracked());
+        options.set_direction(&direction.get_untracked());
+        options.set_sticky(sticky.get_untracked());
 
         if let Some(overlay_context) = overlay_context {
             if let (Some(layer), Some(_map)) = (
@@ -31,18 +31,19 @@ pub fn Tooltip(
             ) {
                 let tooltip = leaflet::Tooltip::new(&options, Some(layer.unchecked_ref()));
                 let content = content.get_untracked().expect("content ref");
-                tooltip.setContent(content.unchecked_ref());
-                layer.bindTooltip(&tooltip);
+                tooltip.set_content(content.unchecked_ref());
+                layer.bind_tooltip(&tooltip);
                 on_cleanup(move || {
                     tooltip.remove();
                 });
             }
         } else if let Some(map) = map_context.map() {
-            let tooltip = leaflet::Tooltip::newWithLatLng(&position.get_untracked().into(), &options);
+            let tooltip =
+                leaflet::Tooltip::new_with_lat_lng(&position.get_untracked().into(), &options);
             let content = content.get_untracked().expect("content ref");
             let html_view: &JsValue = content.unchecked_ref();
-            tooltip.setContent(html_view);
-            tooltip.openOn(&map);
+            tooltip.set_content(html_view);
+            tooltip.open_on(&map);
             on_cleanup(move || {
                 tooltip.remove();
             });
