@@ -38,6 +38,12 @@ impl LeafletMapContext {
     }
 }
 
+impl Default for LeafletMapContext {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub fn provide_leaflet_context() -> LeafletMapContext {
     let context = LeafletMapContext::new();
     provide_context(context);
@@ -97,5 +103,11 @@ impl LeafletOverlayContainerContext {
         self.container
             .get_untracked()
             .map(|layer| layer.unchecked_into())
+    }
+}
+
+impl Default for LeafletOverlayContainerContext {
+    fn default() -> Self {
+        Self::new()
     }
 }
