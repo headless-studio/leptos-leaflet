@@ -1,24 +1,4 @@
 [workspace]
 members = ["leptos-leaflet"]
-exclude = ["examples/simple-map", "examples/with-server"]
+exclude = ["examples"]
 resolver = "2"
-
-[workspace.dependencies]
-getrandom = { version = "0.2", features = ["js"] }
-js-sys = "0.3"
-
-leaflet = "0.3"
-leptos = { version = "0.5", default-features = false }
-leptos_meta = { version = "0.5", default-features = false }
-
-paste = "1.0"
-rand = "0.8"
-regex = "1.9"
-
-[workspace.dependencies.wasm-bindgen]
-version = "0.2"
-features = ["serde-serialize"]
-
-[workspace.dependencies.web-sys]
-version = "0.3"
-features = ["console", "HtmlElement", "HtmlDivElement"]

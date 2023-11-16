@@ -9,16 +9,19 @@ description = "Leaflet components to use in Leptos."
 readme = "../README.md"
 
 [dependencies]
-js-sys.workspace = true
-leaflet.workspace = true
-leptos = { workspace = true }
-leptos_meta = { workspace = true }
-getrandom = { workspace = true, features = ["js"] }
-paste.workspace = true
-rand.workspace = true
-regex.workspace = true
-wasm-bindgen = { workspace = true, features = ["serde-serialize"] }
-web-sys = { workspace = true, features = [
+getrandom = { version = "0.2", features = ["js"] }
+js-sys = "0.3"
+
+leaflet = "0.3"
+leptos = { version = "0.5", default-features = false }
+leptos_meta = { version = "0.5", default-features = false }
+
+paste = "1.0"
+rand = "0.8"
+regex = "1.9"
+
+wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
+web-sys = { version = "0.3", features = [
     "console",
     "HtmlElement",
     "HtmlDivElement",
