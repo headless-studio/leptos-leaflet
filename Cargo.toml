@@ -1,5 +1,5 @@
 [workspace]
-members = ["leptos-leaflet", "leaflet"]
+members = ["leptos-leaflet"]
 exclude = ["examples/simple-map", "examples/with-server"]
 resolver = "2"
 
@@ -7,7 +7,7 @@ resolver = "2"
 getrandom = { version = "0.2", features = ["js"] }
 js-sys = "0.3"
 
-leaflet = { path = "./leaflet" }
+leaflet = "0.3"
 leptos = { version = "0.5", default-features = false }
 leptos_meta = { version = "0.5", default-features = false }
 
