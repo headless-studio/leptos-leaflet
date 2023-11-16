@@ -446,9 +446,9 @@ dependencies = [
 
 [[package]]
 name = "h2"
-version = "0.3.21"
+version = "0.3.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "91fc23aa11be92976ef4729127f1a74adf36d8436f7816b185d18df956790833"
+checksum = "4d6250322ef6e60f93f9a2162799302cd6f68f79f6e5d85c8c16f14d1d958178"
 dependencies = [
  "bytes",
  "fnv",
@@ -456,7 +456,7 @@ dependencies = [
  "futures-sink",
  "futures-util",
  "http",
- "indexmap 1.9.3",
+ "indexmap",
  "slab",
  "tokio",
  "tokio-util",
@@ -468,12 +468,6 @@ name = "half"
 version = "1.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "eabb4a44450da02c90444cf74558da904edde8fb4e9035a9a6a4e15445af0bd7"
-
-[[package]]
-name = "hashbrown"
-version = "0.12.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8a9ee70c43aaf417c914396645a0fa852624801b24ebb7ae78fe8272889ac888"
 
 [[package]]
 name = "hashbrown"
@@ -560,22 +554,12 @@ dependencies = [
 
 [[package]]
 name = "indexmap"
-version = "1.9.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd070e393353796e801d209ad339e89596eb4c8d430d18ede6a1cced8fafbd99"
-dependencies = [
- "autocfg",
- "hashbrown 0.12.3",
-]
-
-[[package]]
-name = "indexmap"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d530e1a18b1cb4c484e6e34556a0d948706958449fca0cab753d649f2bce3d1f"
 dependencies = [
  "equivalent",
- "hashbrown 0.14.2",
+ "hashbrown",
 ]
 
 [[package]]
@@ -669,7 +653,7 @@ dependencies = [
 
 [[package]]
 name = "leptos-leaflet"
-version = "0.6.1-beta"
+version = "0.6.1"
 dependencies = [
  "getrandom",
  "js-sys",
@@ -708,7 +692,7 @@ dependencies = [
  "futures",
  "getrandom",
  "html-escape",
- "indexmap 2.1.0",
+ "indexmap",
  "itertools 0.10.5",
  "js-sys",
  "leptos_reactive",
@@ -734,7 +718,7 @@ checksum = "a6902fabee84955a85a6cdebf8ddfbfb134091087b172e32ebb26e571d4640ca"
 dependencies = [
  "anyhow",
  "camino",
- "indexmap 2.1.0",
+ "indexmap",
  "parking_lot",
  "proc-macro2",
  "quote",
@@ -774,7 +758,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b64d2b4bd0ab25a4897179ee603f2fa8178da6c9f97ef3efd4fa46580fd7efc1"
 dependencies = [
  "cfg-if",
- "indexmap 2.1.0",
+ "indexmap",
  "leptos",
  "tracing",
  "wasm-bindgen",
@@ -790,7 +774,7 @@ dependencies = [
  "base64",
  "cfg-if",
  "futures",
- "indexmap 2.1.0",
+ "indexmap",
  "js-sys",
  "paste",
  "pin-project",
