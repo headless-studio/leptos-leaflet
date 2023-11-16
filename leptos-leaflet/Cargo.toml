@@ -1,8 +1,12 @@
 [package]
 name = "leptos-leaflet"
-version = "0.6.1-beta"
+authors = ["Daniel Santana <danielgsantana@gmail.com>", "Artur Leao <artur.leao@gmail.com>", "Lewin Probst <info@emirror.de>"]
+version = "0.6.1"
 edition = "2021"
 license = "MIT"
+repository = "https://github.com/headless-studio/leptos-leaflet"
+description = "Leaflet components to use in Leptos."
+readme = "../README.md"
 
 [dependencies]
 js-sys.workspace = true
