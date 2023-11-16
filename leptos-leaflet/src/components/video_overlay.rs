@@ -29,56 +29,56 @@ pub fn VideoOverlay(
             log!("Adding image layer: {}", url);
             let mut options = leaflet::VideoOverlayOptions::new();
             if let Some(opacity) = opacity {
-                options.opacity(opacity.get_untracked());
+                options.set_opacity(opacity.get_untracked());
             }
             if let Some(alt) = &alt {
-                options.alt(&alt.get_untracked());
+                options.set_alt(&alt.get_untracked());
             }
             if let Some(interactive) = interactive {
-                options.interactive(interactive.get_untracked());
+                options.set_interactive(interactive.get_untracked());
             }
             if let Some(cross_origin) = &cross_origin {
-                options.cross_origin(&cross_origin.get_untracked());
+                options.set_cross_origin(&cross_origin.get_untracked());
             }
             if let Some(cross_origin_toggle) = cross_origin_toggle {
-                options.cross_origin_toggle(cross_origin_toggle.get_untracked());
+                options.set_cross_origin_toggle(cross_origin_toggle.get_untracked());
             }
             if let Some(error_overlay_url) = &error_overlay_url {
-                options.error_overlay_url(&error_overlay_url.get_untracked());
+                options.set_error_overlay_url(&error_overlay_url.get_untracked());
             }
             if let Some(z_index) = z_index {
-                options.z_index(z_index.get_untracked());
+                options.set_z_index(z_index.get_untracked());
             }
             if let Some(class_name) = &class_name {
-                options.class_name(&class_name.get_untracked());
+                options.set_class_name(&class_name.get_untracked());
             }
             if let Some(bubbling_mouse_events) = bubbling_mouse_events {
-                options.bubbling_mouse_events(bubbling_mouse_events.get_untracked());
+                options.set_bubbling_mouse_events(bubbling_mouse_events.get_untracked());
             }
             if let Some(pane) = &pane {
-                options.pane(&pane.get_untracked());
+                options.set_pane(&pane.get_untracked());
             }
             if let Some(attribution) = &attribution {
-                options.attribution(&attribution.get_untracked());
+                options.set_attribution(&attribution.get_untracked());
             }
             if let Some(autoplay) = autoplay {
-                options.autoplay(autoplay.get_untracked());
+                options.set_autoplay(autoplay.get_untracked());
             }
             if let Some(looped) = looped {
-                options.looped(looped.get_untracked());
+                options.set_looped(looped.get_untracked());
             }
             if let Some(keep_aspect_ratio) = keep_aspect_ratio {
-                options.keep_aspect_ratio(keep_aspect_ratio.get_untracked());
+                options.set_keep_aspect_ratio(keep_aspect_ratio.get_untracked());
             }
             if let Some(muted) = muted {
-                options.muted(muted.get_untracked());
+                options.set_muted(muted.get_untracked());
             }
             if let Some(plays_inline) = plays_inline {
-                options.plays_inline(plays_inline.get_untracked());
+                options.set_plays_inline(plays_inline.get_untracked());
             }
 
             let map_layer = leaflet::VideoOverlay::new_with_options(&url, &bounds, &options);
-            map_layer.addTo(&map);
+            map_layer.add_to(&map);
             on_cleanup(move || {
                 map_layer.remove();
             });

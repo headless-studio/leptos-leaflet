@@ -56,9 +56,9 @@ pub fn MapContainer(
         _ = map_div.on_mount(move |map_div| {
             let map_div = map_div.unchecked_ref::<HtmlDivElement>();
             let mut options = leaflet::MapOptions::new();
-            options.zoom(zoom);
+            options.set_zoom(zoom);
             if let Some(center) = center {
-                options.center(&center.into());
+                options.set_center(&center.into());
             }
             let leaflet_map = Map::new(&map_div.id(), &options);
 
@@ -72,7 +72,7 @@ pub fn MapContainer(
                 locate_options.enable_high_accuracy(enable_high_accuracy);
                 locate_options.set_view(set_view);
                 locate_options.watch(watch);
-                leaflet_map.locateWithOptions(&locate_options);
+                leaflet_map.locate_with_options(&locate_options);
             }
 
             map_context.set_map(&leaflet_map);

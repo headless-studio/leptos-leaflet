@@ -54,7 +54,7 @@ pub fn Marker(
             let mut options = leaflet::MarkerOptions::new();
             let drag = draggable.get_untracked();
             if drag {
-                options.draggable(drag);
+                options.set_draggable(drag);
             }
             setup_layer_leaflet_option!(keyboard, options);
             setup_layer_leaflet_option_ref!(title, options);
@@ -72,27 +72,27 @@ pub fn Marker(
             setup_layer_leaflet_option_ref!(attribution, options);
 
             if let Some((x, y)) = auto_pan_padding.get_untracked() {
-                options.auto_pan_padding(leaflet::Point::new(x, y));
+                options.set_auto_pan_padding(leaflet::Point::new(x, y));
             }
             if let Some(icon_url) = icon_url.get_untracked() {
                 let mut icon_options = leaflet::IconOptions::new();
-                icon_options.icon_url(&icon_url);
+                icon_options.set_icon_url(&icon_url);
                 if let Some((x, y)) = icon_size.get_untracked() {
-                    icon_options.icon_size(leaflet::Point::new(x, y));
+                    icon_options.set_icon_size(leaflet::Point::new(x, y));
                 }
                 let icon = leaflet::Icon::new(&icon_options);
-                options.icon(icon);
+                options.set_icon(icon);
             } else if let Some(icon_class) = icon_class.get_untracked() {
                 let mut icon_options = leaflet::DivIconOptions::new();
-                icon_options.class_name(&icon_class);
+                icon_options.set_class_name(&icon_class);
                 if let Some((x, y)) = icon_size.get_untracked() {
-                    icon_options.icon_size(leaflet::Point::new(x, y));
+                    icon_options.set_icon_size(leaflet::Point::new(x, y));
                 }
                 let icon = leaflet::DivIcon::new(&icon_options);
-                options.icon(icon.into());
+                options.set_icon(icon.into());
             }
             let marker =
-                leaflet::Marker::newWithOptions(&position.get_untracked().into(), &options);
+                leaflet::Marker::new_with_options(&position.get_untracked().into(), &options);
 
             mouse_events.setup(&marker);
             move_events.setup(&marker);
@@ -101,7 +101,7 @@ pub fn Marker(
             tooltip_events.setup(&marker);
             layer_events.setup(&marker);
 
-            marker.addTo(&map);
+            marker.add_to(&map);
             overlay_context.set_container(&marker);
             overlay.set_value(Some(marker));
         };
@@ -111,7 +111,7 @@ pub fn Marker(
         move || position_tracking.get(),
         move |position_tracking, _, _| {
             if let Some(marker) = overlay.get_value() {
-                marker.setLatLng(&position_tracking.into());
+                marker.set_lat_lng(&position_tracking.into());
             }
         },
         false,
@@ -122,7 +122,7 @@ pub fn Marker(
         move |opacity, _, _| {
             overlay.get_value().and_then(|marker| {
                 opacity.map(|opacity| {
-                    marker.setOpacity(opacity);
+                    marker.set_opacity(opacity);
                 })
             });
         },

@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use leptos::logging::log;
 use leptos::*;
 use leptos_leaflet::leaflet::{LocationEvent, Map};
@@ -38,16 +40,16 @@ fn HomePage() -> impl IntoView {
     let (map, set_map) = create_signal(None::<Map>);
 
     create_effect(move |_| {
-        // set_interval_with_handle(
-        //     move || {
-        //         set_marker_position.update(|pos| {
-        //             pos.lat += 0.001;
-        //             pos.lng += 0.001;
-        //         });
-        //     },
-        //     Duration::from_millis(200),
-        // )
-        // .ok()
+        set_interval_with_handle(
+            move || {
+                set_marker_position.update(|pos| {
+                    pos.lat += 0.001;
+                    pos.lng += 0.001;
+                });
+            },
+            Duration::from_secs(1),
+        )
+        .ok()
     });
 
     create_effect(move |_| {
@@ -57,7 +59,7 @@ fn HomePage() -> impl IntoView {
     });
 
     let location_found = move |loc: LocationEvent| {
-        log!("hello from {:?}", loc.latlng());
+        log!("hello from {:?}", loc.lat_lng());
     };
 
     let events = MapEvents::new().location_found(location_found);
@@ -74,6 +76,11 @@ fn HomePage() -> impl IntoView {
                   <Popup auto_close=false close_on_click=false>
                       <strong>{"A pretty CSS3 popup"}</strong>
                   </Popup>
+              </Marker>
+              <Marker position=marker_position draggable=true >
+                <Popup auto_close=false close_on_click=false>
+                  <strong>{"A moving marker"}</strong>
+                </Popup>
               </Marker>
               <Tooltip position=position!(51.5, -0.09) permanent=true direction="top">
                   <strong>{"And a tooltip"}</strong>

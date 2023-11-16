@@ -890,9 +890,12 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "leaflet"
-version = "1.9.3"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "48e5fa1d484cd483b16a40ce3325cfa21b851337a05a98c3129fdd5f26f5aefe"
 dependencies = [
  "js-sys",
+ "paste",
  "wasm-bindgen",
  "web-sys",
 ]
