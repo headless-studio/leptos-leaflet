@@ -19,7 +19,6 @@ pub fn App() -> impl IntoView {
         )
         .ok()
     });
-    });
 
     view! {
           <MapContainer style="height: 400px" center=Position::new(51.505, -0.09) zoom=13.0 set_view=true>

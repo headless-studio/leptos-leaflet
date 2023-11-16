@@ -44,17 +44,16 @@ pub fn MapContainer(
 
     let map_load = map_ref;
     map_load.on_load(move |map_div| {
-        let center = center;
         let html_node = map_div.unchecked_ref::<HtmlDivElement>();
         // Randomize the id of the map
         if html_node.id().is_empty() {
             let id = format!("map-{}", rand::random::<u64>());
-            map_div.clone().id(id);
+            _ = map_div.clone().id(id);
         }
         let events = events.clone();
         let popup_events = popup_events.clone();
         let tooltip_events = tooltip_events.clone();
-        map_div.on_mount(move |map_div| {
+        _ = map_div.on_mount(move |map_div| {
             let map_div = map_div.unchecked_ref::<HtmlDivElement>();
             let mut options = leaflet::MapOptions::new();
             options.set_zoom(zoom);
