@@ -1,4 +1,5 @@
 # leptos-leaflet
+[![crates.io](https://img.shields.io/crates/v/leptos-leaflet.svg)](https://crates.io/crates/leptos-leaflet)
 ![license: MIT](https://img.shields.io/crates/l/syn-rsx.svg)
 
 Leaflet components for Leptos. This aims to target the functionality of React-Leaflet. 
@@ -23,5 +24,4 @@ NOTE: Current version support leptos 0.5.0-beta, that removes all Scope usages f
 - Popup
 
 ## TODO
-- Better way to handle events
 - Implement missing components
