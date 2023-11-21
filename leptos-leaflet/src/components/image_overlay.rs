@@ -22,39 +22,39 @@ pub fn ImageOverlay(
     create_effect(move |_| {
         if let Some(map) = map_context.map() {
             log!("Adding image layer: {}", url);
-            let mut options = leaflet::ImageOverlayOptions::new();
+            let options = leaflet::ImageOverlayOptions::new();
             if let Some(opacity) = opacity {
                 options.set_opacity(opacity.get_untracked());
             }
             if let Some(alt) = &alt {
-                options.set_alt(&alt.get_untracked());
+                options.set_alt(alt.get_untracked());
             }
             if let Some(interactive) = interactive {
                 options.set_interactive(interactive.get_untracked());
             }
             if let Some(cross_origin) = &cross_origin {
-                options.set_cross_origin(&cross_origin.get_untracked());
+                options.set_cross_origin(cross_origin.get_untracked());
             }
             if let Some(cross_origin_toggle) = cross_origin_toggle {
                 options.set_cross_origin_toggle(cross_origin_toggle.get_untracked());
             }
             if let Some(error_overlay_url) = &error_overlay_url {
-                options.set_error_overlay_url(&error_overlay_url.get_untracked());
+                options.set_error_overlay_url(error_overlay_url.get_untracked());
             }
             if let Some(z_index) = z_index {
                 options.set_z_index(z_index.get_untracked());
             }
             if let Some(class_name) = &class_name {
-                options.set_class_name(&class_name.get_untracked());
+                options.set_class_name(class_name.get_untracked());
             }
             if let Some(bubbling_mouse_events) = bubbling_mouse_events {
                 options.set_bubbling_mouse_events(bubbling_mouse_events.get_untracked());
             }
             if let Some(pane) = &pane {
-                options.set_pane(&pane.get_untracked());
+                options.set_pane(pane.get_untracked());
             }
             if let Some(attribution) = &attribution {
-                options.set_attribution(&attribution.get_untracked());
+                options.set_attribution(attribution.get_untracked());
             }
 
             let map_layer = leaflet::ImageOverlay::new_with_options(&url, &bounds, &options);

@@ -51,7 +51,7 @@ pub fn Marker(
 
     create_effect(move |_| {
         if let Some(map) = map_context.map() {
-            let mut options = leaflet::MarkerOptions::new();
+            let options = leaflet::MarkerOptions::new();
             let drag = draggable.get_untracked();
             if drag {
                 options.set_draggable(drag);
@@ -75,16 +75,16 @@ pub fn Marker(
                 options.set_auto_pan_padding(leaflet::Point::new(x, y));
             }
             if let Some(icon_url) = icon_url.get_untracked() {
-                let mut icon_options = leaflet::IconOptions::new();
-                icon_options.set_icon_url(&icon_url);
+                let icon_options = leaflet::IconOptions::new();
+                icon_options.set_icon_url(icon_url);
                 if let Some((x, y)) = icon_size.get_untracked() {
                     icon_options.set_icon_size(leaflet::Point::new(x, y));
                 }
                 let icon = leaflet::Icon::new(&icon_options);
                 options.set_icon(icon);
             } else if let Some(icon_class) = icon_class.get_untracked() {
-                let mut icon_options = leaflet::DivIconOptions::new();
-                icon_options.set_class_name(&icon_class);
+                let icon_options = leaflet::DivIconOptions::new();
+                icon_options.set_class_name(icon_class);
                 if let Some((x, y)) = icon_size.get_untracked() {
                     icon_options.set_icon_size(leaflet::Point::new(x, y));
                 }

@@ -45,7 +45,7 @@ pub fn Circle(
             .expect("map context")
             .map()
         {
-            let mut options = CircleOptions::new();
+            let options = CircleOptions::new();
             setup_layer_leaflet_option!(stroke, options);
             setup_layer_leaflet_option_ref!(color, options);
             setup_layer_leaflet_option!(weight, options);
@@ -89,7 +89,7 @@ pub fn Circle(
         move || stroke.get(),
         move |stroke, _, _| {
             if let (Some(stroke), Some(overlay)) = (stroke, overlay.get_value()) {
-                let mut options = CircleOptions::new();
+                let options = CircleOptions::new();
                 options.set_stroke(*stroke);
                 overlay.set_style(&options);
             }
@@ -101,8 +101,8 @@ pub fn Circle(
         move || color_clone.get(),
         move |color, _, _| {
             if let (Some(color), Some(overlay)) = (color, overlay.get_value()) {
-                let mut options = CircleOptions::new();
-                options.set_color(color);
+                let options = CircleOptions::new();
+                options.set_color(color.to_string());
                 overlay.set_style(&options);
             }
         },
@@ -113,8 +113,8 @@ pub fn Circle(
         move || fill_color_clone.get(),
         move |color, _, _| {
             if let (Some(color), Some(overlay)) = (color, overlay.get_value()) {
-                let mut options = CircleOptions::new();
-                options.set_fill_color(color);
+                let options = CircleOptions::new();
+                options.set_fill_color(color.to_string());
                 overlay.set_style(&options);
             }
         },
@@ -125,7 +125,7 @@ pub fn Circle(
         move || opacity.get(),
         move |opacity, _, _| {
             if let (Some(opacity), Some(overlay)) = (opacity, overlay.get_value()) {
-                let mut options = CircleOptions::new();
+                let options = CircleOptions::new();
                 options.set_opacity(*opacity);
                 overlay.set_style(&options);
             }
@@ -137,7 +137,7 @@ pub fn Circle(
         move || fill_opacity.get(),
         move |opacity, _, _| {
             if let (Some(opacity), Some(overlay)) = (opacity, overlay.get_value()) {
-                let mut options = CircleOptions::new();
+                let options = CircleOptions::new();
                 options.set_fill_opacity(*opacity);
                 overlay.set_style(&options);
             }
@@ -149,7 +149,7 @@ pub fn Circle(
         move || weight.get(),
         move |weight, _, _| {
             if let (Some(weight), Some(overlay)) = (weight, overlay.get_value()) {
-                let mut options = CircleOptions::new();
+                let options = CircleOptions::new();
                 options.set_weight(*weight);
                 overlay.set_style(&options);
             }

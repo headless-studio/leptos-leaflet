@@ -19,9 +19,9 @@ pub fn Tooltip(
     let content = create_node_ref::<Div>();
     // let content = view! { <div>{children()}</div>};
     create_effect(move |_| {
-        let mut options = leaflet::TooltipOptions::default();
+        let options = leaflet::TooltipOptions::default();
         options.set_permanent(permanent.get_untracked());
-        options.set_direction(&direction.get_untracked());
+        options.set_direction(direction.get_untracked());
         options.set_sticky(sticky.get_untracked());
 
         if let Some(overlay_context) = overlay_context {
