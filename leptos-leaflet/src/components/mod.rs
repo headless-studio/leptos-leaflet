@@ -28,7 +28,7 @@ pub use polyline::Polyline;
 pub use popup::Popup;
 pub use position::Position;
 pub use tile_layer::TileLayer;
-pub use tile_layer_wms::TileLayerWms;
+pub use tile_layer_wms::{TileLayerWms, TileLayerWmsEvents};
 pub use tooltip::Tooltip;
 
 #[macro_export]
@@ -114,7 +114,7 @@ macro_rules! setup_layer_leaflet_option_ref {
     ($name:ident, $options:ident) => {
         $crate::paste! {
             if let Some($name) = $name.get_untracked() {
-                $options.[<set_ $name>]($name.as_ref());
+                $options.[<set_ $name>]($name.to_string());
             }
         }
     };

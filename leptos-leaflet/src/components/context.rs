@@ -96,9 +96,9 @@ where
 }
 
 /// Updates the overlay context with the given layer.
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `layer` - A cloneable object that can be converted into a `leaflet::Layer`.
 pub fn update_overlay_context<C: Into<leaflet::Layer> + Clone>(layer: &C) {
     let overlay_context = use_context::<LeafletOverlayContainerContext>().expect("overlay context");
@@ -139,5 +139,32 @@ impl LeafletOverlayContainerContext {
 impl Default for LeafletOverlayContainerContext {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct TileLayerWmsContext {
+    wms: RwSignal<Option<leaflet::TileLayerWms>>,
+}
+
+impl Default for TileLayerWmsContext {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl TileLayerWmsContext {
+    pub fn new() -> Self {
+        Self {
+            wms: create_rw_signal(None),
+        }
+    }
+
+    pub fn set_wms(&self, wms: &leaflet::TileLayerWms) {
+        self.wms.set(Some(wms.clone()));
+    }
+
+    pub fn wms(&self) -> Option<leaflet::TileLayerWms> {
+        self.wms.get()
     }
 }

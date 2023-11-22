@@ -11,9 +11,9 @@ pub fn TileLayer(
 
     create_effect(move |_| {
         if let Some(map) = map_context.map() {
-            let mut options = leaflet::TileLayerOptions::default();
+            let options = leaflet::TileLayerOptions::default();
             if attribution.is_empty() {
-                options.set_attribution(&attribution);
+                options.set_attribution(attribution.to_string());
             }
             let map_layer = leaflet::TileLayer::new_options(&url, &options);
             map_layer.add_to(&map);

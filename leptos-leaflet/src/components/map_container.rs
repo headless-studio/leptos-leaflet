@@ -55,10 +55,10 @@ pub fn MapContainer(
         let tooltip_events = tooltip_events.clone();
         _ = map_div.on_mount(move |map_div| {
             let map_div = map_div.unchecked_ref::<HtmlDivElement>();
-            let mut options = leaflet::MapOptions::new();
+            let options = leaflet::MapOptions::new();
             options.set_zoom(zoom);
             if let Some(center) = center {
-                options.set_center(&center.into());
+                options.set_center(center.into());
             }
             let leaflet_map = Map::new(&map_div.id(), &options);
 

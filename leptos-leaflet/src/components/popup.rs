@@ -32,9 +32,9 @@ pub fn Popup(
 
     create_effect(move |_| {
         let inner_content = content;
-        let mut options = leaflet::PopupOptions::default();
+        let options = leaflet::PopupOptions::default();
         if let Some(pane) = &pane {
-            options.set_pane(&pane.get_untracked());
+            options.set_pane(pane.get_untracked());
         }
         if let Some(offset) = offset {
             options.set_offset(leaflet::Point::from(offset.get_untracked()));
@@ -77,7 +77,7 @@ pub fn Popup(
             options.set_close_on_click(close_on_click.get_untracked());
         }
         if let Some(class_name) = &class_name {
-            options.set_class_name(&class_name.get_untracked());
+            options.set_class_name(class_name.get_untracked());
         }
         if let Some(overlay_context) = overlay_context {
             if let (Some(marker), Some(_map)) = (
