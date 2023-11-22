@@ -6,7 +6,7 @@ Leaflet components for Leptos. This aims to target the functionality of React-Le
 
 For now only a few of the components are ported, and events must be set in the Signal `map` object set by the MapContainer when leaflet is inited.
 
-NOTE: Current version support leptos 0.5.0-beta, that removes all Scope usages from signals and effects.
+NOTE: Current version support leptos 0.5.x, that removes all Scope usages from signals and effects.
 
 ## Features
 - CSR/HYDRATE/SSR support
@@ -14,6 +14,7 @@ NOTE: Current version support leptos 0.5.0-beta, that removes all Scope usages f
 ### Components
 - MapContainer
 - TileLayer
+- TileLayerWms
 - ImageOverlay
 - VideoOverlay
 - Marker
