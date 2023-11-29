@@ -25,7 +25,7 @@ pub fn TileLayerWms(
             });
         }
     });
-    children.map_or(view! { <>()</> }, |c| view! { <>{ c() }</>})
+    children.map_or(view! { <>""</> }, |c| view! { <>{ c() }</>})
 }
 
 #[component(transparent)]
