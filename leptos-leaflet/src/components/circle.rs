@@ -65,6 +65,8 @@ pub fn Circle(
             setup_layer_leaflet_option_ref!(class_name, options);
             let circle =
                 leaflet::Circle::new_with_options(&center.get_untracked().into(), &options);
+            
+            leaflet::Circle::set_radius(&circle, radius.get_untracked());
 
             mouse_events.setup(&circle);
             popup_events.setup(&circle);
