@@ -874,12 +874,13 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "leaflet"
-version = "0.3.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "48e5fa1d484cd483b16a40ce3325cfa21b851337a05a98c3129fdd5f26f5aefe"
+checksum = "f1ca4f4ecc791314ac38d50a5af6dc6506977aa7c7f0231b1bfd66989a9c4be3"
 dependencies = [
  "js-sys",
  "paste",
+ "url",
  "wasm-bindgen",
  "web-sys",
 ]
@@ -906,7 +907,7 @@ dependencies = [
 
 [[package]]
 name = "leptos-leaflet"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "getrandom",
  "js-sys",
