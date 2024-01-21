@@ -12,7 +12,7 @@ pub fn TileLayer(
     create_effect(move |_| {
         if let Some(map) = map_context.map() {
             let options = leaflet::TileLayerOptions::default();
-            if attribution.is_empty() {
+            if !attribution.is_empty() {
                 options.set_attribution(attribution.to_string());
             }
             let map_layer = leaflet::TileLayer::new_options(&url, &options);

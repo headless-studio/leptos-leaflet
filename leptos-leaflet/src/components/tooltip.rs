@@ -11,6 +11,7 @@ pub fn Tooltip(
     #[prop(into, optional)] permanent: MaybeSignal<bool>,
     #[prop(into, optional, default="auto".into())] direction: MaybeSignal<String>,
     #[prop(into, optional)] sticky: MaybeSignal<bool>,
+    #[prop(into, optional, default=0.9.into())] opacity: MaybeSignal<f64>,
     children: Children,
 ) -> impl IntoView {
     let map_context = use_context::<LeafletMapContext>().expect("Map context not found");
@@ -23,6 +24,7 @@ pub fn Tooltip(
         options.set_permanent(permanent.get_untracked());
         options.set_direction(direction.get_untracked());
         options.set_sticky(sticky.get_untracked());
+        options.set_opacity(opacity.get_untracked());
 
         if let Some(overlay_context) = overlay_context {
             if let (Some(layer), Some(_map)) = (

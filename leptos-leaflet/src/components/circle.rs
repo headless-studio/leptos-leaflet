@@ -4,7 +4,7 @@ use crate::components::position::Position;
 use crate::core::LeafletMaybeSignal;
 use crate::{
     setup_layer_leaflet_option, setup_layer_leaflet_option_ref, LayerEvents, MouseEvents,
-    PopupEvents, TooltipEvents,
+    PopupEvents, TooltipEvents, MoveEvents,
 };
 use leaflet::CircleOptions;
 use leptos::*;
@@ -31,10 +31,12 @@ pub fn Circle(
     #[prop(into, optional)] layer_events: LayerEvents,
     #[prop(into, optional)] popup_events: PopupEvents,
     #[prop(into, optional)] tooltip_events: TooltipEvents,
+    #[prop(into, optional)] move_events: MoveEvents,
 
     #[prop(into)] radius: MaybeSignal<f64>,
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
+    let position_tracking = center;
     let overlay_context = extend_context_with_overlay();
     let overlay = store_value(None::<leaflet::Circle>);
 
@@ -63,11 +65,14 @@ pub fn Circle(
             setup_layer_leaflet_option_ref!(class_name, options);
             let circle =
                 leaflet::Circle::new_with_options(&center.get_untracked().into(), &options);
+            
+            leaflet::Circle::set_radius(&circle, radius.get_untracked());
 
             mouse_events.setup(&circle);
             popup_events.setup(&circle);
             tooltip_events.setup(&circle);
             layer_events.setup(&circle);
+            move_events.setup(&circle);
 
             circle.add_to(&map);
             overlay_context.set_container(&circle);
@@ -157,7 +162,18 @@ pub fn Circle(
         false,
     );
 
+    let position_stop = watch(
+        move || position_tracking.get(),
+        move |position_tracking, _, _| {
+            if let Some(circle) = overlay.get_value() {
+                circle.set_lat_lng(&position_tracking.into());
+            }
+        },
+        false,
+    );     
+
     on_cleanup(move || {
+        position_stop();
         radius_stop();
         stroke_stop();
         color_stop();
