@@ -8,8 +8,8 @@ edition = "2021"
 [dependencies]
 console_error_panic_hook = "0.1"
 geojson = "0.24"
-gloo = { version = "0.10", features = ["net"] }
-leptos = { version = "0.5", default-features = false, "features" = [
+gloo = { version = "0.11", features = ["net"] }
+leptos = { version = "0.6", default-features = false, "features" = [
     "csr",
 ] }
 leptos-leaflet = { path = "../../leptos-leaflet", default-features = false, features = [
