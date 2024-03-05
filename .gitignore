@@ -9,6 +9,4 @@
 
 target/
 dist/
-/Cargo.lock
-/examples/simple-map/Cargo.lock
-/examples/with-server/Cargo.lock
+Cargo.lock
