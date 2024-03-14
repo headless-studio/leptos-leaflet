@@ -33,6 +33,7 @@ pub fn Marker(
     #[prop(into, optional)] icon_class: LeafletMaybeSignal<String>,
     #[prop(into, optional)] icon_url: LeafletMaybeSignal<String>,
     #[prop(into, optional)] icon_size: LeafletMaybeSignal<(f64, f64)>,
+    #[prop(into, optional)] icon_anchor: LeafletMaybeSignal<(f64, f64)>,
     #[prop(into, optional)] attribution: LeafletMaybeSignal<String>,
     #[prop(into, optional)] rotation: LeafletMaybeSignal<f64>,
     #[prop(into, optional)] move_events: MoveEvents,
@@ -80,6 +81,9 @@ pub fn Marker(
                 if let Some((x, y)) = icon_size.get_untracked() {
                     icon_options.set_icon_size(leaflet::Point::new(x, y));
                 }
+                if let Some((x, y)) = icon_anchor.get_untracked() {
+                    icon_options.set_icon_anchor(leaflet::Point::new(x, y));
+                }
                 let icon = leaflet::Icon::new(&icon_options);
                 options.set_icon(icon);
             } else if let Some(icon_class) = icon_class.get_untracked() {
@@ -87,6 +91,9 @@ pub fn Marker(
                 icon_options.set_class_name(icon_class);
                 if let Some((x, y)) = icon_size.get_untracked() {
                     icon_options.set_icon_size(leaflet::Point::new(x, y));
+                }
+                if let Some((x, y)) = icon_anchor.get_untracked() {
+                    icon_options.set_icon_anchor(leaflet::Point::new(x, y));
                 }
                 let icon = leaflet::DivIcon::new(&icon_options);
                 options.set_icon(icon.into());
