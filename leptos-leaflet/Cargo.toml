@@ -13,8 +13,8 @@ getrandom = { version = "0.2", features = ["js"] }
 js-sys = "0.3"
 
 leaflet = "0.4"
-leptos = { version = "0.6", default-features = false }
-leptos_meta = { version = "0.6", default-features = false }
+leptos = { git = "https://github.com/leptos-rs/leptos", features = ["serde","nightly","experimental-islands"]}
+leptos_meta = { git = "https://github.com/leptos-rs/leptos", features = ["nightly"]  }
 
 paste = "1.0"
 rand = "0.8"
