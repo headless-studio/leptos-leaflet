@@ -1,3 +1,4 @@
+mod bounds;
 mod circle;
 mod context;
 mod events;
@@ -14,11 +15,13 @@ mod tile_layer_wms;
 mod tooltip;
 mod video_overlay;
 
+pub use bounds::Bounds;
 pub use circle::Circle;
 pub use context::*;
 pub use events::{
     DragEvents, LayerEvents, MapEvents, MouseEvents, MoveEvents, PopupEvents, TooltipEvents,
 };
+pub use image_overlay::ImageOverlay;
 pub use leaflet::{CircleOptions, PathOptions, PolylineOptions};
 pub use map_container::{LeafletMap, MapContainer};
 pub use marker::Marker;
@@ -30,6 +33,7 @@ pub use position::Position;
 pub use tile_layer::TileLayer;
 pub use tile_layer_wms::{TileLayerWms, TileLayerWmsEvents};
 pub use tooltip::Tooltip;
+pub use video_overlay::VideoOverlay;
 
 #[macro_export]
 macro_rules! effect_update_on_change {
