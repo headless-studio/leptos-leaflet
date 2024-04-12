@@ -149,16 +149,10 @@ pub fn Marker(
         false,
     );
 
-    let t_re = regex::Regex::new("\\s*rotate\\([\\d\\.]+deg\\)\\s*").unwrap();
     let rotation_stop = watch(
         move || rotation.get(),
         move |&rotation, prev_rotation, _| {
             if let (Some(marker), Some(rotation)) = (overlay.get_value(), rotation) {
-                // let rotation = if let Some(&Some(prev_rotation)) = prev_rotation {
-                //     rotation - prev_rotation
-                // } else {
-                //     rotation
-                // };
                 if Some(rotation.trunc()) == prev_rotation.copied().flatten().map(|r| r.trunc()) {
                     return;
                 }
@@ -167,19 +161,25 @@ pub fn Marker(
                     _ = internal_icon
                         .style()
                         .set_property("--gps_rotation", &format!("{}deg", rotation));
-                    let t = internal_icon
+
+                    let transform = internal_icon
                         .style()
                         .get_property_value("transform")
                         .unwrap_or_default();
-                    if t.is_empty() {
-                        let _ = internal_icon
-                            .style()
-                            .set_property("transform", &format!("rotate({}deg)", rotation));
-                    } else {
-                        let t = format!("{} rotate({}deg)", t_re.replace(&t, ""), rotation);
-                        let _ = internal_icon.style().set_property("transform", &t);
-                    }
-                    // log!("Rotate: {}", &rotation);
+
+                    let transform = match transform.contains("rotate(") {
+                        true => transform
+                            .split_whitespace()
+                            .map(|part| match part.starts_with("rotate(") {
+                                true => format!("rotate({}deg)", rotation),
+                                false => part.to_string(),
+                            })
+                            .collect::<Vec<String>>()
+                            .join(" "),
+                        false => format!("{} rotate({}deg)", transform, rotation),
+                    };
+
+                    let _ = internal_icon.style().set_property("transform", &transform);
                     let _ = internal_icon
                         .style()
                         .set_property("transform-origin", "center");
