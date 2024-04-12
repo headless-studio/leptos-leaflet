@@ -1,3 +1,4 @@
+use crate::components::bbox::Bbox;
 use crate::components::context::LeafletMapContext;
 use leptos::logging::log;
 use leptos::*;
@@ -5,7 +6,7 @@ use leptos::*;
 #[component(transparent)]
 pub fn VideoOverlay(
     #[prop(into)] url: String,
-    #[prop(into)] bounds: leaflet::LatLngBounds,
+    #[prop(into)] bounds: Bbox,
     #[prop(into, optional)] opacity: Option<MaybeSignal<f64>>,
     #[prop(into, optional)] alt: Option<MaybeSignal<String>>,
     #[prop(into, optional)] interactive: Option<MaybeSignal<bool>>,
@@ -77,7 +78,7 @@ pub fn VideoOverlay(
                 options.set_plays_inline(plays_inline.get_untracked());
             }
 
-            let map_layer = leaflet::VideoOverlay::new_with_options(&url, &bounds, &options);
+            let map_layer = leaflet::VideoOverlay::new_with_options(&url, &bounds.into(), &options);
             map_layer.add_to(&map);
             on_cleanup(move || {
                 map_layer.remove();

@@ -1,3 +1,4 @@
+mod bbox;
 mod circle;
 mod context;
 mod events;
