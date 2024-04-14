@@ -1,4 +1,4 @@
-mod bbox;
+mod bounds;
 mod circle;
 mod context;
 mod events;
@@ -15,6 +15,7 @@ mod tile_layer_wms;
 mod tooltip;
 mod video_overlay;
 
+pub use bounds::Bounds;
 pub use circle::Circle;
 pub use context::*;
 pub use events::{

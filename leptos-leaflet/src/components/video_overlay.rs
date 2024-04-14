@@ -1,4 +1,4 @@
-use crate::components::bbox::Bbox;
+use crate::components::bounds::Bounds;
 use crate::components::context::LeafletMapContext;
 use leptos::logging::log;
 use leptos::*;
@@ -6,7 +6,7 @@ use leptos::*;
 #[component(transparent)]
 pub fn VideoOverlay(
     #[prop(into)] url: String,
-    #[prop(into)] bounds: Bbox,
+    #[prop(into)] bounds: Bounds,
     #[prop(into, optional)] opacity: Option<MaybeSignal<f64>>,
     #[prop(into, optional)] alt: Option<MaybeSignal<String>>,
     #[prop(into, optional)] interactive: Option<MaybeSignal<bool>>,
