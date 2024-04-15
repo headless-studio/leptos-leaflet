@@ -24,7 +24,7 @@ pub fn Popup(
     #[prop(into, optional)] class_name: Option<MaybeSignal<String>>,
     children: Children,
 ) -> impl IntoView {
-    let map_context = use_context::<LeafletMapContext>().expect("Map context not found");
+    let map_context = use_context::<LeafletMapContext>();
     let overlay_context = use_context::<LeafletOverlayContainerContext>();
 
     // Render popup content to a html element
@@ -80,10 +80,7 @@ pub fn Popup(
             options.set_class_name(class_name.get_untracked());
         }
         if let Some(overlay_context) = overlay_context {
-            if let (Some(marker), Some(_map)) = (
-                overlay_context.container::<leaflet::Layer>(),
-                map_context.map(),
-            ) {
+            if let Some(marker) = overlay_context.container::<leaflet::Layer>() {
                 let popup = leaflet::Popup::new(&options, Some(marker.unchecked_ref()));
                 let content = inner_content.get_untracked().expect("content ref");
                 let html_view: &JsValue = content.unchecked_ref();
@@ -93,7 +90,7 @@ pub fn Popup(
                     popup.remove();
                 });
             }
-        } else if let Some(map) = map_context.map() {
+        } else if let Some(map) = map_context.expect("map context not found").map() {
             let popup =
                 leaflet::Popup::new_with_lat_lng(&position.get_untracked().into(), &options);
             let content = inner_content.get_untracked().expect("content ref");

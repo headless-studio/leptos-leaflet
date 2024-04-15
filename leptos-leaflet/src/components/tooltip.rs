@@ -14,7 +14,7 @@ pub fn Tooltip(
     #[prop(into, optional, default=0.9.into())] opacity: MaybeSignal<f64>,
     children: Children,
 ) -> impl IntoView {
-    let map_context = use_context::<LeafletMapContext>().expect("Map context not found");
+    let map_context = use_context::<LeafletMapContext>();
     let overlay_context = use_context::<LeafletOverlayContainerContext>();
 
     let content = create_node_ref::<Div>();
@@ -27,10 +27,7 @@ pub fn Tooltip(
         options.set_opacity(opacity.get_untracked());
 
         if let Some(overlay_context) = overlay_context {
-            if let (Some(layer), Some(_map)) = (
-                overlay_context.container::<leaflet::Layer>(),
-                map_context.map(),
-            ) {
+            if let Some(layer) = overlay_context.container::<leaflet::Layer>() {
                 let tooltip = leaflet::Tooltip::new(&options, Some(layer.unchecked_ref()));
                 let content = content.get_untracked().expect("content ref");
                 tooltip.set_content(content.unchecked_ref());
@@ -39,7 +36,7 @@ pub fn Tooltip(
                     tooltip.remove();
                 });
             }
-        } else if let Some(map) = map_context.map() {
+        } else if let Some(map) = map_context.expect("Map context not found").map() {
             let tooltip =
                 leaflet::Tooltip::new_with_lat_lng(&position.get_untracked().into(), &options);
             let content = content.get_untracked().expect("content ref");
