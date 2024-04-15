@@ -23,6 +23,3 @@ NOTE: Current version support leptos 0.6.x, that removes all Scope usages from s
 - Circle
 - Tooltip
 - Popup
-
-## TODO
-- Implement missing components
