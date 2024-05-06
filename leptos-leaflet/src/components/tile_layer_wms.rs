@@ -1,10 +1,10 @@
+use leptos::logging::warn;
 use leptos::*;
 
 use crate::components::context::LeafletMapContext;
 use crate::components::context::TileLayerWmsContext;
 use crate::MapEvents;
 use leaflet::{Map, TileLayerWms as LeafletTileLayerWms, TileLayerWmsOptions};
-use log::warn;
 
 #[component(transparent)]
 pub fn TileLayerWms(

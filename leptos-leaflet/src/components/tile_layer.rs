@@ -1,7 +1,7 @@
+use leptos::logging::warn;
 use leptos::*;
 
 use crate::components::context::LeafletMapContext;
-use log::warn;
 
 #[component(transparent)]
 pub fn TileLayer(
