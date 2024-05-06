@@ -16,6 +16,7 @@ leaflet = "0.4"
 leptos = { version = "0.6", default-features = false }
 leptos_meta = { version = "0.6", default-features = false }
 
+log = "0.4"
 paste = "1.0"
 rand = "0.8"
 
