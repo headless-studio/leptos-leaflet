@@ -35,11 +35,13 @@ pub fn MapContainer(
     #[prop(optional)] events: MapEvents,
     #[prop(optional)] popup_events: PopupEvents,
     #[prop(optional)] tooltip_events: TooltipEvents,
+    /// An optional node ref for the map `div` container element.
+    #[prop(optional)] node_ref: Option<NodeRef<Div>>,
     /// Inner map child nodes
     #[prop(optional)]
     children: Option<Children>,
 ) -> impl IntoView {
-    let map_ref = create_node_ref::<Div>();
+    let map_ref = node_ref.unwrap_or(create_node_ref::<Div>());
     let map_context = provide_leaflet_context();
 
     let map_load = map_ref;
