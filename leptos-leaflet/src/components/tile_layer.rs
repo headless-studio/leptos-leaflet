@@ -1,7 +1,8 @@
 use leptos::logging::warn;
-use leptos::*;
+use leptos::prelude::*;
 
 use crate::components::context::LeafletMapContext;
+use crate::IntoThreadSafeJsValue;
 
 #[component(transparent)]
 pub fn TileLayer(
@@ -12,13 +13,13 @@ pub fn TileLayer(
 ) -> impl IntoView {
     let map_context = use_context::<LeafletMapContext>().expect("map context not found");
 
-    create_effect(move |_| {
+    Effect::new(move |_| {
         if let Some(map) = map_context.map() {
             let options = leaflet::TileLayerOptions::default();
             if !attribution.is_empty() {
                 options.set_attribution(attribution.to_string());
             }
-            let map_layer = leaflet::TileLayer::new_options(&url, &options);
+            let map_layer = leaflet::TileLayer::new_options(&url, &options).into_thread_safe_js_value();
             map_layer.add_to(&map);
 
             match (bring_to_front, bring_to_back) {

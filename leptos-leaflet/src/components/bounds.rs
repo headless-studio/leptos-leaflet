@@ -11,8 +11,8 @@ pub struct Bounds {
 impl Bounds {
     pub fn new(ne_corner: Position, sw_corner: Position) -> Self {
         Self {
-            ne_corner: ne_corner,
-            sw_corner: sw_corner,
+            ne_corner,
+            sw_corner,
         }
     }
 

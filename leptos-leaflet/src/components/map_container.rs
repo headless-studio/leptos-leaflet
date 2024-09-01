@@ -1,5 +1,5 @@
 use leaflet::Map;
-use leptos::{html::Div, *};
+use leptos::{html::Div, prelude::*};
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlDivElement;
 
@@ -7,7 +7,7 @@ use leaflet::LocateOptions;
 
 use crate::components::context::provide_leaflet_context;
 use crate::components::position::Position;
-use crate::{MapEvents, PopupEvents, TooltipEvents};
+use crate::{IntoThreadSafeJsValue, MapEvents, PopupEvents, ThreadSafeJsValue, TooltipEvents};
 
 #[component]
 pub fn MapContainer(
@@ -31,38 +31,39 @@ pub fn MapContainer(
     /// Sets the view of the map if geolocation is available
     #[prop(optional)]
     set_view: bool,
-    #[prop(optional)] map: Option<WriteSignal<Option<Map>>>,
+    #[prop(optional)] map: Option<WriteSignal<Option<ThreadSafeJsValue<Map>>>>,
     #[prop(optional)] events: MapEvents,
     #[prop(optional)] popup_events: PopupEvents,
     #[prop(optional)] tooltip_events: TooltipEvents,
     /// An optional node ref for the map `div` container element.
-    #[prop(optional)] node_ref: Option<NodeRef<Div>>,
+    #[prop(optional)]
+    node_ref: Option<NodeRef<Div>>,
     /// Inner map child nodes
     #[prop(optional)]
     children: Option<Children>,
 ) -> impl IntoView {
-    let map_ref = node_ref.unwrap_or(create_node_ref::<Div>());
+    let map_ref = node_ref.unwrap_or_default();
     let map_context = provide_leaflet_context();
 
     let map_load = map_ref;
-    map_load.on_load(move |map_div| {
-        let html_node = map_div.unchecked_ref::<HtmlDivElement>();
-        // Randomize the id of the map
-        if html_node.id().is_empty() {
-            let id = format!("map-{}", rand::random::<u64>());
-            _ = map_div.clone().id(id);
-        }
-        let events = events.clone();
-        let popup_events = popup_events.clone();
-        let tooltip_events = tooltip_events.clone();
-        _ = map_div.on_mount(move |map_div| {
-            let map_div = map_div.unchecked_ref::<HtmlDivElement>();
+    Effect::new(move |_| {
+        if let Some(map_div) = map_load.get() {
+            let html_node = map_div.unchecked_ref::<HtmlDivElement>();
+            // Randomize the id of the map
+            if html_node.id().is_empty() {
+                let id = format!("map-{}", rand::random::<u64>());
+                map_div.set_id(&id);
+            }
+            let events = events.clone();
+            let popup_events = popup_events.clone();
+            let tooltip_events = tooltip_events.clone();
+
             let options = leaflet::MapOptions::new();
             options.set_zoom(zoom);
             if let Some(center) = center {
                 options.set_center(center.into());
             }
-            let leaflet_map = Map::new(&map_div.id(), &options);
+            let leaflet_map = Map::new(&html_node.id(), &options);
 
             // Setup events
             events.setup(&leaflet_map);
@@ -78,14 +79,15 @@ pub fn MapContainer(
             }
 
             map_context.set_map(&leaflet_map);
+            let leaflet_map = leaflet_map.into_thread_safe_js_value();
             if let Some(map) = map {
                 map.set(Some(leaflet_map));
             }
-        });
+        };
     });
 
     on_cleanup(move || {
-        if let Some(map) = map_context.map_signal().get_untracked() {
+        if let Some(map) = map_context.map_signal().get_untracked().as_ref() {
             map.remove();
         };
     });

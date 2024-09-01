@@ -1,4 +1,4 @@
-use leptos::*;
+use leptos::prelude::*;
 
 use leaflet::{to_lat_lng_array, PolylineOptions};
 
@@ -9,8 +9,7 @@ use crate::components::path_options::{FillRule, LineCap, LineJoin};
 use crate::components::position::Position;
 use crate::core::LeafletMaybeSignal;
 use crate::{
-    setup_layer_leaflet_option, setup_layer_leaflet_option_ref, LayerEvents, MouseEvents,
-    PopupEvents, TooltipEvents,
+    setup_layer_leaflet_option, setup_layer_leaflet_option_ref, JsStoredValue, LayerEvents, MouseEvents, PopupEvents, TooltipEvents
 };
 
 #[component(transparent)]
@@ -40,13 +39,13 @@ pub fn Polygon(
     #[prop(optional)] children: Option<ChildrenFn>,
 ) -> impl IntoView {
     extend_context_with_overlay();
-    let overlay = store_value(None::<leaflet::Polygon>);
+    let overlay = JsStoredValue::new(None::<leaflet::Polygon>);
 
     let positions_for_effect = positions.clone();
     let color_clone = color.clone();
     let fill_color_clone = fill_color.clone();
     // This effect just setups the polygon when we get a map
-    create_effect(move |_| {
+    Effect::new(move |_| {
         if let Some(map) = use_context::<LeafletMapContext>()
             .expect("map context")
             .map()
@@ -84,10 +83,10 @@ pub fn Polygon(
         }
     });
 
-    let position_stop = watch(
+    let position_stop = Effect::watch(
         move || positions_for_effect.get(),
         move |pos, _, _| {
-            if let Some(polygon) = overlay.get_value() {
+            if let Some(polygon) = overlay.get_value().as_ref() {
                 let lat_lngs = to_lat_lng_array(pos);
                 polygon.set_lat_lngs(&lat_lngs);
             }
@@ -95,10 +94,10 @@ pub fn Polygon(
         false,
     );
 
-    let stroke_stop = watch(
+    let stroke_stop = Effect::watch(
         move || stroke.get(),
         move |stroke, _, _| {
-            if let (Some(stroke), Some(overlay)) = (stroke, overlay.get_value()) {
+            if let (Some(stroke), Some(overlay)) = (stroke, overlay.get_value().as_ref()) {
                 let options = PolylineOptions::new();
                 options.set_stroke(*stroke);
                 overlay.set_style(&options.into())
@@ -107,10 +106,10 @@ pub fn Polygon(
         false,
     );
 
-    let color_stop = watch(
+    let color_stop = Effect::watch(
         move || color_clone.get(),
         move |color, _, _| {
-            if let (Some(color), Some(overlay)) = (color, overlay.get_value()) {
+            if let (Some(color), Some(overlay)) = (color, overlay.get_value().as_ref()) {
                 let options = PolylineOptions::new();
                 options.set_color(color.to_string());
                 overlay.set_style(&options.into())
@@ -119,10 +118,10 @@ pub fn Polygon(
         false,
     );
 
-    let fill_color_stop = watch(
+    let fill_color_stop = Effect::watch(
         move || fill_color_clone.get(),
         move |color, _, _| {
-            if let (Some(color), Some(overlay)) = (color, overlay.get_value()) {
+            if let (Some(color), Some(overlay)) = (color, overlay.get_value().as_ref()) {
                 let options = PolylineOptions::new();
                 options.set_fill_color(color.to_string());
                 overlay.set_style(&options.into())
@@ -131,10 +130,10 @@ pub fn Polygon(
         false,
     );
 
-    let opacity_stop = watch(
+    let opacity_stop = Effect::watch(
         move || opacity.get(),
         move |opacity, _, _| {
-            if let (Some(opacity), Some(overlay)) = (opacity, overlay.get_value()) {
+            if let (Some(opacity), Some(overlay)) = (opacity, overlay.get_value().as_ref()) {
                 let options = PolylineOptions::new();
                 options.set_opacity(*opacity);
                 overlay.set_style(&options.into())
@@ -143,10 +142,10 @@ pub fn Polygon(
         false,
     );
 
-    let fill_opacity_stop = watch(
+    let fill_opacity_stop = Effect::watch(
         move || fill_opacity.get(),
         move |opacity, _, _| {
-            if let (Some(opacity), Some(overlay)) = (opacity, overlay.get_value()) {
+            if let (Some(opacity), Some(overlay)) = (opacity, overlay.get_value().as_ref()) {
                 let options = PolylineOptions::new();
                 options.set_fill_opacity(*opacity);
                 overlay.set_style(&options.into())
@@ -155,10 +154,10 @@ pub fn Polygon(
         false,
     );
 
-    let weight_stop = watch(
+    let weight_stop = Effect::watch(
         move || weight.get(),
         move |weight, _, _| {
-            if let (Some(weight), Some(overlay)) = (weight, overlay.get_value()) {
+            if let (Some(weight), Some(overlay)) = (weight, overlay.get_value().as_ref()) {
                 let options = PolylineOptions::new();
                 options.set_weight(*weight);
                 overlay.set_style(&options.into())
@@ -167,10 +166,10 @@ pub fn Polygon(
         false,
     );
 
-    let smooth_factor_stop = watch(
+    let smooth_factor_stop = Effect::watch(
         move || smooth_factor.get(),
         move |smooth_factor, _, _| {
-            if let (Some(smooth_factor), Some(overlay)) = (smooth_factor, overlay.get_value()) {
+            if let (Some(smooth_factor), Some(overlay)) = (smooth_factor, overlay.get_value().as_ref()) {
                 let options = PolylineOptions::new();
                 options.set_smooth_factor(*smooth_factor);
                 overlay.set_style(&options.into())
@@ -180,15 +179,15 @@ pub fn Polygon(
     );
 
     on_cleanup(move || {
-        position_stop();
-        stroke_stop();
-        color_stop();
-        fill_color_stop();
-        opacity_stop();
-        fill_opacity_stop();
-        weight_stop();
-        smooth_factor_stop();
-        if let Some(overlay) = overlay.get_value() {
+        position_stop.stop();
+        stroke_stop.stop();
+        color_stop.stop();
+        fill_color_stop.stop();
+        opacity_stop.stop();
+        fill_opacity_stop.stop();
+        weight_stop.stop();
+        smooth_factor_stop.stop();
+        if let Some(overlay) = overlay.get_value().as_ref() {
             overlay.remove();
         }
     });

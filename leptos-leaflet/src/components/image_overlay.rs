@@ -1,7 +1,8 @@
 use crate::components::bounds::Bounds;
 use crate::components::context::LeafletMapContext;
+use crate::IntoThreadSafeJsValue;
 use leptos::logging::log;
-use leptos::*;
+use leptos::prelude::*;
 
 #[component(transparent)]
 pub fn ImageOverlay(
@@ -20,7 +21,7 @@ pub fn ImageOverlay(
     #[prop(into, optional)] attribution: Option<MaybeSignal<String>>,
 ) -> impl IntoView {
     let map_context = use_context::<LeafletMapContext>().expect("map context not found");
-    create_effect(move |_| {
+    Effect::new(move |_| {
         if let Some(map) = map_context.map() {
             log!("Adding image layer: {}", url);
             let options = leaflet::ImageOverlayOptions::new();
@@ -58,7 +59,8 @@ pub fn ImageOverlay(
                 options.set_attribution(attribution.get_untracked());
             }
 
-            let map_layer = leaflet::ImageOverlay::new_with_options(&url, &bounds.into(), &options);
+            let map_layer = leaflet::ImageOverlay::new_with_options(&url, &bounds.into(), &options)
+                .into_thread_safe_js_value();
             map_layer.add_to(&map);
             on_cleanup(move || {
                 map_layer.remove();

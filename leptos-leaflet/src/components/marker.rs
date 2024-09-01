@@ -1,13 +1,12 @@
 use crate::components::context::extend_context_with_overlay;
 use crate::components::position::Position;
-use leptos::*;
+use leptos::prelude::*;
 use wasm_bindgen::JsCast;
 
 use crate::components::context::LeafletMapContext;
 use crate::core::LeafletMaybeSignal;
 use crate::{
-    setup_layer_leaflet_option, setup_layer_leaflet_option_ref, DragEvents, LayerEvents,
-    MouseEvents, MoveEvents, PopupEvents, TooltipEvents,
+    setup_layer_leaflet_option, setup_layer_leaflet_option_ref, DragEvents, JsStoredValue, LayerEvents, MouseEvents, MoveEvents, PopupEvents, TooltipEvents
 };
 
 #[component(transparent)]
@@ -48,9 +47,9 @@ pub fn Marker(
     let map_context = use_context::<LeafletMapContext>().expect("Map context not found");
 
     let overlay_context = extend_context_with_overlay();
-    let overlay = store_value(None::<leaflet::Marker>);
+    let overlay = JsStoredValue::new(None::<leaflet::Marker>);
 
-    create_effect(move |_| {
+    Effect::new(move |_| {
         if let Some(map) = map_context.map() {
             let options = leaflet::MarkerOptions::new();
             let drag = draggable.get_untracked();
@@ -114,20 +113,20 @@ pub fn Marker(
         };
     });
 
-    let position_stop = watch(
+    let position_stop = Effect::watch(
         move || position_tracking.get(),
         move |position_tracking, _, _| {
-            if let Some(marker) = overlay.get_value() {
+            if let Some(marker) = overlay.get_value().as_ref() {
                 marker.set_lat_lng(&position_tracking.into());
             }
         },
         false,
     );
 
-    let opacity_stop = watch(
+    let opacity_stop = Effect::watch(
         move || opacity.get(),
         move |opacity, _, _| {
-            overlay.get_value().and_then(|marker| {
+            overlay.get_value().as_ref().and_then(|marker| {
                 opacity.map(|opacity| {
                     marker.set_opacity(opacity);
                 })
@@ -136,10 +135,10 @@ pub fn Marker(
         false,
     );
 
-    let drag_stop = watch(
+    let drag_stop = Effect::watch(
         move || draggable.get(),
         move |&draggable, _, _| {
-            if let Some(marker) = overlay.get_value() {
+            if let Some(marker) = overlay.get_value().as_ref() {
                 match draggable {
                     true => marker.dragging().enable(),
                     false => marker.dragging().disable(),
@@ -149,14 +148,14 @@ pub fn Marker(
         false,
     );
 
-    let rotation_stop = watch(
+    let rotation_stop = Effect::watch(
         move || rotation.get(),
         move |&rotation, prev_rotation, _| {
-            if let (Some(marker), Some(rotation)) = (overlay.get_value(), rotation) {
+            if let (Some(marker), Some(rotation)) = (overlay.get_value().as_ref(), rotation) {
                 if Some(rotation.trunc()) == prev_rotation.copied().flatten().map(|r| r.trunc()) {
                     return;
                 }
-                if let Ok(internal_icon) = js_sys::Reflect::get(&marker, &"_icon".into()) {
+                if let Ok(internal_icon) = js_sys::Reflect::get(marker, &"_icon".into()) {
                     let internal_icon = internal_icon.unchecked_ref::<web_sys::HtmlElement>();
                     _ = internal_icon
                         .style()
@@ -190,11 +189,11 @@ pub fn Marker(
     );
 
     on_cleanup(move || {
-        position_stop();
-        opacity_stop();
-        drag_stop();
-        rotation_stop();
-        if let Some(overlay) = overlay.get_value() {
+        position_stop.stop();
+        opacity_stop.stop();
+        drag_stop.stop();
+        rotation_stop.stop();
+        if let Some(overlay) = overlay.get_value().as_ref() {
             overlay.remove();
         }
     });

@@ -1,8 +1,9 @@
 use crate::components::position::Position;
 
 use crate::components::context::{LeafletMapContext, LeafletOverlayContainerContext};
+use crate::IntoThreadSafeJsValue;
 use leptos::html::Div;
-use leptos::*;
+use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
 
 #[component]
@@ -28,9 +29,9 @@ pub fn Popup(
     let overlay_context = use_context::<LeafletOverlayContainerContext>();
 
     // Render popup content to a html element
-    let content = create_node_ref::<Div>();
+    let content = NodeRef::<Div>::new();
 
-    create_effect(move |_| {
+    Effect::new(move |_| {
         let inner_content = content;
         let options = leaflet::PopupOptions::default();
         if let Some(pane) = &pane {
@@ -81,7 +82,7 @@ pub fn Popup(
         }
         if let Some(overlay_context) = overlay_context {
             if let Some(marker) = overlay_context.container::<leaflet::Layer>() {
-                let popup = leaflet::Popup::new(&options, Some(marker.unchecked_ref()));
+                let popup = leaflet::Popup::new(&options, Some(marker.unchecked_ref())).into_thread_safe_js_value();
                 let content = inner_content.get_untracked().expect("content ref");
                 let html_view: &JsValue = content.unchecked_ref();
                 popup.set_content(html_view);
@@ -92,7 +93,7 @@ pub fn Popup(
             }
         } else if let Some(map) = map_context.expect("map context not found").map() {
             let popup =
-                leaflet::Popup::new_with_lat_lng(&position.get_untracked().into(), &options);
+                leaflet::Popup::new_with_lat_lng(&position.get_untracked().into(), &options).into_thread_safe_js_value();
             let content = inner_content.get_untracked().expect("content ref");
             let html_view: &JsValue = content.unchecked_ref();
             popup.set_content(html_view);
@@ -103,5 +104,5 @@ pub fn Popup(
         }
     });
 
-    view! { <div style="visibility:collapse"><div _ref=content>{children()}</div></div> }
+    view! { <div style="visibility:collapse"><div node_ref=content>{children()}</div></div> }
 }

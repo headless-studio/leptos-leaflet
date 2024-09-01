@@ -2,15 +2,19 @@
  * Copyright (c) HeadlessStudio  2023.
  */
 
-use leptos::*;
+use std::panic::Location;
+
+use leptos::prelude::*;
+
+use super::{JsReadSignal, JsRwSignal, JsSignal, JsStoredValue};
 
 #[derive(Copy, Clone)]
 pub enum LeafletMaybeSignal<T>
 where
     T: Clone + 'static,
 {
-    Static(StoredValue<Option<T>>),
-    Dynamic(Signal<Option<T>>),
+    Static(JsStoredValue<Option<T>>),
+    Dynamic(JsSignal<Option<T>>),
 }
 
 impl<T> Default for LeafletMaybeSignal<T>
@@ -18,86 +22,46 @@ where
     T: Clone + 'static,
 {
     fn default() -> Self {
-        Self::Static(store_value(None))
+        Self::Static(JsStoredValue::new(None))
     }
 }
 
-impl<T> SignalGet for LeafletMaybeSignal<T>
+impl<T> DefinedAt for LeafletMaybeSignal<T>
 where
     T: Clone + 'static,
 {
-    type Value = Option<T>;
-    fn get(&self) -> Self::Value {
+    fn defined_at(&self) -> Option<&'static Location<'static>> {
         match self {
-            LeafletMaybeSignal::Static(v) => v.get_value(),
-            LeafletMaybeSignal::Dynamic(v) => v.get(),
-        }
-    }
-
-    fn try_get(&self) -> Option<Self::Value> {
-        match self {
-            LeafletMaybeSignal::Static(v) => v.try_get_value(),
-            LeafletMaybeSignal::Dynamic(v) => v.try_get(),
+            LeafletMaybeSignal::Static(v) => v.defined_at(),
+            LeafletMaybeSignal::Dynamic(v) => v.defined_at(),
         }
     }
 }
 
-impl<T> SignalWith for LeafletMaybeSignal<T>
+impl<T> With for LeafletMaybeSignal<T>
 where
     T: Clone + 'static,
 {
     type Value = Option<T>;
-    fn with<O>(&self, f: impl FnOnce(&Self::Value) -> O) -> O {
-        match self {
-            LeafletMaybeSignal::Static(v) => f(&v.get_value()),
-            LeafletMaybeSignal::Dynamic(v) => v.with(f),
-        }
-    }
 
-    fn try_with<O>(&self, f: impl FnOnce(&Self::Value) -> O) -> Option<O> {
+    fn try_with<U>(&self, fun: impl FnOnce(&Self::Value) -> U) -> Option<U> {
         match self {
-            LeafletMaybeSignal::Static(v) => Some(f(&v.get_value())),
-            LeafletMaybeSignal::Dynamic(v) => v.try_with(f),
+            LeafletMaybeSignal::Static(v) => v.try_with_value(|v| fun(v)),
+            LeafletMaybeSignal::Dynamic(v) => v.try_with(|v| fun(v)),
         }
     }
 }
 
-impl<T> SignalWithUntracked for LeafletMaybeSignal<T>
+impl<T> WithUntracked for LeafletMaybeSignal<T>
 where
     T: Clone + 'static,
 {
     type Value = Option<T>;
-    fn with_untracked<O>(&self, f: impl FnOnce(&Self::Value) -> O) -> O {
-        match self {
-            LeafletMaybeSignal::Static(v) => f(&v.get_value()),
-            LeafletMaybeSignal::Dynamic(v) => v.with_untracked(f),
-        }
-    }
 
-    fn try_with_untracked<O>(&self, f: impl FnOnce(&Self::Value) -> O) -> Option<O> {
+    fn try_with_untracked<U>(&self, fun: impl FnOnce(&Self::Value) -> U) -> Option<U> {
         match self {
-            LeafletMaybeSignal::Static(v) => Some(f(&v.get_value())),
-            LeafletMaybeSignal::Dynamic(v) => v.try_with_untracked(f),
-        }
-    }
-}
-
-impl<T> SignalGetUntracked for LeafletMaybeSignal<T>
-where
-    T: Clone + 'static,
-{
-    type Value = Option<T>;
-    fn get_untracked(&self) -> Self::Value {
-        match self {
-            LeafletMaybeSignal::Static(v) => v.get_value(),
-            LeafletMaybeSignal::Dynamic(v) => v.get_untracked(),
-        }
-    }
-
-    fn try_get_untracked(&self) -> Option<Self::Value> {
-        match self {
-            LeafletMaybeSignal::Static(v) => v.try_get_value(),
-            LeafletMaybeSignal::Dynamic(v) => v.try_get_untracked(),
+            LeafletMaybeSignal::Static(v) => v.try_with_value(|v| fun(v)),
+            LeafletMaybeSignal::Dynamic(v) => v.try_with_untracked(|v| fun(v)),
         }
     }
 }
@@ -107,7 +71,7 @@ where
     T: Clone + 'static,
 {
     fn from(target: Option<T>) -> Self {
-        LeafletMaybeSignal::Static(store_value(target))
+        LeafletMaybeSignal::Static(JsStoredValue::new(target))
     }
 }
 
@@ -116,7 +80,7 @@ where
     T: Clone + 'static,
 {
     fn from(target: T) -> Self {
-        LeafletMaybeSignal::Static(store_value(Some(target)))
+        LeafletMaybeSignal::Static(JsStoredValue::new(Some(target)))
     }
 }
 
@@ -133,33 +97,6 @@ macro_rules! impl_from_signal_option {
     };
 }
 
-impl_from_signal_option!(Signal<Option<T>>);
-impl_from_signal_option!(ReadSignal<Option<T>>);
-impl_from_signal_option!(RwSignal<Option<T>>);
-impl_from_signal_option!(Memo<Option<T>>);
-
-macro_rules! impl_from_signal {
-    ($ty:ty) => {
-        impl<T> From<$ty> for LeafletMaybeSignal<T>
-        where
-            T: Clone + 'static,
-        {
-            fn from(target: $ty) -> Self {
-                let signal = target;
-
-                Self::Dynamic(Signal::derive(move || Some(signal.get())))
-            }
-        }
-    };
-}
-
-impl_from_signal!(Signal<T>);
-impl_from_signal!(ReadSignal<T>);
-impl_from_signal!(RwSignal<T>);
-impl_from_signal!(Memo<T>);
-
-impl From<&str> for LeafletMaybeSignal<String> {
-    fn from(value: &str) -> Self {
-        Self::Static(store_value(Some(value.to_string())))
-    }
-}
+impl_from_signal_option!(JsSignal<Option<T>>);
+impl_from_signal_option!(JsReadSignal<Option<T>>);
+impl_from_signal_option!(JsRwSignal<Option<T>>);

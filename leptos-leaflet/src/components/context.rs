@@ -1,15 +1,17 @@
-use leptos::*;
+use leptos::prelude::*;
 use wasm_bindgen::JsCast;
+
+use crate::core::{JsReadSignal, JsRwSignal};
 
 #[derive(Debug, Clone, Copy)]
 pub struct LeafletMapContext {
-    map: RwSignal<Option<leaflet::Map>>,
+    map: JsRwSignal<Option<leaflet::Map>>,
 }
 
 impl LeafletMapContext {
     pub fn new() -> Self {
         Self {
-            map: create_rw_signal(None),
+            map: JsRwSignal::new(None),
         }
     }
 
@@ -28,7 +30,7 @@ impl LeafletMapContext {
     }
 
     /// Returns a signal that emits the current map instance.
-    pub fn map_signal(&self) -> ReadSignal<Option<leaflet::Map>> {
+    pub fn map_signal(&self) -> JsReadSignal<Option<leaflet::Map>> {
         self.map.read_only()
     }
 
@@ -108,13 +110,13 @@ pub fn update_overlay_context<C: Into<leaflet::Layer> + Clone>(layer: &C) {
 /// A context struct for Leaflet overlay container.
 #[derive(Debug, Clone, Copy)]
 pub struct LeafletOverlayContainerContext {
-    container: RwSignal<Option<leaflet::Layer>>,
+    container: JsRwSignal<Option<leaflet::Layer>>,
 }
 
 impl LeafletOverlayContainerContext {
     pub fn new() -> Self {
         Self {
-            container: create_rw_signal(None),
+            container: JsRwSignal::new(None),
         }
     }
 
@@ -144,7 +146,7 @@ impl Default for LeafletOverlayContainerContext {
 
 #[derive(Debug, Clone, Copy)]
 pub struct TileLayerWmsContext {
-    wms: RwSignal<Option<leaflet::TileLayerWms>>,
+    wms: JsRwSignal<Option<leaflet::TileLayerWms>>,
 }
 
 impl Default for TileLayerWmsContext {
@@ -156,7 +158,7 @@ impl Default for TileLayerWmsContext {
 impl TileLayerWmsContext {
     pub fn new() -> Self {
         Self {
-            wms: create_rw_signal(None),
+            wms: JsRwSignal::new(None),
         }
     }
 

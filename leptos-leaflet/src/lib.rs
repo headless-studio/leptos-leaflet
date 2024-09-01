@@ -2,6 +2,9 @@ mod components;
 pub(crate) mod core;
 
 pub use components::*;
+pub use core::{
+    JsReadSignal, JsRwSignal, JsSignal, JsStoredValue, JsWriteSignal, LeafletMaybeSignal, ThreadSafeJsValue, IntoThreadSafeJsValue
+};
 
 /// Leaflet re-exports
 pub use leaflet;

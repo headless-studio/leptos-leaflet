@@ -1,8 +1,9 @@
 use leptos::logging::warn;
-use leptos::*;
+use leptos::prelude::*;
 
 use crate::components::context::LeafletMapContext;
 use crate::components::context::TileLayerWmsContext;
+use crate::IntoThreadSafeJsValue;
 use crate::MapEvents;
 use leaflet::{Map, TileLayerWms as LeafletTileLayerWms, TileLayerWmsOptions};
 
@@ -18,9 +19,10 @@ pub fn TileLayerWms(
     let wms_context = TileLayerWmsContext::new();
     provide_context(wms_context);
 
-    create_effect(move |_| {
+    Effect::new(move |_| {
         if let Some(map) = map_context.map() {
-            let map_layer = leaflet::TileLayerWms::new_options(&url, &options);
+            let map_layer =
+                leaflet::TileLayerWms::new_options(&url, &options).into_thread_safe_js_value();
             map_layer.add_to(&map);
             wms_context.set_wms(&map_layer);
 
@@ -36,7 +38,9 @@ pub fn TileLayerWms(
             });
         }
     });
-    children.map_or(view! { <>""</> }, |c| view! { <>{ c() }</>})
+    children.map_or(view! { <>""</> }.into_any(), |c| {
+        view! { <>{ c() }</>}.into_any()
+    })
 }
 
 #[component(transparent)]
@@ -49,7 +53,7 @@ where
     let wms_ctx =
         use_context::<crate::TileLayerWmsContext>().expect("TileLayerWmsContext not available.");
 
-    create_effect(move |_| {
+    Effect::new(move |_| {
         let map = map_ctx.map();
         let wms = wms_ctx.wms();
         if let (Some(m), Some(w)) = (map, wms) {

@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 console_error_panic_hook = "0.1"
-leptos = { version = "0.6", default-features = false, "features" = [
+leptos = { version = "0.7.0-beta4", default-features = false, "features" = [
     "csr",
 ] }
 leptos-leaflet = { path = "../../leptos-leaflet", default-features = false, features = [
@@ -15,6 +15,9 @@ leptos-leaflet = { path = "../../leptos-leaflet", default-features = false, feat
 ] }
 
 web-sys = { version = "0.3", features = ["HtmlBodyElement"] }
+
+[patch.crates-io]
+leptos = { git = "https://github.com/leptos-rs/leptos", branch = "main" }
 
 [features]
 csr = []
