@@ -1,11 +1,9 @@
 use leptos::logging::warn;
 use leptos::prelude::*;
-
-use crate::components::context::LeafletMapContext;
-use crate::components::context::TileLayerWmsContext;
-use crate::IntoThreadSafeJsValue;
-use crate::MapEvents;
 use leaflet::{Map, TileLayerWms as LeafletTileLayerWms, TileLayerWmsOptions};
+
+use super::{LeafletMapContext, MapEvents, TileLayerWmsContext};
+use crate::core::IntoThreadSafeJsValue;
 
 #[component(transparent)]
 pub fn TileLayerWms(
@@ -49,9 +47,9 @@ where
     F: Fn(&Map, &LeafletTileLayerWms) -> MapEvents + 'static,
 {
     let map_ctx =
-        use_context::<crate::LeafletMapContext>().expect("LeafletMapContext not available.");
+        use_context::<LeafletMapContext>().expect("LeafletMapContext not available.");
     let wms_ctx =
-        use_context::<crate::TileLayerWmsContext>().expect("TileLayerWmsContext not available.");
+        use_context::<TileLayerWmsContext>().expect("TileLayerWmsContext not available.");
 
     Effect::new(move |_| {
         let map = map_ctx.map();

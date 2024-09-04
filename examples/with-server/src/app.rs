@@ -1,11 +1,12 @@
 use std::time::Duration;
 
 use leptos::logging::log;
-use leptos::*;
+use leptos::prelude::*;
 use leptos_leaflet::leaflet::{LocationEvent, Map};
-use leptos_leaflet::*;
+use leptos_leaflet::prelude::*;
 use leptos_meta::*;
-use leptos_router::*;
+use leptos_router::components::{Route, Router, Routes};
+use leptos_router::path;
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -25,8 +26,8 @@ pub fn App() -> impl IntoView {
         // content for this welcome page
         <Router>
             <main>
-                <Routes>
-                    <Route path="" view=HomePage/>
+                <Routes fallback=|| "This page couldn't be found">
+                    <Route path=path!("") view=HomePage/>
                 </Routes>
             </main>
         </Router>
@@ -36,10 +37,10 @@ pub fn App() -> impl IntoView {
 /// Renders the home page of your application.
 #[component]
 fn HomePage() -> impl IntoView {
-    let (marker_position, set_marker_position) = create_signal(Position::new(51.49, -0.08));
-    let (map, set_map) = create_signal(None::<Map>);
+    let (marker_position, set_marker_position) = JsRwSignal::new(Position::new(51.49, -0.08)).split();
+    let (map, set_map) = create_map_signal();
 
-    create_effect(move |_| {
+    Effect::new(move |_| {
         set_interval_with_handle(
             move || {
                 set_marker_position.update(|pos| {
@@ -52,7 +53,7 @@ fn HomePage() -> impl IntoView {
         .ok()
     });
 
-    create_effect(move |_| {
+    Effect::new(move |_| {
         if let Some(map) = map.get() {
             log!("Map context {:?}", map);
         }

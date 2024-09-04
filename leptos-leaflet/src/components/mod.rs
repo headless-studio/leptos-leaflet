@@ -29,7 +29,7 @@ pub use path_options::*;
 pub use polygon::Polygon;
 pub use polyline::Polyline;
 pub use popup::Popup;
-pub use position::Position;
+pub use position::*;
 pub use tile_layer::TileLayer;
 pub use tile_layer_wms::{TileLayerWms, TileLayerWmsEvents};
 pub use tooltip::Tooltip;
@@ -122,4 +122,38 @@ macro_rules! setup_layer_leaflet_option_ref {
             }
         }
     };
+}
+
+#[macro_export]
+macro_rules! setup_layer_leaflet_string {
+    ($name:ident, $options:ident) => {
+        $crate::paste! {
+            if !$name.get_untracked().is_empty() {
+                $options.[<set_ $name>]($name.get_untracked().to_string());
+            }
+        }
+    };
+}
+
+pub trait StringEmptyOption<T> {
+    fn to_option(&self) -> Option<&T>;
+    fn to_option_owned(self) -> Option<T>;
+}
+
+impl StringEmptyOption<String> for String {
+    fn to_option(&self) -> Option<&String> {
+        if self.is_empty() {
+            None
+        } else {
+            Some(self)
+        }
+    }
+
+    fn to_option_owned(self) -> Option<String> {
+        if self.is_empty() {
+            None
+        } else {
+            Some(self)
+        }
+    }
 }

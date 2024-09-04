@@ -1,6 +1,6 @@
 use crate::components::bounds::Bounds;
 use crate::components::context::LeafletMapContext;
-use crate::IntoThreadSafeJsValue;
+use crate::core::IntoThreadSafeJsValue;
 use leptos::logging::log;
 use leptos::prelude::*;
 
@@ -59,7 +59,7 @@ pub fn ImageOverlay(
                 options.set_attribution(attribution.get_untracked());
             }
 
-            let map_layer = leaflet::ImageOverlay::new_with_options(&url, &bounds.into(), &options)
+            let map_layer = leaflet::ImageOverlay::new_with_options(&url, &bounds.as_lat_lng_bounds(), &options)
                 .into_thread_safe_js_value();
             map_layer.add_to(&map);
             on_cleanup(move || {

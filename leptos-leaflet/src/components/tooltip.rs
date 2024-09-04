@@ -2,13 +2,13 @@ use leptos::html::Div;
 use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
 
-use crate::components::context::{LeafletMapContext, LeafletOverlayContainerContext};
-use crate::components::position::Position;
-use crate::IntoThreadSafeJsValue;
+use crate::core::{IntoThreadSafeJsValue, JsMaybeSignal};
+
+use super::{LeafletMapContext, LeafletOverlayContainerContext, Position};
 
 #[component]
 pub fn Tooltip(
-    #[prop(into, optional)] position: MaybeSignal<Position>,
+    #[prop(into, optional)] position: JsMaybeSignal<Position>,
     #[prop(into, optional)] permanent: MaybeSignal<bool>,
     #[prop(into, optional, default="auto".into())] direction: MaybeSignal<String>,
     #[prop(into, optional)] sticky: MaybeSignal<bool>,
@@ -29,7 +29,8 @@ pub fn Tooltip(
 
         if let Some(overlay_context) = overlay_context {
             if let Some(layer) = overlay_context.container::<leaflet::Layer>() {
-                let tooltip = leaflet::Tooltip::new(&options, Some(layer.unchecked_ref())).into_thread_safe_js_value();
+                let tooltip = leaflet::Tooltip::new(&options, Some(layer.unchecked_ref()))
+                    .into_thread_safe_js_value();
                 let content = content.get_untracked().expect("content ref");
                 tooltip.set_content(content.unchecked_ref());
                 layer.bind_tooltip(&tooltip);
@@ -38,8 +39,11 @@ pub fn Tooltip(
                 });
             }
         } else if let Some(map) = map_context.expect("Map context not found").map() {
-            let tooltip =
-                leaflet::Tooltip::new_with_lat_lng(&position.get_untracked().into(), &options).into_thread_safe_js_value();
+            let tooltip = leaflet::Tooltip::new_with_lat_lng(
+                &position.get_untracked().as_lat_lng(),
+                &options,
+            )
+            .into_thread_safe_js_value();
             let content = content.get_untracked().expect("content ref");
             let html_view: &JsValue = content.unchecked_ref();
             tooltip.set_content(html_view);

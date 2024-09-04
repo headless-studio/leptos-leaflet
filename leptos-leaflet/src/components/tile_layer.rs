@@ -1,8 +1,9 @@
 use leptos::logging::warn;
 use leptos::prelude::*;
 
-use crate::components::context::LeafletMapContext;
-use crate::IntoThreadSafeJsValue;
+use crate::core::IntoThreadSafeJsValue;
+
+use super::LeafletMapContext;
 
 #[component(transparent)]
 pub fn TileLayer(

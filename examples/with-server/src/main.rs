@@ -2,7 +2,7 @@
 #[tokio::main]
 async fn main() {
     use axum::{extract::Extension, routing::post, Router};
-    use leptos::*;
+    use leptos::prelude::*;
     use leptos_axum::{generate_route_list, LeptosRoutes};
     use start_axum::app::*;
     use start_axum::fileserv::file_and_error_handler;

@@ -5,9 +5,9 @@ use web_sys::HtmlDivElement;
 
 use leaflet::LocateOptions;
 
-use crate::components::context::provide_leaflet_context;
-use crate::components::position::Position;
-use crate::{IntoThreadSafeJsValue, MapEvents, PopupEvents, ThreadSafeJsValue, TooltipEvents};
+use crate::core::{IntoThreadSafeJsValue, ThreadSafeJsValue};
+
+use super::{provide_leaflet_context, MapEvents, PopupEvents, Position, TooltipEvents};
 
 #[component]
 pub fn MapContainer(
@@ -61,7 +61,7 @@ pub fn MapContainer(
             let options = leaflet::MapOptions::new();
             options.set_zoom(zoom);
             if let Some(center) = center {
-                options.set_center(center.into());
+                options.set_center(center.as_lat_lng());
             }
             let leaflet_map = Map::new(&html_node.id(), &options);
 

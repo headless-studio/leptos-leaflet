@@ -4,7 +4,7 @@ pub mod error_template;
 pub mod fileserv;
 
 cfg_if! { if #[cfg(feature = "hydrate")] {
-    use leptos::*;
+    use leptos::prelude::*;
     use wasm_bindgen::prelude::wasm_bindgen;
     use crate::app::*;
 
@@ -14,7 +14,7 @@ cfg_if! { if #[cfg(feature = "hydrate")] {
         _ = console_log::init_with_level(log::Level::Debug);
         console_error_panic_hook::set_once();
 
-        leptos::mount_to_body(move || {
+        mount_to_body(move || {
             view! { <App/> }
         });
     }

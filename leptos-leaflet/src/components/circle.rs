@@ -1,32 +1,29 @@
-use crate::components::context::{extend_context_with_overlay, LeafletMapContext};
-use crate::components::path_options::{FillRule, LineCap, LineJoin};
-use crate::components::position::Position;
-use crate::core::{JsStoredValue, LeafletMaybeSignal};
-use crate::{
-    setup_layer_leaflet_option, setup_layer_leaflet_option_ref, LayerEvents, MouseEvents,
-    PopupEvents, TooltipEvents, MoveEvents,
-};
 use leaflet::CircleOptions;
 use leptos::prelude::*;
 
+use super::{
+    extend_context_with_overlay, FillRule, LayerEvents, LeafletMapContext, LineCap, LineJoin, MouseEvents, MoveEvents, PopupEvents, Position, StringEmptyOption, TooltipEvents
+};
+use crate::{core::{JsMaybeSignal, JsStoredValue, LeafletMaybeSignal}, setup_layer_leaflet_option, setup_layer_leaflet_option_ref, setup_layer_leaflet_string};
+
 #[component(transparent)]
 pub fn Circle(
-    #[prop(into)] center: MaybeSignal<Position>,
+    #[prop(into)] center: JsMaybeSignal<Position>,
     #[prop(into, optional)] stroke: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] color: LeafletMaybeSignal<String>,
+    #[prop(into, optional)] color: MaybeSignal<String>,
     #[prop(into, optional)] weight: LeafletMaybeSignal<f64>,
     #[prop(into, optional)] interactive: LeafletMaybeSignal<bool>,
     #[prop(into, optional)] opacity: LeafletMaybeSignal<f64>,
     #[prop(into, optional)] line_cap: LeafletMaybeSignal<LineCap>,
     #[prop(into, optional)] line_join: LeafletMaybeSignal<LineJoin>,
-    #[prop(into, optional)] dash_array: LeafletMaybeSignal<String>,
-    #[prop(into, optional)] dash_offset: LeafletMaybeSignal<String>,
+    #[prop(into, optional)] dash_array: MaybeSignal<String>,
+    #[prop(into, optional)] dash_offset: MaybeSignal<String>,
     #[prop(into, optional)] fill: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] fill_color: LeafletMaybeSignal<String>,
+    #[prop(into, optional)] fill_color: MaybeSignal<String>,
     #[prop(into, optional)] fill_opacity: LeafletMaybeSignal<f64>,
     #[prop(into, optional)] fill_rule: LeafletMaybeSignal<FillRule>,
     #[prop(into, optional)] bubbling_mouse_events: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] class_name: LeafletMaybeSignal<String>,
+    #[prop(into, optional)] class_name: MaybeSignal<String>,
     #[prop(into, optional)] mouse_events: MouseEvents,
     #[prop(into, optional)] layer_events: LayerEvents,
     #[prop(into, optional)] popup_events: PopupEvents,
@@ -49,23 +46,23 @@ pub fn Circle(
         {
             let options = CircleOptions::new();
             setup_layer_leaflet_option!(stroke, options);
-            setup_layer_leaflet_option_ref!(color, options);
+            setup_layer_leaflet_string!(color, options);
             setup_layer_leaflet_option!(weight, options);
             setup_layer_leaflet_option!(opacity, options);
             setup_layer_leaflet_option!(interactive, options);
             setup_layer_leaflet_option_ref!(line_cap, options);
             setup_layer_leaflet_option_ref!(line_join, options);
-            setup_layer_leaflet_option_ref!(dash_array, options);
-            setup_layer_leaflet_option_ref!(dash_offset, options);
+            setup_layer_leaflet_string!(dash_array, options);
+            setup_layer_leaflet_string!(dash_offset, options);
             setup_layer_leaflet_option!(fill, options);
-            setup_layer_leaflet_option_ref!(fill_color, options);
+            setup_layer_leaflet_string!(fill_color, options);
             setup_layer_leaflet_option!(fill_opacity, options);
             setup_layer_leaflet_option_ref!(fill_rule, options);
             setup_layer_leaflet_option!(bubbling_mouse_events, options);
-            setup_layer_leaflet_option_ref!(class_name, options);
+            setup_layer_leaflet_string!(class_name, options);
             let circle =
                 leaflet::Circle::new_with_options(&center.get_untracked().into(), &options);
-            
+
             leaflet::Circle::set_radius(&circle, radius.get_untracked());
 
             mouse_events.setup(&circle);
@@ -105,7 +102,7 @@ pub fn Circle(
     let color_stop = Effect::watch(
         move || color_clone.get(),
         move |color, _, _| {
-            if let (Some(color), Some(overlay)) = (color, overlay.get_value().as_ref()) {
+            if let (Some(color), Some(overlay)) = (color.to_option(), overlay.get_value().as_ref()) {
                 let options = CircleOptions::new();
                 options.set_color(color.to_string());
                 overlay.set_style(&options);
@@ -117,7 +114,7 @@ pub fn Circle(
     let fill_color_stop = Effect::watch(
         move || fill_color_clone.get(),
         move |color, _, _| {
-            if let (Some(color), Some(overlay)) = (color, overlay.get_value().as_ref()) {
+            if let (Some(color), Some(overlay)) = (color.to_option(), overlay.get_value().as_ref()) {
                 let options = CircleOptions::new();
                 options.set_fill_color(color.to_string());
                 overlay.set_style(&options);
@@ -166,11 +163,11 @@ pub fn Circle(
         move || position_tracking.get(),
         move |position_tracking, _, _| {
             if let Some(circle) = overlay.get_value().as_ref() {
-                circle.set_lat_lng(&position_tracking.into());
+                circle.set_lat_lng(&position_tracking.as_lat_lng());
             }
         },
         false,
-    );     
+    );
 
     on_cleanup(move || {
         position_stop.stop();

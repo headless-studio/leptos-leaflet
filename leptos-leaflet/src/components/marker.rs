@@ -1,39 +1,40 @@
 use crate::components::context::extend_context_with_overlay;
 use crate::components::position::Position;
+use crate::prelude::StringEmptyOption;
 use leptos::prelude::*;
 use wasm_bindgen::JsCast;
 
-use crate::components::context::LeafletMapContext;
-use crate::core::LeafletMaybeSignal;
-use crate::{
-    setup_layer_leaflet_option, setup_layer_leaflet_option_ref, DragEvents, JsStoredValue, LayerEvents, MouseEvents, MoveEvents, PopupEvents, TooltipEvents
+use super::{
+    DragEvents, LayerEvents, LeafletMapContext, MouseEvents, MoveEvents, PopupEvents, TooltipEvents,
 };
+use crate::core::{JsMaybeSignal, JsStoredValue, LeafletMaybeSignal};
+use crate::{setup_layer_leaflet_option, setup_layer_leaflet_string};
 
 #[component(transparent)]
 pub fn Marker(
     /// Position for the Marker
     #[prop(into)]
-    position: MaybeSignal<Position>,
+    position: JsMaybeSignal<Position>,
     #[prop(into, optional)] draggable: MaybeSignal<bool>,
     #[prop(into, optional)] keyboard: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] title: LeafletMaybeSignal<String>,
-    #[prop(into, optional)] alt: LeafletMaybeSignal<String>,
+    #[prop(into, optional)] title: MaybeSignal<String>,
+    #[prop(into, optional)] alt: MaybeSignal<String>,
     #[prop(into, optional)] interactive: LeafletMaybeSignal<bool>,
     #[prop(into, optional)] z_index_offset: LeafletMaybeSignal<f64>,
     #[prop(into, optional)] opacity: LeafletMaybeSignal<f64>,
     #[prop(into, optional)] rise_on_hover: LeafletMaybeSignal<bool>,
     #[prop(into, optional)] rise_offset: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] pane: LeafletMaybeSignal<String>,
-    #[prop(into, optional)] shadow_pane: LeafletMaybeSignal<String>,
+    #[prop(into, optional)] pane: MaybeSignal<String>,
+    #[prop(into, optional)] shadow_pane: MaybeSignal<String>,
     #[prop(into, optional)] bubbling_mouse_events: LeafletMaybeSignal<bool>,
     #[prop(into, optional)] auto_pan: LeafletMaybeSignal<bool>,
     #[prop(into, optional)] auto_pan_padding: LeafletMaybeSignal<(f64, f64)>,
     #[prop(into, optional)] auto_pan_speed: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] icon_class: LeafletMaybeSignal<String>,
-    #[prop(into, optional)] icon_url: LeafletMaybeSignal<String>,
+    #[prop(into, optional)] icon_class: MaybeSignal<String>,
+    #[prop(into, optional)] icon_url: MaybeSignal<String>,
     #[prop(into, optional)] icon_size: LeafletMaybeSignal<(f64, f64)>,
     #[prop(into, optional)] icon_anchor: LeafletMaybeSignal<(f64, f64)>,
-    #[prop(into, optional)] attribution: LeafletMaybeSignal<String>,
+    #[prop(into, optional)] attribution: MaybeSignal<String>,
     #[prop(into, optional)] rotation: LeafletMaybeSignal<f64>,
     #[prop(into, optional)] move_events: MoveEvents,
     #[prop(into, optional)] mouse_events: MouseEvents,
@@ -57,24 +58,24 @@ pub fn Marker(
                 options.set_draggable(drag);
             }
             setup_layer_leaflet_option!(keyboard, options);
-            setup_layer_leaflet_option_ref!(title, options);
-            setup_layer_leaflet_option_ref!(alt, options);
+            setup_layer_leaflet_string!(title, options);
+            setup_layer_leaflet_string!(alt, options);
             setup_layer_leaflet_option!(interactive, options);
             setup_layer_leaflet_option!(z_index_offset, options);
             setup_layer_leaflet_option!(opacity, options);
             setup_layer_leaflet_option!(rise_on_hover, options);
             setup_layer_leaflet_option!(rise_offset, options);
-            setup_layer_leaflet_option_ref!(pane, options);
-            setup_layer_leaflet_option_ref!(shadow_pane, options);
+            setup_layer_leaflet_string!(pane, options);
+            setup_layer_leaflet_string!(shadow_pane, options);
             setup_layer_leaflet_option!(bubbling_mouse_events, options);
             setup_layer_leaflet_option!(auto_pan, options);
             setup_layer_leaflet_option!(auto_pan_speed, options);
-            setup_layer_leaflet_option_ref!(attribution, options);
+            setup_layer_leaflet_string!(attribution, options);
 
             if let Some((x, y)) = auto_pan_padding.get_untracked() {
                 options.set_auto_pan_padding(leaflet::Point::new(x, y));
             }
-            if let Some(icon_url) = icon_url.get_untracked() {
+            if let Some(icon_url) = icon_url.get_untracked().to_option_owned() {
                 let icon_options = leaflet::IconOptions::new();
                 icon_options.set_icon_url(icon_url);
                 if let Some((x, y)) = icon_size.get_untracked() {
@@ -85,7 +86,7 @@ pub fn Marker(
                 }
                 let icon = leaflet::Icon::new(&icon_options);
                 options.set_icon(icon);
-            } else if let Some(icon_class) = icon_class.get_untracked() {
+            } else if let Some(icon_class) = icon_class.get_untracked().to_option_owned() {
                 let icon_options = leaflet::DivIconOptions::new();
                 icon_options.set_class_name(icon_class);
                 if let Some((x, y)) = icon_size.get_untracked() {
@@ -97,8 +98,9 @@ pub fn Marker(
                 let icon = leaflet::DivIcon::new(&icon_options);
                 options.set_icon(icon.into());
             }
+
             let marker =
-                leaflet::Marker::new_with_options(&position.get_untracked().into(), &options);
+                leaflet::Marker::new_with_options(&position.get_untracked().as_lat_lng(), &options);
 
             mouse_events.setup(&marker);
             move_events.setup(&marker);
@@ -117,7 +119,7 @@ pub fn Marker(
         move || position_tracking.get(),
         move |position_tracking, _, _| {
             if let Some(marker) = overlay.get_value().as_ref() {
-                marker.set_lat_lng(&position_tracking.into());
+                marker.set_lat_lng(&position_tracking.as_lat_lng());
             }
         },
         false,

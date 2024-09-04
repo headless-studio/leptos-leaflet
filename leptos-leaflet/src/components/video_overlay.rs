@@ -1,8 +1,9 @@
-use crate::components::bounds::Bounds;
-use crate::components::context::LeafletMapContext;
-use crate::IntoThreadSafeJsValue;
 use leptos::logging::log;
 use leptos::prelude::*;
+
+use crate::core::IntoThreadSafeJsValue;
+
+use super::{Bounds, LeafletMapContext};
 
 #[component(transparent)]
 pub fn VideoOverlay(
@@ -79,7 +80,12 @@ pub fn VideoOverlay(
                 options.set_plays_inline(plays_inline.get_untracked());
             }
 
-            let map_layer = leaflet::VideoOverlay::new_with_options(&url, &bounds.into(), &options).into_thread_safe_js_value();
+            let map_layer = leaflet::VideoOverlay::new_with_options(
+                &url,
+                &bounds.as_lat_lng_bounds(),
+                &options,
+            )
+            .into_thread_safe_js_value();
             map_layer.add_to(&map);
             on_cleanup(move || {
                 map_layer.remove();

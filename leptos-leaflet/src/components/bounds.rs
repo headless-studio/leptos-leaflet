@@ -1,4 +1,4 @@
-use crate::Position;
+use super::Position;
 use leaflet::LatLng;
 use leaflet::LatLngBounds;
 
@@ -107,6 +107,13 @@ impl Bounds {
 
     pub fn equals(&self, other: Bounds) -> bool {
         self.ne_corner == other.ne_corner && self.sw_corner == other.sw_corner
+    }
+
+    pub fn as_lat_lng_bounds(&self) -> LatLngBounds {
+        LatLngBounds::new(
+            &LatLng::new(self.ne_corner.lat, self.ne_corner.lng),
+            &LatLng::new(self.sw_corner.lat, self.sw_corner.lng),
+        )
     }
 }
 

@@ -38,6 +38,14 @@ impl<T: PartialEq> PartialEq for JsStoredValue<T> {
 
 impl<T: Eq> Eq for JsStoredValue<T> {}
 
+impl<T> std::fmt::Debug for JsStoredValue<T> where T: std::fmt::Debug {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("JsStoredValue")
+            .field("value", &self.value)
+            .finish()
+    }
+}
+
 impl<T> JsStoredValue<T> {
     pub fn inner(&self) -> &StoredValue<ThreadSafeJsValue<T>> {
         &self.value
@@ -76,6 +84,14 @@ where
 
     pub fn try_get_value(&self) -> Option<ThreadSafeJsValue<T>> {
         self.value.try_get_value().clone()
+    }
+}
+
+impl<T> WithUntracked for JsStoredValue<T> where T: 'static {
+    type Value = T;
+
+    fn try_with_untracked<U>(&self, fun: impl FnOnce(&Self::Value) -> U) -> Option<U> {
+        self.value.try_with_value(|v| fun(v))
     }
 }
 

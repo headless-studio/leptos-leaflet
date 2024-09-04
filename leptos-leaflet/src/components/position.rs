@@ -1,5 +1,4 @@
 use leaflet::LatLng;
-
 #[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub struct Position {
     pub lat: f64,
@@ -71,6 +70,10 @@ impl Position {
     pub fn is_zero(&self) -> bool {
         self.lat.abs() <= f64::EPSILON && self.lng.abs() <= f64::EPSILON
     }
+
+    pub fn as_lat_lng(&self) -> LatLng {
+        LatLng::new(self.lat, self.lng)
+    }
 }
 
 /// Winding number of a polygon
@@ -119,4 +122,18 @@ impl From<Position> for [f64; 2] {
     fn from(value: Position) -> Self {
         [value.lat, value.lng]
     }
+}
+
+#[macro_export]
+macro_rules! position {
+    ($lat: expr, $lng: expr) => {
+        $crate::prelude::JsMaybeSignal::new($crate::prelude::Position::new($lat, $lng))
+    };
+}
+
+pub fn positions(positions: &[(f64, f64)]) -> Vec<Position> {
+    positions
+        .iter()
+        .map(|&(lat, lng)| Position::new(lat, lng))
+        .collect()
 }

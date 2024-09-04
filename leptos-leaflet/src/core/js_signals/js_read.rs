@@ -37,6 +37,18 @@ impl<T: 'static> ReadUntracked for JsReadSignal<T> {
     }
 }
 
+impl<T> With for JsReadSignal<T>
+where
+    T: Clone,
+{
+    type Value = T;
+
+    fn try_with<U>(&self, fun: impl FnOnce(&Self::Value) -> U) -> Option<U> {
+        self.inner.try_with(|v| fun(v))
+    }
+}
+
+/// A signal that can be read from and contains a ThreadSafeJsValue.
 pub struct JsSignal<T: 'static> {
     inner: ReadSignal<ThreadSafeJsValue<T>>,
 }
@@ -48,6 +60,14 @@ impl<T> Clone for JsSignal<T> {
 }
 
 impl<T> Copy for JsSignal<T> {}
+
+impl<T> std::fmt::Debug for JsSignal<T> where T: std::fmt::Debug {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("JsSignal")
+            .field("inner", &self.inner)
+            .finish()
+    }
+}
 
 impl<T: 'static> Dispose for JsSignal<T> {
     fn dispose(self) {

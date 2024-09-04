@@ -1,7 +1,8 @@
+use leaflet::Map;
 use leptos::prelude::*;
 use wasm_bindgen::JsCast;
 
-use crate::core::{JsReadSignal, JsRwSignal};
+use crate::core::{JsReadSignal, JsRwSignal, ThreadSafeJsValue};
 
 #[derive(Debug, Clone, Copy)]
 pub struct LeafletMapContext {
@@ -169,4 +170,12 @@ impl TileLayerWmsContext {
     pub fn wms(&self) -> Option<leaflet::TileLayerWms> {
         self.wms.get()
     }
+}
+
+pub type MapReadSignal = ReadSignal<Option<ThreadSafeJsValue<Map>>>;
+pub type MapWriteSignal = WriteSignal<Option<ThreadSafeJsValue<Map>>>;
+
+/// Creates a pair of signals for reading and writing a `leaflet::Map` instance.
+pub fn create_map_signal() -> (MapReadSignal, MapWriteSignal) {
+    RwSignal::new(None).split()
 }

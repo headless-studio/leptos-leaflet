@@ -1,14 +1,14 @@
-use crate::components::position::Position;
-
-use crate::components::context::{LeafletMapContext, LeafletOverlayContainerContext};
-use crate::IntoThreadSafeJsValue;
 use leptos::html::Div;
 use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
 
+use super::{LeafletMapContext, Position};
+use crate::core::{IntoThreadSafeJsValue, JsMaybeSignal};
+use crate::prelude::LeafletOverlayContainerContext;
+
 #[component]
 pub fn Popup(
-    #[prop(into, optional)] position: MaybeSignal<Position>,
+    #[prop(into, optional)] position: JsMaybeSignal<Position>,
     #[prop(into, optional)] pane: Option<MaybeSignal<String>>,
     #[prop(into, optional)] offset: Option<MaybeSignal<(u32, u32)>>,
     #[prop(into, optional)] min_width: Option<MaybeSignal<f64>>,
@@ -82,7 +82,8 @@ pub fn Popup(
         }
         if let Some(overlay_context) = overlay_context {
             if let Some(marker) = overlay_context.container::<leaflet::Layer>() {
-                let popup = leaflet::Popup::new(&options, Some(marker.unchecked_ref())).into_thread_safe_js_value();
+                let popup = leaflet::Popup::new(&options, Some(marker.unchecked_ref()))
+                    .into_thread_safe_js_value();
                 let content = inner_content.get_untracked().expect("content ref");
                 let html_view: &JsValue = content.unchecked_ref();
                 popup.set_content(html_view);
@@ -93,7 +94,8 @@ pub fn Popup(
             }
         } else if let Some(map) = map_context.expect("map context not found").map() {
             let popup =
-                leaflet::Popup::new_with_lat_lng(&position.get_untracked().into(), &options).into_thread_safe_js_value();
+                leaflet::Popup::new_with_lat_lng(&position.get_untracked().as_lat_lng(), &options)
+                    .into_thread_safe_js_value();
             let content = inner_content.get_untracked().expect("content ref");
             let html_view: &JsValue = content.unchecked_ref();
             popup.set_content(html_view);
