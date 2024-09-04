@@ -35,7 +35,7 @@ pub fn Circle(
 ) -> impl IntoView {
     let position_tracking = center;
     let overlay_context = extend_context_with_overlay();
-    let overlay = JsStoredValue::new(None::<leaflet::Circle>);
+    let overlay = JsStoredValue::new_local(None::<leaflet::Circle>);
 
     let color_clone = color.clone();
     let fill_color_clone = fill_color.clone();
@@ -178,7 +178,7 @@ pub fn Circle(
         opacity_stop.stop();
         fill_opacity_stop.stop();
         weight_stop.stop();
-        if let Some(overlay) = overlay.get_value().as_ref() {
+        if let Some(overlay) = overlay.try_get_value().flatten().as_ref() {
             overlay.remove();
         }
     });

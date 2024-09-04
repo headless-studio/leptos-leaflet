@@ -1,8 +1,8 @@
-use crate::components::bounds::Bounds;
-use crate::components::context::LeafletMapContext;
-use crate::core::IntoThreadSafeJsValue;
 use leptos::logging::log;
 use leptos::prelude::*;
+use super::{Bounds, LeafletMapContext};
+use crate::core::IntoThreadSafeJsValue;
+
 
 #[component(transparent)]
 pub fn ImageOverlay(

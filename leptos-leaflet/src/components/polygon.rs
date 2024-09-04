@@ -2,14 +2,18 @@ use leptos::prelude::*;
 
 use leaflet::{to_lat_lng_array, PolylineOptions};
 
-use super::{extend_context_with_overlay, update_overlay_context, FillRule, LayerEvents, LeafletMapContext, LineCap, LineJoin, MouseEvents, PopupEvents, Position, StringEmptyOption, TooltipEvents
+use super::{
+    extend_context_with_overlay, update_overlay_context, FillRule, LayerEvents, LeafletMapContext,
+    LineCap, LineJoin, MouseEvents, PopupEvents, Position, StringEmptyOption, TooltipEvents,
 };
-use crate::core::{JsMaybeSignal, JsStoredValue, LeafletMaybeSignal};
-use crate::{setup_layer_leaflet_option, setup_layer_leaflet_option_ref, setup_layer_leaflet_string};
+use crate::core::{JsStoredValue, LeafletMaybeSignal};
+use crate::{
+    setup_layer_leaflet_option, setup_layer_leaflet_option_ref, setup_layer_leaflet_string,
+};
 
 #[component(transparent)]
 pub fn Polygon(
-    #[prop(into)] positions: JsMaybeSignal<Vec<Position>>,
+    #[prop(into)] positions: MaybeSignal<Vec<Position>>,
     #[prop(into, optional)] stroke: LeafletMaybeSignal<bool>,
     #[prop(into, optional)] color: MaybeSignal<String>,
     #[prop(into, optional)] weight: LeafletMaybeSignal<f64>,
@@ -34,7 +38,7 @@ pub fn Polygon(
     #[prop(optional)] children: Option<ChildrenFn>,
 ) -> impl IntoView {
     extend_context_with_overlay();
-    let overlay = JsStoredValue::new(None::<leaflet::Polygon>);
+    let overlay = JsStoredValue::new_local(None::<leaflet::Polygon>);
 
     let positions_for_effect = positions.clone();
     let color_clone = color.clone();
@@ -104,7 +108,8 @@ pub fn Polygon(
     let color_stop = Effect::watch(
         move || color_clone.get(),
         move |color, _, _| {
-            if let (Some(color), Some(overlay)) = (color.to_option(), overlay.get_value().as_ref()) {
+            if let (Some(color), Some(overlay)) = (color.to_option(), overlay.get_value().as_ref())
+            {
                 let options = PolylineOptions::new();
                 options.set_color(color.to_string());
                 overlay.set_style(&options.into())
@@ -116,7 +121,8 @@ pub fn Polygon(
     let fill_color_stop = Effect::watch(
         move || fill_color_clone.get(),
         move |color, _, _| {
-            if let (Some(color), Some(overlay)) = (color.to_option(), overlay.get_value().as_ref()) {
+            if let (Some(color), Some(overlay)) = (color.to_option(), overlay.get_value().as_ref())
+            {
                 let options = PolylineOptions::new();
                 options.set_fill_color(color.to_string());
                 overlay.set_style(&options.into())
@@ -184,7 +190,7 @@ pub fn Polygon(
         fill_opacity_stop.stop();
         weight_stop.stop();
         smooth_factor_stop.stop();
-        if let Some(overlay) = overlay.get_value().as_ref() {
+        if let Some(overlay) = overlay.try_get_value().flatten().as_ref() {
             overlay.remove();
         }
     });

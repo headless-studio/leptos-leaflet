@@ -48,7 +48,7 @@ pub fn Marker(
     let map_context = use_context::<LeafletMapContext>().expect("Map context not found");
 
     let overlay_context = extend_context_with_overlay();
-    let overlay = JsStoredValue::new(None::<leaflet::Marker>);
+    let overlay = JsStoredValue::new_local(None::<leaflet::Marker>);
 
     Effect::new(move |_| {
         if let Some(map) = map_context.map() {
@@ -195,7 +195,7 @@ pub fn Marker(
         opacity_stop.stop();
         drag_stop.stop();
         rotation_stop.stop();
-        if let Some(overlay) = overlay.get_value().as_ref() {
+        if let Some(overlay) = overlay.try_get_value().flatten().as_ref() {
             overlay.remove();
         }
     });

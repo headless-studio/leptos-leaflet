@@ -2,17 +2,19 @@ use leaflet::Map;
 use leptos::prelude::*;
 use wasm_bindgen::JsCast;
 
-use crate::core::{JsReadSignal, JsRwSignal, ThreadSafeJsValue};
+use crate::core::{JsReadSignal, JsRwSignal, JsWriteSignal};
 
 #[derive(Debug, Clone, Copy)]
 pub struct LeafletMapContext {
     map: JsRwSignal<Option<leaflet::Map>>,
+    thread_id: std::thread::ThreadId,
 }
 
 impl LeafletMapContext {
     pub fn new() -> Self {
         Self {
-            map: JsRwSignal::new(None),
+            map: JsRwSignal::new_local(None),
+            thread_id: std::thread::current().id(),
         }
     }
 
@@ -22,17 +24,39 @@ impl LeafletMapContext {
     ///
     /// * `map` - A reference to a `leaflet::Map` object.
     pub fn set_map(&self, map: &leaflet::Map) {
+        if !self.is_valid() {
+            leptos::logging::error!("Accessing map from a different thread. Probably running on the server.");
+            return;
+        }
         self.map.set(Some(map.clone()));
     }
 
     /// Returns an optional `leaflet::Map` instance.
     pub fn map(&self) -> Option<leaflet::Map> {
-        self.map.get()
+        if self.is_valid() {
+            self.map.get()
+        } else {
+            leptos::logging::error!("Accessing map from a different thread. Probably running on the server.");
+            None
+        }
+    }
+
+    pub fn map_untracked(&self) -> Option<leaflet::Map> {
+        if self.is_valid() {
+            self.map.get_untracked()
+        } else {
+            leptos::logging::error!("Accessing map from a different thread. Probably running on the server.");
+            None
+        }
     }
 
     /// Returns a signal that emits the current map instance.
     pub fn map_signal(&self) -> JsReadSignal<Option<leaflet::Map>> {
-        self.map.read_only()
+        if self.is_valid() {
+            self.map.read_only()
+        } else {
+            panic!("Accessing map from a different thread. Probably running on the server.");
+        }
     }
 
     /// Adds a layer to the context.
@@ -42,6 +66,10 @@ impl LeafletMapContext {
     /// * `layer` - A reference to the layer to be added.
     ///
     pub fn add_layer<L: Into<leaflet::Layer> + Clone>(&self, layer: &L) {
+        if !self.is_valid() {
+            leptos::logging::error!("Accessing map from a different thread. Probably running on the server.");
+            return;
+        }
         let map = self.map.get_untracked().expect("Map to be available");
         let layer: leaflet::Layer = layer.to_owned().into();
         layer.add_to(&map);
@@ -54,9 +82,17 @@ impl LeafletMapContext {
     /// * `layer` - A reference to the layer to be removed.
     ///
     pub fn remove_layer<L: Into<leaflet::Layer> + Clone>(&self, layer: &L) {
+        if !self.is_valid() {
+            leptos::logging::error!("Accessing map from a different thread. Probably running on the server.");
+            return;
+        }
         let map = self.map.get_untracked().expect("Map to be available");
         let layer: leaflet::Layer = layer.to_owned().into();
         layer.remove_from(&map);
+    }
+
+    fn is_valid(&self) -> bool {
+        std::thread::current().id() == self.thread_id && !self.map.is_disposed()
     }
 }
 
@@ -112,30 +148,48 @@ pub fn update_overlay_context<C: Into<leaflet::Layer> + Clone>(layer: &C) {
 #[derive(Debug, Clone, Copy)]
 pub struct LeafletOverlayContainerContext {
     container: JsRwSignal<Option<leaflet::Layer>>,
+    thread_id: std::thread::ThreadId,
 }
 
 impl LeafletOverlayContainerContext {
     pub fn new() -> Self {
         Self {
-            container: JsRwSignal::new(None),
+            container: JsRwSignal::new_local(None),
+            thread_id: std::thread::current().id(),
         }
     }
 
     /// Calls set on the inner signal for the Layer
     pub fn set_container<C: Into<leaflet::Layer> + Clone>(&self, layer: &C) {
+        if !self.is_valid() {
+            leptos::logging::error!("Accessing map from a different thread. Probably running on the server.");
+            return;
+        }
         self.container.set(Some(layer.clone().into()));
     }
 
     /// Calls get on the inner signal for the Layer
     pub fn container<T: JsCast>(&self) -> Option<T> {
+        if !self.is_valid() {
+            leptos::logging::error!("Accessing map from a different thread. Probably running on the server.");
+            return None;
+        }
         self.container.get().map(|layer| layer.unchecked_into())
     }
 
     /// Calls get_untracked on the inner signal for the Layer
     pub fn untrack_container<C: JsCast>(&self) -> Option<C> {
+        if !self.is_valid() {
+            leptos::logging::error!("Accessing map from a different thread. Probably running on the server.");
+            return None;
+        }
         self.container
             .get_untracked()
             .map(|layer| layer.unchecked_into())
+    }
+
+    fn is_valid(&self) -> bool {
+        std::thread::current().id() == self.thread_id && !self.container.is_disposed()
     }
 }
 
@@ -148,6 +202,7 @@ impl Default for LeafletOverlayContainerContext {
 #[derive(Debug, Clone, Copy)]
 pub struct TileLayerWmsContext {
     wms: JsRwSignal<Option<leaflet::TileLayerWms>>,
+    thread_id: std::thread::ThreadId,
 }
 
 impl Default for TileLayerWmsContext {
@@ -159,23 +214,37 @@ impl Default for TileLayerWmsContext {
 impl TileLayerWmsContext {
     pub fn new() -> Self {
         Self {
-            wms: JsRwSignal::new(None),
+            wms: JsRwSignal::new_local(None),
+            thread_id: std::thread::current().id(),
         }
     }
 
     pub fn set_wms(&self, wms: &leaflet::TileLayerWms) {
+        if !self.is_valid() {
+            leptos::logging::error!("Accessing map from a different thread. Probably running on the server.");
+            return;
+        }
         self.wms.set(Some(wms.clone()));
     }
 
     pub fn wms(&self) -> Option<leaflet::TileLayerWms> {
-        self.wms.get()
+        if self.is_valid() {
+            self.wms.get()
+        } else {
+            leptos::logging::error!("Accessing map from a different thread. Probably running on the server.");
+            None
+        }
+    }
+
+    fn is_valid(&self) -> bool {
+        std::thread::current().id() == self.thread_id && !self.wms.is_disposed()
     }
 }
 
-pub type MapReadSignal = ReadSignal<Option<ThreadSafeJsValue<Map>>>;
-pub type MapWriteSignal = WriteSignal<Option<ThreadSafeJsValue<Map>>>;
+pub type MapReadSignal = JsReadSignal<Option<Map>>;
+pub type MapWriteSignal = JsWriteSignal<Option<Map>>;
 
 /// Creates a pair of signals for reading and writing a `leaflet::Map` instance.
 pub fn create_map_signal() -> (MapReadSignal, MapWriteSignal) {
-    RwSignal::new(None).split()
+    JsRwSignal::new_local(None).split()
 }

@@ -5,7 +5,7 @@ use leptos_leaflet::prelude::*;
 
 #[component]
 pub fn App() -> impl IntoView {
-    let (marker_position, set_marker_position) = JsRwSignal::new(Position::new(51.49, -0.08)).split();
+    let (marker_position, set_marker_position) = JsRwSignal::new_local(Position::new(51.49, -0.08)).split();
 
     Effect::new(move |_| {
         set_interval_with_handle(

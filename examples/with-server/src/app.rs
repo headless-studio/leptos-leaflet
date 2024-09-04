@@ -8,21 +8,33 @@ use leptos_meta::*;
 use leptos_router::components::{Route, Router, Routes};
 use leptos_router::path;
 
+pub fn shell(options: LeptosOptions) -> impl IntoView {
+    view! {
+        <!DOCTYPE html>
+        <html lang="en">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <Stylesheet href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+                <Script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"/>
+                <AutoReload options=options.clone()/>
+                <HydrationScripts options/>
+                <MetaTags/>
+            </head>
+            <body>
+                <App/>
+            </body>
+        </html>
+    }
+}
+
 #[component]
 pub fn App() -> impl IntoView {
     // Provides context that manages stylesheets, titles, meta tags, etc.
     provide_meta_context();
 
     view! {
-        // injects a stylesheet into the document <head>
-        // id=leptos means cargo-leptos will hot-reload this stylesheet
-        <Stylesheet href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-        <Script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"/>
-        <Stylesheet id="leptos" href="/pkg/start-axum.css"/>
-
-        // sets the document title
         <Title text="Welcome to Leptos"/>
-
         // content for this welcome page
         <Router>
             <main>
@@ -37,7 +49,7 @@ pub fn App() -> impl IntoView {
 /// Renders the home page of your application.
 #[component]
 fn HomePage() -> impl IntoView {
-    let (marker_position, set_marker_position) = JsRwSignal::new(Position::new(51.49, -0.08)).split();
+    let (marker_position, set_marker_position) = JsRwSignal::new_local(Position::new(51.49, -0.08)).split();
     let (map, set_map) = create_map_signal();
 
     Effect::new(move |_| {

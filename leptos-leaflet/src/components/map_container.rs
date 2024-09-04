@@ -5,7 +5,7 @@ use web_sys::HtmlDivElement;
 
 use leaflet::LocateOptions;
 
-use crate::core::{IntoThreadSafeJsValue, ThreadSafeJsValue};
+use crate::core::JsWriteSignal;
 
 use super::{provide_leaflet_context, MapEvents, PopupEvents, Position, TooltipEvents};
 
@@ -31,7 +31,7 @@ pub fn MapContainer(
     /// Sets the view of the map if geolocation is available
     #[prop(optional)]
     set_view: bool,
-    #[prop(optional)] map: Option<WriteSignal<Option<ThreadSafeJsValue<Map>>>>,
+    #[prop(optional)] map: Option<JsWriteSignal<Option<Map>>>,
     #[prop(optional)] events: MapEvents,
     #[prop(optional)] popup_events: PopupEvents,
     #[prop(optional)] tooltip_events: TooltipEvents,
@@ -79,7 +79,6 @@ pub fn MapContainer(
             }
 
             map_context.set_map(&leaflet_map);
-            let leaflet_map = leaflet_map.into_thread_safe_js_value();
             if let Some(map) = map {
                 map.set(Some(leaflet_map));
             }
@@ -87,7 +86,7 @@ pub fn MapContainer(
     });
 
     on_cleanup(move || {
-        if let Some(map) = map_context.map_signal().get_untracked().as_ref() {
+        if let Some(map) = map_context.map_untracked().as_ref() {
             map.remove();
         };
     });

@@ -3,13 +3,13 @@ use leptos::prelude::*;
 
 use super::{extend_context_with_overlay, update_overlay_context, FillRule, LayerEvents, LeafletMapContext, LineCap, LineJoin, MouseEvents, PopupEvents, Position, StringEmptyOption, TooltipEvents
 };
-use crate::core::{JsMaybeSignal, JsStoredValue, LeafletMaybeSignal};
+use crate::core::{JsStoredValue, LeafletMaybeSignal};
 use crate::{setup_layer_leaflet_option, setup_layer_leaflet_option_ref, setup_layer_leaflet_string};
 
 
 #[component(transparent)]
 pub fn Polyline(
-    #[prop(into)] positions: JsMaybeSignal<Vec<Position>>,
+    #[prop(into)] positions: MaybeSignal<Vec<Position>>,
     #[prop(into, optional)] stroke: LeafletMaybeSignal<bool>,
     #[prop(into, optional)] color: MaybeSignal<String>,
     #[prop(into, optional)] weight: LeafletMaybeSignal<f64>,
@@ -34,7 +34,7 @@ pub fn Polyline(
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
     extend_context_with_overlay();
-    let overlay = JsStoredValue::new(None::<leaflet::Polyline>);
+    let overlay = JsStoredValue::new_local(None::<leaflet::Polyline>);
 
     let positions_for_effect = positions.clone();
     let color_clone = color.clone();
@@ -182,7 +182,7 @@ pub fn Polyline(
         fill_opacity_stop.stop();
         weight_stop.stop();
         smooth_factor_stop.stop();
-        if let Some(overlay) = overlay.get_value().as_ref() {
+        if let Some(overlay) = overlay.try_get_value().flatten().as_ref() {
             overlay.remove();
         }
     });

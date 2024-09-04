@@ -22,7 +22,7 @@ where
     T: Clone + 'static,
 {
     fn default() -> Self {
-        Self::Static(JsStoredValue::new(None))
+        Self::Static(JsStoredValue::new_local(None))
     }
 }
 
@@ -71,7 +71,7 @@ where
     T: Clone + 'static,
 {
     fn from(target: Option<T>) -> Self {
-        LeafletMaybeSignal::Static(JsStoredValue::new(target))
+        LeafletMaybeSignal::Static(JsStoredValue::new_local(target))
     }
 }
 
@@ -80,7 +80,7 @@ where
     T: Clone + 'static,
 {
     fn from(target: T) -> Self {
-        LeafletMaybeSignal::Static(JsStoredValue::new(Some(target)))
+        LeafletMaybeSignal::Static(JsStoredValue::new_local(Some(target)))
     }
 }
 
