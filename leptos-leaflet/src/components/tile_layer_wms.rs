@@ -8,7 +8,7 @@ use crate::core::IntoThreadSafeJsValue;
 #[component(transparent)]
 pub fn TileLayerWms(
     #[prop(into)] url: String,
-    options: TileLayerWmsOptions,
+    options: StoredValue<TileLayerWmsOptions, LocalStorage>,
     #[prop(optional)] children: Option<Children>,
     #[prop(optional)] bring_to_front: bool,
     #[prop(optional)] bring_to_back: bool,
@@ -19,6 +19,7 @@ pub fn TileLayerWms(
 
     Effect::new(move |_| {
         if let Some(map) = map_context.map() {
+            let options = options.get_value();
             let map_layer =
                 leaflet::TileLayerWms::new_options(&url, &options).into_thread_safe_js_value();
             map_layer.add_to(&map);

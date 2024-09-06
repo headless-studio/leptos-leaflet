@@ -1,53 +1,32 @@
 use geojson::GeoJson;
-use leaflet::{TileLayerWmsOptions, WmsRequestBuilder};
-use leptos::*;
-use leptos_leaflet::*;
+use leptos::{prelude::*, spawn::spawn_local};
+use leptos_leaflet::leaflet::{TileLayerWmsOptions, WmsRequestBuilder};
+use leptos_leaflet::prelude::*;
 
 #[component]
 pub fn App() -> impl IntoView {
-    let (pre_text, set_pre_text) = create_signal("Please click into the map to start a request.".to_string());
+    let (pre_text, set_pre_text) =
+        RwSignal::new("Please click into the map to start a request.".to_string()).split();
 
     let options = TileLayerWmsOptions::new();
     options.set_layers("OSM-WMS".to_string());
 
     let abort_controller = web_sys::AbortController::new().ok();
     let abort_signal = abort_controller.as_ref().map(|a| a.signal());
-    leptos::on_cleanup(move || {
-        if let Some(abort_controller) = abort_controller {
+
+    let abort_signal = StoredValue::new_local(abort_signal);
+    let abort_controller = StoredValue::new_local(abort_controller);
+    on_cleanup(move || {
+        if let Some(abort_controller) = abort_controller.try_get_value().flatten() {
             abort_controller.abort()
         }
     });
 
-    let action_details = create_action(move |path: &String| {
-        set_pre_text.set("Loading...".to_string());
-        let abort_signal = abort_signal.clone();
-        let path = path.clone();
-        async move {
-            let r = gloo::net::http::Request::get(&path)
-                .abort_signal(abort_signal.as_ref())
-                .send()
-                .await
-                .map_err(|e| log::error!("{e}"))
-                .ok()
-                .unwrap()
-                .text()
-                .await
-                .ok()
-                .unwrap();
-            log::debug!("{r}");
-            r.parse::<GeoJson>().ok()
-        }
-    });
-    let action_details_value = action_details.value();
-    let update_action_details_value = move || {
-        if let Some(val) = action_details_value.get() {
-            set_pre_text.set(format!("{val:#?}"));
-        }
-    };
-    let map_events = move |map: &leaflet::Map, wms: &leaflet::TileLayerWms| {
+    let map_events = move |map: &leptos_leaflet::leaflet::Map,
+                           wms: &leptos_leaflet::leaflet::TileLayerWms| {
         let mut events = MapEvents::new();
         let map_clone = map.clone();
-        let wms_clone  = wms.clone();
+        let wms_clone = wms.clone();
         events = events.mouse_click(move |m| {
             let url = WmsRequestBuilder::default()
                 .with_info_format("application/json")
@@ -55,11 +34,33 @@ pub fn App() -> impl IntoView {
                 .unwrap()
                 .to_string();
             log::debug!("{url:#?}");
-            action_details.dispatch(url);
+
+            spawn_local({
+                set_pre_text.set("Loading...".to_string());
+                let abort_signal = abort_signal.get_value();
+                let path = url.clone();
+                async move {
+                    let r = gloo::net::http::Request::get(&path)
+                        .abort_signal(abort_signal.as_ref())
+                        .send()
+                        .await
+                        .map_err(|e| log::error!("{e}"))
+                        .ok()
+                        .unwrap()
+                        .text()
+                        .await
+                        .ok()
+                        .unwrap();
+                    log::debug!("{r}");
+                    let result = r.parse::<GeoJson>().ok();
+                    set_pre_text.set(format!("{result:#?}"));
+                }
+            });
         });
         events
     };
 
+    let options = StoredValue::new_local(options);
 
     view! {
         <MapContainer style="height: 400px" center=Position::new(51.505, -0.09) zoom=13.0 set_view=true>
@@ -70,6 +71,5 @@ pub fn App() -> impl IntoView {
         <pre>
             { pre_text }
         </pre>
-        { update_action_details_value }
     }
 }
