@@ -7,7 +7,7 @@ use wasm_bindgen::JsCast;
 use super::{
     DragEvents, LayerEvents, LeafletMapContext, MouseEvents, MoveEvents, PopupEvents, TooltipEvents,
 };
-use crate::core::{JsMaybeSignal, JsStoredValue, LeafletMaybeSignal};
+use crate::core::{JsMaybeSignal, JsStoredValue};
 use crate::{setup_layer_leaflet_option, setup_layer_leaflet_string};
 
 #[component(transparent)]
@@ -16,26 +16,26 @@ pub fn Marker(
     #[prop(into)]
     position: JsMaybeSignal<Position>,
     #[prop(into, optional)] draggable: MaybeSignal<bool>,
-    #[prop(into, optional)] keyboard: LeafletMaybeSignal<bool>,
+    #[prop(into, optional)] keyboard: MaybeSignal<Option<bool>>,
     #[prop(into, optional)] title: MaybeSignal<String>,
     #[prop(into, optional)] alt: MaybeSignal<String>,
-    #[prop(into, optional)] interactive: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] z_index_offset: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] opacity: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] rise_on_hover: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] rise_offset: LeafletMaybeSignal<f64>,
+    #[prop(into, optional)] interactive: MaybeSignal<Option<bool>>,
+    #[prop(into, optional)] z_index_offset: MaybeSignal<Option<f64>>,
+    #[prop(into, optional)] opacity: MaybeSignal<Option<f64>>,
+    #[prop(into, optional)] rise_on_hover: MaybeSignal<Option<bool>>,
+    #[prop(into, optional)] rise_offset: MaybeSignal<Option<f64>>,
     #[prop(into, optional)] pane: MaybeSignal<String>,
     #[prop(into, optional)] shadow_pane: MaybeSignal<String>,
-    #[prop(into, optional)] bubbling_mouse_events: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] auto_pan: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] auto_pan_padding: LeafletMaybeSignal<(f64, f64)>,
-    #[prop(into, optional)] auto_pan_speed: LeafletMaybeSignal<f64>,
+    #[prop(into, optional)] bubbling_mouse_events: MaybeSignal<Option<bool>>,
+    #[prop(into, optional)] auto_pan: MaybeSignal<Option<bool>>,
+    #[prop(into, optional)] auto_pan_padding: MaybeSignal<Option<(f64, f64)>>,
+    #[prop(into, optional)] auto_pan_speed: MaybeSignal<Option<f64>>,
     #[prop(into, optional)] icon_class: MaybeSignal<String>,
     #[prop(into, optional)] icon_url: MaybeSignal<String>,
-    #[prop(into, optional)] icon_size: LeafletMaybeSignal<(f64, f64)>,
-    #[prop(into, optional)] icon_anchor: LeafletMaybeSignal<(f64, f64)>,
+    #[prop(into, optional)] icon_size: MaybeSignal<Option<(f64, f64)>>,
+    #[prop(into, optional)] icon_anchor: MaybeSignal<Option<(f64, f64)>>,
     #[prop(into, optional)] attribution: MaybeSignal<String>,
-    #[prop(into, optional)] rotation: LeafletMaybeSignal<f64>,
+    #[prop(into, optional)] rotation: MaybeSignal<Option<f64>>,
     #[prop(into, optional)] move_events: MoveEvents,
     #[prop(into, optional)] mouse_events: MouseEvents,
     #[prop(into, optional)] drag_events: DragEvents,

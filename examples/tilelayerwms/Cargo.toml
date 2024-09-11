@@ -9,7 +9,7 @@ edition = "2021"
 console_error_panic_hook = "0.1"
 geojson = "0.24"
 gloo = { version = "0.11", features = ["net"] }
-leptos = { version = "0.7.0-beta4", default-features = false, "features" = [
+leptos = { version = "0.7.0-beta5", default-features = false, "features" = [
     "csr",
 ] }
 leptos-leaflet = { path = "../../leptos-leaflet", default-features = false, features = [

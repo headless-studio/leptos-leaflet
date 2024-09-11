@@ -1,32 +1,35 @@
 use leaflet::{to_lat_lng_array, PolylineOptions};
 use leptos::prelude::*;
 
-use super::{extend_context_with_overlay, update_overlay_context, FillRule, LayerEvents, LeafletMapContext, LineCap, LineJoin, MouseEvents, PopupEvents, Position, StringEmptyOption, TooltipEvents
+use super::{
+    extend_context_with_overlay, update_overlay_context, FillRule, LayerEvents, LeafletMapContext,
+    LineCap, LineJoin, MouseEvents, PopupEvents, Position, StringEmptyOption, TooltipEvents,
 };
-use crate::core::{JsStoredValue, LeafletMaybeSignal};
-use crate::{setup_layer_leaflet_option, setup_layer_leaflet_option_ref, setup_layer_leaflet_string};
-
+use crate::core::JsStoredValue;
+use crate::{
+    setup_layer_leaflet_option, setup_layer_leaflet_option_ref, setup_layer_leaflet_string,
+};
 
 #[component(transparent)]
 pub fn Polyline(
     #[prop(into)] positions: MaybeSignal<Vec<Position>>,
-    #[prop(into, optional)] stroke: LeafletMaybeSignal<bool>,
+    #[prop(into, optional)] stroke: MaybeSignal<Option<bool>>,
     #[prop(into, optional)] color: MaybeSignal<String>,
-    #[prop(into, optional)] weight: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] opacity: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] interactive: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] line_cap: LeafletMaybeSignal<LineCap>,
-    #[prop(into, optional)] line_join: LeafletMaybeSignal<LineJoin>,
+    #[prop(into, optional)] weight: MaybeSignal<Option<f64>>,
+    #[prop(into, optional)] opacity: MaybeSignal<Option<f64>>,
+    #[prop(into, optional)] interactive: MaybeSignal<Option<bool>>,
+    #[prop(into, optional)] line_cap: MaybeSignal<Option<LineCap>>,
+    #[prop(into, optional)] line_join: MaybeSignal<Option<LineJoin>>,
     #[prop(into, optional)] dash_array: MaybeSignal<String>,
-    #[prop(into, optional)] dash_offset: LeafletMaybeSignal<String>,
-    #[prop(into, optional)] fill: LeafletMaybeSignal<bool>,
+    #[prop(into, optional)] dash_offset: MaybeSignal<Option<String>>,
+    #[prop(into, optional)] fill: MaybeSignal<Option<bool>>,
     #[prop(into, optional)] fill_color: MaybeSignal<String>,
-    #[prop(into, optional)] fill_opacity: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] fill_rule: LeafletMaybeSignal<FillRule>,
-    #[prop(into, optional)] bubbling_mouse_events: LeafletMaybeSignal<bool>,
+    #[prop(into, optional)] fill_opacity: MaybeSignal<Option<f64>>,
+    #[prop(into, optional)] fill_rule: MaybeSignal<Option<FillRule>>,
+    #[prop(into, optional)] bubbling_mouse_events: MaybeSignal<Option<bool>>,
     #[prop(into, optional)] class_name: MaybeSignal<String>,
-    #[prop(into, optional)] smooth_factor: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] no_clip: LeafletMaybeSignal<bool>,
+    #[prop(into, optional)] smooth_factor: MaybeSignal<Option<f64>>,
+    #[prop(into, optional)] no_clip: MaybeSignal<Option<bool>>,
     #[prop(into, optional)] mouse_events: MouseEvents,
     #[prop(into, optional)] layer_events: LayerEvents,
     #[prop(into, optional)] popup_events: PopupEvents,
@@ -102,7 +105,8 @@ pub fn Polyline(
     let color_stop = Effect::watch(
         move || color_clone.get(),
         move |color, _, _| {
-            if let (Some(color), Some(overlay)) = (color.to_option(), overlay.get_value().as_ref()) {
+            if let (Some(color), Some(overlay)) = (color.to_option(), overlay.get_value().as_ref())
+            {
                 let options = PolylineOptions::new();
                 options.set_color(color.to_string());
                 overlay.set_style(&options.into())
@@ -114,7 +118,8 @@ pub fn Polyline(
     let fill_color_stop = Effect::watch(
         move || fill_color_clone.get(),
         move |color, _, _| {
-            if let (Some(color), Some(overlay)) = (color.to_option(), overlay.get_value().as_ref()) {
+            if let (Some(color), Some(overlay)) = (color.to_option(), overlay.get_value().as_ref())
+            {
                 let options = PolylineOptions::new();
                 options.set_fill_color(color.to_string());
                 overlay.set_style(&options.into())

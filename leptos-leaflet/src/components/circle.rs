@@ -2,27 +2,31 @@ use leaflet::CircleOptions;
 use leptos::prelude::*;
 
 use super::{
-    extend_context_with_overlay, FillRule, LayerEvents, LeafletMapContext, LineCap, LineJoin, MouseEvents, MoveEvents, PopupEvents, Position, StringEmptyOption, TooltipEvents
+    extend_context_with_overlay, FillRule, LayerEvents, LeafletMapContext, LineCap, LineJoin,
+    MouseEvents, MoveEvents, PopupEvents, Position, StringEmptyOption, TooltipEvents,
 };
-use crate::{core::{JsMaybeSignal, JsStoredValue, LeafletMaybeSignal}, setup_layer_leaflet_option, setup_layer_leaflet_option_ref, setup_layer_leaflet_string};
+use crate::{
+    core::{JsMaybeSignal, JsStoredValue},
+    setup_layer_leaflet_option, setup_layer_leaflet_option_ref, setup_layer_leaflet_string,
+};
 
 #[component(transparent)]
 pub fn Circle(
     #[prop(into)] center: JsMaybeSignal<Position>,
-    #[prop(into, optional)] stroke: LeafletMaybeSignal<bool>,
+    #[prop(into, optional)] stroke: MaybeSignal<Option<bool>>,
     #[prop(into, optional)] color: MaybeSignal<String>,
-    #[prop(into, optional)] weight: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] interactive: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] opacity: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] line_cap: LeafletMaybeSignal<LineCap>,
-    #[prop(into, optional)] line_join: LeafletMaybeSignal<LineJoin>,
+    #[prop(into, optional)] weight: MaybeSignal<Option<f64>>,
+    #[prop(into, optional)] interactive: MaybeSignal<Option<bool>>,
+    #[prop(into, optional)] opacity: MaybeSignal<Option<f64>>,
+    #[prop(into, optional)] line_cap: MaybeSignal<Option<LineCap>>,
+    #[prop(into, optional)] line_join: MaybeSignal<Option<LineJoin>>,
     #[prop(into, optional)] dash_array: MaybeSignal<String>,
     #[prop(into, optional)] dash_offset: MaybeSignal<String>,
-    #[prop(into, optional)] fill: LeafletMaybeSignal<bool>,
+    #[prop(into, optional)] fill: MaybeSignal<Option<bool>>,
     #[prop(into, optional)] fill_color: MaybeSignal<String>,
-    #[prop(into, optional)] fill_opacity: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] fill_rule: LeafletMaybeSignal<FillRule>,
-    #[prop(into, optional)] bubbling_mouse_events: LeafletMaybeSignal<bool>,
+    #[prop(into, optional)] fill_opacity: MaybeSignal<Option<f64>>,
+    #[prop(into, optional)] fill_rule: MaybeSignal<Option<FillRule>>,
+    #[prop(into, optional)] bubbling_mouse_events: MaybeSignal<Option<bool>>,
     #[prop(into, optional)] class_name: MaybeSignal<String>,
     #[prop(into, optional)] mouse_events: MouseEvents,
     #[prop(into, optional)] layer_events: LayerEvents,
@@ -102,7 +106,8 @@ pub fn Circle(
     let color_stop = Effect::watch(
         move || color_clone.get(),
         move |color, _, _| {
-            if let (Some(color), Some(overlay)) = (color.to_option(), overlay.get_value().as_ref()) {
+            if let (Some(color), Some(overlay)) = (color.to_option(), overlay.get_value().as_ref())
+            {
                 let options = CircleOptions::new();
                 options.set_color(color.to_string());
                 overlay.set_style(&options);
@@ -114,7 +119,8 @@ pub fn Circle(
     let fill_color_stop = Effect::watch(
         move || fill_color_clone.get(),
         move |color, _, _| {
-            if let (Some(color), Some(overlay)) = (color.to_option(), overlay.get_value().as_ref()) {
+            if let (Some(color), Some(overlay)) = (color.to_option(), overlay.get_value().as_ref())
+            {
                 let options = CircleOptions::new();
                 options.set_fill_color(color.to_string());
                 overlay.set_style(&options);
