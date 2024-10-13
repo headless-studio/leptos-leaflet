@@ -9,8 +9,8 @@ pub fn TileLayer(
     #[prop(into, optional)] attribution: String,
     #[prop(optional)] bring_to_front: bool,
     #[prop(optional)] bring_to_back: bool,
-    #[prop(default=0.0)] min_zoom: f64,
-    #[prop(default=18.0)] max_zoom: f64,
+    #[prop(default = 0.0)] min_zoom: f64,
+    #[prop(default = 18.0)] max_zoom: f64,
 ) -> impl IntoView {
     let map_context = use_context::<LeafletMapContext>().expect("map context not found");
 
