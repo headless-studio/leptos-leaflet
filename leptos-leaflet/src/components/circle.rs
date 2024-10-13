@@ -4,7 +4,7 @@ use crate::components::position::Position;
 use crate::core::LeafletMaybeSignal;
 use crate::{
     setup_layer_leaflet_option, setup_layer_leaflet_option_ref, LayerEvents, MouseEvents,
-    PopupEvents, TooltipEvents, MoveEvents,
+    MoveEvents, PopupEvents, TooltipEvents,
 };
 use leaflet::CircleOptions;
 use leptos::*;
@@ -65,7 +65,7 @@ pub fn Circle(
             setup_layer_leaflet_option_ref!(class_name, options);
             let circle =
                 leaflet::Circle::new_with_options(&center.get_untracked().into(), &options);
-            
+
             leaflet::Circle::set_radius(&circle, radius.get_untracked());
 
             mouse_events.setup(&circle);
@@ -170,7 +170,7 @@ pub fn Circle(
             }
         },
         false,
-    );     
+    );
 
     on_cleanup(move || {
         position_stop();

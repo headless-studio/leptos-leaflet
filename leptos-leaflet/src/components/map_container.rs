@@ -36,7 +36,8 @@ pub fn MapContainer(
     #[prop(optional)] popup_events: PopupEvents,
     #[prop(optional)] tooltip_events: TooltipEvents,
     /// An optional node ref for the map `div` container element.
-    #[prop(optional)] node_ref: Option<NodeRef<Div>>,
+    #[prop(optional)]
+    node_ref: Option<NodeRef<Div>>,
     /// Inner map child nodes
     #[prop(optional)]
     children: Option<Children>,
