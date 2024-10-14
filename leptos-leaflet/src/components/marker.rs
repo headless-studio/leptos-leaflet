@@ -45,6 +45,10 @@ pub fn Marker(
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
     let position_tracking = position;
+    let icon_class_tracking = icon_class.clone();
+    let icon_url_tracking = icon_url.clone();
+    let icon_size_tracking = icon_size;
+    let icon_anchor_tracking = icon_anchor;
     let map_context = use_context::<LeafletMapContext>().expect("Map context not found");
 
     let overlay_context = extend_context_with_overlay();
@@ -124,6 +128,45 @@ pub fn Marker(
         false,
     );
 
+    let icon_stop = watch(
+        move || {
+            (
+                icon_url_tracking.get(),
+                icon_class_tracking.get(),
+                icon_size_tracking.get(),
+                icon_anchor_tracking.get(),
+            )
+        },
+        move |(maybe_icon_url, maybe_icon_class, maybe_icon_size, maybe_icon_anchor), _, _| {
+            if let Some(marker) = overlay.get_value() {
+                if let Some(icon_url) = maybe_icon_url {
+                    let icon_options = leaflet::IconOptions::new();
+                    icon_options.set_icon_url(icon_url.clone());
+                    if let Some((x, y)) = maybe_icon_size {
+                        icon_options.set_icon_size(leaflet::Point::new(*x, *y));
+                    }
+                    if let Some((x, y)) = maybe_icon_anchor {
+                        icon_options.set_icon_anchor(leaflet::Point::new(*x, *y));
+                    }
+                    let icon = leaflet::Icon::new(&icon_options);
+                    marker.set_icon(&icon);
+                } else if let Some(icon_class) = maybe_icon_class {
+                    let icon_options = leaflet::DivIconOptions::new();
+                    icon_options.set_class_name(icon_class.clone());
+                    if let Some((x, y)) = maybe_icon_size {
+                        icon_options.set_icon_size(leaflet::Point::new(*x, *y));
+                    }
+                    if let Some((x, y)) = maybe_icon_anchor {
+                        icon_options.set_icon_anchor(leaflet::Point::new(*x, *y));
+                    }
+                    let icon = leaflet::DivIcon::new(&icon_options);
+                    marker.set_icon(&icon.into());
+                }
+            }
+        },
+        false,
+    );
+
     let opacity_stop = watch(
         move || opacity.get(),
         move |opacity, _, _| {
@@ -191,6 +234,7 @@ pub fn Marker(
 
     on_cleanup(move || {
         position_stop();
+        icon_stop();
         opacity_stop();
         drag_stop();
         rotation_stop();
