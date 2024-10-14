@@ -19,6 +19,12 @@ pub fn MapContainer(
     /// Zoom level of the map. Defaults to 10.0
     #[prop(optional, default = 10.0)]
     zoom: f64,
+    /// Zoom snap of the map. Defaults to 1.0
+    #[prop(optional, default = 1.0)]
+    zoom_snap: f64,
+    /// Zoom delta of the map. Defaults to 1.0
+    #[prop(optional, default = 1.0)]
+    zoom_delta: f64,
     /// Use geolocation from the browser to track the user
     #[prop(optional)]
     locate: bool,
@@ -60,6 +66,8 @@ pub fn MapContainer(
             let map_div = map_div.unchecked_ref::<HtmlDivElement>();
             let options = leaflet::MapOptions::new();
             options.set_zoom(zoom);
+            options.set_zoom_snap(zoom_snap);
+            options.set_zoom_delta(zoom_delta);
             if let Some(center) = center {
                 options.set_center(center.into());
             }
