@@ -53,6 +53,14 @@ pub fn Zoom(
         c.add_to(&map);
         control.set_value(Some(c));
     });
+
+    on_cleanup(move || {
+        control.with_value(|contr| {
+            if let Some(c) = contr {
+                c.remove();
+            }
+        });
+        control.set_value(None);
     });
 
     let update_position = move || {
