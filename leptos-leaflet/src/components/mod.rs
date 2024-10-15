@@ -14,6 +14,7 @@ mod tile_layer;
 mod tile_layer_wms;
 mod tooltip;
 mod video_overlay;
+mod zoom;
 
 pub use bounds::Bounds;
 pub use circle::Circle;
@@ -34,6 +35,7 @@ pub use tile_layer::TileLayer;
 pub use tile_layer_wms::{TileLayerWms, TileLayerWmsEvents};
 pub use tooltip::Tooltip;
 pub use video_overlay::VideoOverlay;
+pub use zoom::Zoom;
 
 #[macro_export]
 macro_rules! effect_update_on_change {

@@ -55,28 +55,20 @@ impl Bounds {
 
     // Returns true if the rectangle intersects the given bounds. Two bounds intersect if they have at least one point in common.
     pub fn intersects(&self, other: Bounds) -> bool {
-        let lat_overlap = (self.ne_corner.lat >= other.sw_corner.lat
-            && self.sw_corner.lat <= other.ne_corner.lat)
-            || (other.ne_corner.lat >= self.sw_corner.lat
-                && other.sw_corner.lat <= self.ne_corner.lat);
-        let lng_overlap = (self.ne_corner.lng >= other.sw_corner.lng
-            && self.sw_corner.lng <= other.ne_corner.lng)
-            || (other.ne_corner.lng >= self.sw_corner.lng
-                && other.sw_corner.lng <= self.ne_corner.lng);
+        let lat_overlap =
+            self.ne_corner.lat >= other.sw_corner.lat && self.sw_corner.lat <= other.ne_corner.lat;
+        let lng_overlap =
+            self.ne_corner.lng >= other.sw_corner.lng && self.sw_corner.lng <= other.ne_corner.lng;
 
         lat_overlap && lng_overlap
     }
 
     // Returns true if the rectangle overlaps the given bounds. Two bounds overlap if their intersection is an area.
     pub fn overlaps(&self, other: Bounds) -> bool {
-        let lat_overlap = (self.ne_corner.lat > other.sw_corner.lat
-            && self.sw_corner.lat < other.ne_corner.lat)
-            || (other.ne_corner.lat > self.sw_corner.lat
-                && other.sw_corner.lat < self.ne_corner.lat);
-        let lng_overlap = (self.ne_corner.lng > other.sw_corner.lng
-            && self.sw_corner.lng < other.ne_corner.lng)
-            || (other.ne_corner.lng > self.sw_corner.lng
-                && other.sw_corner.lng < self.ne_corner.lng);
+        let lat_overlap =
+            self.ne_corner.lat > other.sw_corner.lat && self.sw_corner.lat < other.ne_corner.lat;
+        let lng_overlap =
+            self.ne_corner.lng > other.sw_corner.lng && self.sw_corner.lng < other.ne_corner.lng;
 
         lat_overlap && lng_overlap
     }

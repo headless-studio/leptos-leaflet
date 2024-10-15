@@ -1,6 +1,5 @@
 use crate::components::context::extend_context_with_overlay;
 use crate::components::position::Position;
-use crate::prelude::StringEmptyOption;
 use leptos::prelude::*;
 use wasm_bindgen::JsCast;
 
@@ -30,8 +29,8 @@ pub fn Marker(
     #[prop(into, optional)] auto_pan: MaybeSignal<Option<bool>>,
     #[prop(into, optional)] auto_pan_padding: MaybeSignal<Option<(f64, f64)>>,
     #[prop(into, optional)] auto_pan_speed: MaybeSignal<Option<f64>>,
-    #[prop(into, optional)] icon_class: MaybeSignal<String>,
-    #[prop(into, optional)] icon_url: MaybeSignal<String>,
+    #[prop(into, optional)] icon_class: MaybeSignal<Option<String>>,
+    #[prop(into, optional)] icon_url: MaybeSignal<Option<String>>,
     #[prop(into, optional)] icon_size: MaybeSignal<Option<(f64, f64)>>,
     #[prop(into, optional)] icon_anchor: MaybeSignal<Option<(f64, f64)>>,
     #[prop(into, optional)] attribution: MaybeSignal<String>,
@@ -45,6 +44,10 @@ pub fn Marker(
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
     let position_tracking = position;
+    let icon_class_tracking = icon_class.clone();
+    let icon_url_tracking = icon_url.clone();
+    let icon_size_tracking = icon_size;
+    let icon_anchor_tracking = icon_anchor;
     let map_context = use_context::<LeafletMapContext>().expect("Map context not found");
 
     let overlay_context = extend_context_with_overlay();
@@ -75,7 +78,7 @@ pub fn Marker(
             if let Some((x, y)) = auto_pan_padding.get_untracked() {
                 options.set_auto_pan_padding(leaflet::Point::new(x, y));
             }
-            if let Some(icon_url) = icon_url.get_untracked().to_option_owned() {
+            if let Some(icon_url) = icon_url.get_untracked() {
                 let icon_options = leaflet::IconOptions::new();
                 icon_options.set_icon_url(icon_url);
                 if let Some((x, y)) = icon_size.get_untracked() {
@@ -86,7 +89,7 @@ pub fn Marker(
                 }
                 let icon = leaflet::Icon::new(&icon_options);
                 options.set_icon(icon);
-            } else if let Some(icon_class) = icon_class.get_untracked().to_option_owned() {
+            } else if let Some(icon_class) = icon_class.get_untracked() {
                 let icon_options = leaflet::DivIconOptions::new();
                 icon_options.set_class_name(icon_class);
                 if let Some((x, y)) = icon_size.get_untracked() {
@@ -120,6 +123,45 @@ pub fn Marker(
         move |position_tracking, _, _| {
             if let Some(marker) = overlay.get_value().as_ref() {
                 marker.set_lat_lng(&position_tracking.as_lat_lng());
+            }
+        },
+        false,
+    );
+
+    let icon_stop = Effect::watch(
+        move || {
+            (
+                icon_url_tracking.get(),
+                icon_class_tracking.get(),
+                icon_size_tracking.get(),
+                icon_anchor_tracking.get(),
+            )
+        },
+        move |(maybe_icon_url, maybe_icon_class, maybe_icon_size, maybe_icon_anchor), _, _| {
+            if let Some(marker) = overlay.get_value() {
+                if let Some(icon_url) = maybe_icon_url {
+                    let icon_options = leaflet::IconOptions::new();
+                    icon_options.set_icon_url(icon_url.clone());
+                    if let Some((x, y)) = maybe_icon_size {
+                        icon_options.set_icon_size(leaflet::Point::new(*x, *y));
+                    }
+                    if let Some((x, y)) = maybe_icon_anchor {
+                        icon_options.set_icon_anchor(leaflet::Point::new(*x, *y));
+                    }
+                    let icon = leaflet::Icon::new(&icon_options);
+                    marker.set_icon(&icon);
+                } else if let Some(icon_class) = maybe_icon_class {
+                    let icon_options = leaflet::DivIconOptions::new();
+                    icon_options.set_class_name(icon_class.clone());
+                    if let Some((x, y)) = maybe_icon_size {
+                        icon_options.set_icon_size(leaflet::Point::new(*x, *y));
+                    }
+                    if let Some((x, y)) = maybe_icon_anchor {
+                        icon_options.set_icon_anchor(leaflet::Point::new(*x, *y));
+                    }
+                    let icon = leaflet::DivIcon::new(&icon_options);
+                    marker.set_icon(&icon.into());
+                }
             }
         },
         false,
@@ -192,10 +234,11 @@ pub fn Marker(
 
     on_cleanup(move || {
         position_stop.stop();
+        icon_stop.stop();
         opacity_stop.stop();
         drag_stop.stop();
         rotation_stop.stop();
-        if let Some(overlay) = overlay.try_get_value().flatten().as_ref() {
+        if let Some(overlay) = overlay.get_value() {
             overlay.remove();
         }
     });

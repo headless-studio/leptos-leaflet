@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use leptos::logging::log;
 use leptos::prelude::*;
-use leptos_leaflet::leaflet::{LocationEvent, Map};
+use leptos_leaflet::leaflet::LocationEvent;
 use leptos_leaflet::prelude::*;
 use leptos_meta::*;
 use leptos_router::components::{Route, Router, Routes};
@@ -49,7 +49,8 @@ pub fn App() -> impl IntoView {
 /// Renders the home page of your application.
 #[component]
 fn HomePage() -> impl IntoView {
-    let (marker_position, set_marker_position) = JsRwSignal::new_local(Position::new(51.49, -0.08)).split();
+    let (marker_position, set_marker_position) =
+        JsRwSignal::new_local(Position::new(51.49, -0.08)).split();
     let (map, set_map) = create_map_signal();
 
     Effect::new(move |_| {
