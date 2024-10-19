@@ -2,6 +2,7 @@ mod components;
 pub(crate) mod core;
 
 pub use components::*;
+pub use core::IntoLatLng;
 
 /// Leaflet re-exports
 pub use leaflet;
