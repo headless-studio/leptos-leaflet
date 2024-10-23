@@ -1,0 +1,12 @@
+[package]
+edition = "2021"
+name    = "leaflet-api"
+version = "0.1.0"
+
+[dependencies]
+console_error_panic_hook = "0.1"
+leptos = { version = "0.6", default-features = false, "features" = ["csr"] }
+leptos-leaflet = { path = "../../leptos-leaflet", default-features = false, features = [
+    "csr",
+] }
+web-sys = { version = "0.3", features = ["HtmlBodyElement"] }
