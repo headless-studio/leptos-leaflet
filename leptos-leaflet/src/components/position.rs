@@ -1,5 +1,7 @@
 use leaflet::LatLng;
 
+use crate::core::IntoLatLng;
+
 #[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub struct Position {
     pub lat: f64,
@@ -118,5 +120,11 @@ impl From<Position> for (f64, f64) {
 impl From<Position> for [f64; 2] {
     fn from(value: Position) -> Self {
         [value.lat, value.lng]
+    }
+}
+
+impl IntoLatLng for Position {
+    fn into_lat_lng(self) -> LatLng {
+        LatLng::new(self.lat, self.lng)
     }
 }

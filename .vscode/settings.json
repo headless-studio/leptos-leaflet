@@ -4,11 +4,12 @@
         ".\\examples\\with-server\\Cargo.toml",
         ".\\Cargo.toml"
     ],
-    "rust-analyzer.check.allTargets": false,
-    "rust-analyzer.cargo.target": "wasm32-unknown-unknown",
+    // "rust-analyzer.check.allTargets": false,
+    // "rust-analyzer.cargo.target": "wasm32-unknown-unknown",
     "rust-analyzer.check.command": "clippy",
     // "rust-analyzer.cargo.noDefaultFeatures": true,
     // "rust-analyzer.cargo.features": ["ssr"],
     "rust-analyzer.procMacro.enable": true,
     "rust-analyzer.procMacro.attributes.enable": true,
+    "rust-analyzer.cargo.targetDir": true
 }
