@@ -47,6 +47,9 @@ pub fn MapContainer(
     /// An optional node ref for the map `div` container element.
     #[prop(optional)]
     node_ref: Option<NodeRef<Div>>,
+    /// Wether the map should prefer canvas renderer.
+    #[prop(optional)]
+    prefer_canvas: bool,
     /// Inner map child nodes
     #[prop(optional)]
     children: Option<Children>,
@@ -68,6 +71,7 @@ pub fn MapContainer(
         _ = map_div.on_mount(move |map_div| {
             let map_div = map_div.unchecked_ref::<HtmlDivElement>();
             let options = leaflet::MapOptions::new();
+            options.set_prefer_canvas(prefer_canvas);
             options.set_zoom_control(zoom_control);
             options.set_zoom(zoom);
             options.set_zoom_snap(zoom_snap);
