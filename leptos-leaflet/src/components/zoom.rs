@@ -23,7 +23,7 @@ pub fn Zoom(
     #[prop(optional)]
     zoom_out_title: Option<String>,
 ) -> impl IntoView {
-    let control = create_signal(None::<Zoom>);
+    let control = store_value(None::<Zoom>);
 
     let mut options = ZoomOptions::new();
     options.set_position(&position.get_untracked());
@@ -51,12 +51,21 @@ pub fn Zoom(
 
         let c = Zoom::new(&options);
         c.add_to(&map);
-        control.1.set(Some(c));
+        control.set_value(Some(c));
+    });
+
+    on_cleanup(move || {
+        control.with_value(|contr| {
+            if let Some(c) = contr {
+                c.remove();
+            }
+        });
+        control.set_value(None);
     });
 
     let update_position = move || {
         let position = position.get();
-        let Some(c) = control.0.get() else {
+        let Some(c) = control.get_value() else {
             return;
         };
         c.set_position(&position);
