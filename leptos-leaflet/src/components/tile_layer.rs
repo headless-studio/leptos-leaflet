@@ -5,6 +5,7 @@ use crate::core::JsStoredValue;
 
 use super::LeafletMapContext;
 
+/// A tile layer component.
 #[component(transparent)]
 pub fn TileLayer(
     #[prop(into)] url: String,

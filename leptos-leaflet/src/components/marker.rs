@@ -9,6 +9,7 @@ use super::{
 use crate::core::{JsMaybeSignal, JsStoredValue};
 use crate::{setup_layer_leaflet_option, setup_layer_leaflet_string};
 
+/// A marker component.
 #[component(transparent)]
 pub fn Marker(
     /// Position for the Marker

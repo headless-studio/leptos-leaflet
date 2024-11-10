@@ -5,6 +5,7 @@ use leaflet::{Map, TileLayerWms as LeafletTileLayerWms, TileLayerWmsOptions};
 use super::{LeafletMapContext, MapEvents, TileLayerWmsContext};
 use crate::core::IntoThreadSafeJsValue;
 
+/// A WMS tile layer component.
 #[component(transparent)]
 pub fn TileLayerWms(
     #[prop(into)] url: String,

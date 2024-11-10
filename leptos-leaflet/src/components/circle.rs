@@ -10,6 +10,10 @@ use crate::{
     setup_layer_leaflet_option, setup_layer_leaflet_option_ref, setup_layer_leaflet_string,
 };
 
+/// A circle overlay that represents a circle on the map.
+/// 
+/// The `Circle` component is used to create a circle overlay on the map. It provides options to customize
+/// the appearance of the circle, such as the stroke color, fill color, and radius.
 #[component(transparent)]
 pub fn Circle(
     #[prop(into)] center: JsMaybeSignal<Position>,

@@ -10,6 +10,7 @@ use crate::{
     setup_layer_leaflet_option, setup_layer_leaflet_option_ref, setup_layer_leaflet_string,
 };
 
+/// A polyline overlay that represents a polyline on the map.
 #[component(transparent)]
 pub fn Polyline(
     #[prop(into)] positions: MaybeSignal<Vec<Position>>,

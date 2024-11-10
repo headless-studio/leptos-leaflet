@@ -9,6 +9,10 @@ use crate::core::JsWriteSignal;
 
 use super::{provide_leaflet_context, MapEvents, PopupEvents, Position, TooltipEvents};
 
+/// A container for the Leaflet map.
+/// 
+/// This is the main container for the Leaflet map. It provides a way to add child nodes to the map.
+/// It also provides a signal to access the map instance, allowing to interact with the map from other components.
 #[component]
 pub fn MapContainer(
     #[prop(into, optional)] class: MaybeSignal<String>,

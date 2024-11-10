@@ -4,6 +4,10 @@ use wasm_bindgen::JsCast;
 
 use crate::core::{JsReadSignal, JsRwSignal, JsWriteSignal};
 
+
+/// A context struct for the Leaflet map.
+/// 
+/// This struct provides a way to access the current state of the Leaflet map.
 #[derive(Debug, Clone, Copy)]
 pub struct LeafletMapContext {
     map: JsRwSignal<Option<leaflet::Map>>,
@@ -11,6 +15,7 @@ pub struct LeafletMapContext {
 }
 
 impl LeafletMapContext {
+    /// Creates a new `LeafletMapContext` instance.
     pub fn new() -> Self {
         Self {
             map: JsRwSignal::new_local(None),

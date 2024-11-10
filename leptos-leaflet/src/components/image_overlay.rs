@@ -4,6 +4,7 @@ use super::{Bounds, LeafletMapContext};
 use crate::core::IntoThreadSafeJsValue;
 
 
+/// An image overlay component.
 #[component(transparent)]
 pub fn ImageOverlay(
     #[prop(into)] url: String,

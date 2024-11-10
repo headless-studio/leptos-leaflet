@@ -6,6 +6,7 @@ use crate::core::{IntoThreadSafeJsValue, JsMaybeSignal};
 
 use super::{LeafletMapContext, LeafletOverlayContainerContext, Position};
 
+/// A tooltip component.
 #[component]
 pub fn Tooltip(
     #[prop(into, optional)] position: JsMaybeSignal<Position>,

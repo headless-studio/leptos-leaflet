@@ -11,6 +11,7 @@ use crate::{
     setup_layer_leaflet_option, setup_layer_leaflet_option_ref, setup_layer_leaflet_string,
 };
 
+/// A polygon overlay that represents a polygon on the map.
 #[component(transparent)]
 pub fn Polygon(
     #[prop(into)] positions: MaybeSignal<Vec<Position>>,

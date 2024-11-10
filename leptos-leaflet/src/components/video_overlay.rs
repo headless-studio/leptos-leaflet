@@ -5,6 +5,7 @@ use crate::core::IntoThreadSafeJsValue;
 
 use super::{Bounds, LeafletMapContext};
 
+/// A video overlay component.
 #[component(transparent)]
 pub fn VideoOverlay(
     #[prop(into)] url: String,

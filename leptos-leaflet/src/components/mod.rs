@@ -1,6 +1,7 @@
 mod bounds;
 mod circle;
 mod context;
+mod control;
 mod events;
 mod image_overlay;
 mod map_container;
@@ -19,6 +20,7 @@ mod zoom;
 pub use bounds::Bounds;
 pub use circle::Circle;
 pub use context::*;
+pub use control::Control;
 pub use events::{
     DragEvents, LayerEvents, MapEvents, MouseEvents, MoveEvents, PopupEvents, TooltipEvents,
 };

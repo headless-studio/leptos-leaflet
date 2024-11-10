@@ -1,4 +1,11 @@
 use leaflet::LatLng;
+
+/// A struct to represent a position on the map.
+///
+/// This allows to pass the positions around even on the server side, since LatLng is a client-side only struct.
+/// 
+/// This struct offers some utility methods to work with positions, and conversions to LatLng.
+/// It also supports passing positions as tuples or arrays.
 #[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub struct Position {
     pub lat: f64,
@@ -6,6 +13,7 @@ pub struct Position {
 }
 
 impl Position {
+    /// Creates a new position
     pub fn new(lat: f64, lng: f64) -> Self {
         Self { lat, lng }
     }
@@ -39,8 +47,8 @@ impl Position {
         self.distance_haversine(center) < radius
     }
 
-    #[inline]
     /// Check if the position is inside a polygon
+    #[inline]
     pub fn inside_polygon(&self, polygon: &[Position]) -> bool {
         let x = self.lat;
         let y = self.lng;
@@ -67,6 +75,7 @@ impl Position {
         ((self.lat - other.lat).powi(2) + (self.lng - other.lng).powi(2)).sqrt()
     }
 
+    /// Check if the position is zero using the f64::EPSILON
     pub fn is_zero(&self) -> bool {
         self.lat.abs() <= f64::EPSILON && self.lng.abs() <= f64::EPSILON
     }

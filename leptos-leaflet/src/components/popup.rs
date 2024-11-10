@@ -6,6 +6,7 @@ use super::{LeafletMapContext, Position};
 use crate::core::{IntoThreadSafeJsValue, JsMaybeSignal};
 use crate::prelude::LeafletOverlayContainerContext;
 
+/// A popup component for displaying content on the map.
 #[component]
 pub fn Popup(
     #[prop(into, optional)] position: JsMaybeSignal<Position>,
