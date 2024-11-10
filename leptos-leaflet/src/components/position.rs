@@ -146,7 +146,7 @@ macro_rules! position {
     ($lat: expr, $lng: expr) => {
         {
             use leptos::prelude::*;
-            $crate::prelude::JsMaybeSignal::Static($crate::prelude::Position::new($lat, $lng))
+            $crate::prelude::JsSignal::derive_local(move || $crate::prelude::Position::new($lat, $lng))
         }
     };
 }

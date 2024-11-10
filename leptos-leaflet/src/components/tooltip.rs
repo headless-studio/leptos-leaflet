@@ -2,18 +2,18 @@ use leptos::html::Div;
 use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
 
-use crate::core::{IntoThreadSafeJsValue, JsMaybeSignal};
+use crate::core::{IntoThreadSafeJsValue, JsSignal};
 
 use super::{LeafletMapContext, LeafletOverlayContainerContext, Position};
 
 /// A tooltip component.
 #[component]
 pub fn Tooltip(
-    #[prop(into, optional)] position: JsMaybeSignal<Position>,
-    #[prop(into, optional)] permanent: MaybeSignal<bool>,
-    #[prop(into, optional, default="auto".into())] direction: MaybeSignal<String>,
-    #[prop(into, optional)] sticky: MaybeSignal<bool>,
-    #[prop(into, optional, default=0.9.into())] opacity: MaybeSignal<f64>,
+    #[prop(into, optional)] position: JsSignal<Position>,
+    #[prop(into, optional)] permanent: Signal<bool>,
+    #[prop(into, optional, default="auto".into())] direction: Signal<String>,
+    #[prop(into, optional)] sticky: Signal<bool>,
+    #[prop(into, optional, default=0.9.into())] opacity: Signal<f64>,
     children: Children,
 ) -> impl IntoView {
     let map_context = use_context::<LeafletMapContext>();

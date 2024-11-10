@@ -9,7 +9,7 @@ use crate::prelude::LeafletMapContext;
 pub fn Zoom(
     /// Position where the zoom control is shown.
     #[prop(into)]
-    position: MaybeSignal<String>,
+    position: Signal<String>,
     /// Text for "zoom in".
     #[prop(optional)]
     zoom_in_text: Option<String>,

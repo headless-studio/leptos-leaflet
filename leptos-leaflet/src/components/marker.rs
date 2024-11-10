@@ -6,7 +6,7 @@ use wasm_bindgen::JsCast;
 use super::{
     DragEvents, LayerEvents, LeafletMapContext, MouseEvents, MoveEvents, PopupEvents, TooltipEvents,
 };
-use crate::core::{JsMaybeSignal, JsStoredValue};
+use crate::core::{JsSignal, JsStoredValue};
 use crate::{setup_layer_leaflet_option, setup_layer_leaflet_string};
 
 /// A marker component.
@@ -14,28 +14,28 @@ use crate::{setup_layer_leaflet_option, setup_layer_leaflet_string};
 pub fn Marker(
     /// Position for the Marker
     #[prop(into)]
-    position: JsMaybeSignal<Position>,
-    #[prop(into, optional)] draggable: MaybeSignal<bool>,
-    #[prop(into, optional)] keyboard: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] title: MaybeSignal<String>,
-    #[prop(into, optional)] alt: MaybeSignal<String>,
-    #[prop(into, optional)] interactive: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] z_index_offset: MaybeSignal<Option<f64>>,
-    #[prop(into, optional)] opacity: MaybeSignal<Option<f64>>,
-    #[prop(into, optional)] rise_on_hover: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] rise_offset: MaybeSignal<Option<f64>>,
-    #[prop(into, optional)] pane: MaybeSignal<String>,
-    #[prop(into, optional)] shadow_pane: MaybeSignal<String>,
-    #[prop(into, optional)] bubbling_mouse_events: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] auto_pan: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] auto_pan_padding: MaybeSignal<Option<(f64, f64)>>,
-    #[prop(into, optional)] auto_pan_speed: MaybeSignal<Option<f64>>,
-    #[prop(into, optional)] icon_class: MaybeSignal<Option<String>>,
-    #[prop(into, optional)] icon_url: MaybeSignal<Option<String>>,
-    #[prop(into, optional)] icon_size: MaybeSignal<Option<(f64, f64)>>,
-    #[prop(into, optional)] icon_anchor: MaybeSignal<Option<(f64, f64)>>,
-    #[prop(into, optional)] attribution: MaybeSignal<String>,
-    #[prop(into, optional)] rotation: MaybeSignal<Option<f64>>,
+    position: JsSignal<Position>,
+    #[prop(into, optional)] draggable: Signal<bool>,
+    #[prop(into, optional)] keyboard: Signal<Option<bool>>,
+    #[prop(into, optional)] title: Signal<String>,
+    #[prop(into, optional)] alt: Signal<String>,
+    #[prop(into, optional)] interactive: Signal<Option<bool>>,
+    #[prop(into, optional)] z_index_offset: Signal<Option<f64>>,
+    #[prop(into, optional)] opacity: Signal<Option<f64>>,
+    #[prop(into, optional)] rise_on_hover: Signal<Option<bool>>,
+    #[prop(into, optional)] rise_offset: Signal<Option<f64>>,
+    #[prop(into, optional)] pane: Signal<String>,
+    #[prop(into, optional)] shadow_pane: Signal<String>,
+    #[prop(into, optional)] bubbling_mouse_events: Signal<Option<bool>>,
+    #[prop(into, optional)] auto_pan: Signal<Option<bool>>,
+    #[prop(into, optional)] auto_pan_padding: Signal<Option<(f64, f64)>>,
+    #[prop(into, optional)] auto_pan_speed: Signal<Option<f64>>,
+    #[prop(into, optional)] icon_class: Signal<Option<String>>,
+    #[prop(into, optional)] icon_url: Signal<Option<String>>,
+    #[prop(into, optional)] icon_size: Signal<Option<(f64, f64)>>,
+    #[prop(into, optional)] icon_anchor: Signal<Option<(f64, f64)>>,
+    #[prop(into, optional)] attribution: Signal<String>,
+    #[prop(into, optional)] rotation: Signal<Option<f64>>,
     #[prop(into, optional)] move_events: MoveEvents,
     #[prop(into, optional)] mouse_events: MouseEvents,
     #[prop(into, optional)] drag_events: DragEvents,
@@ -45,8 +45,8 @@ pub fn Marker(
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
     let position_tracking = position;
-    let icon_class_tracking = icon_class.clone();
-    let icon_url_tracking = icon_url.clone();
+    let icon_class_tracking = icon_class;
+    let icon_url_tracking = icon_url;
     let icon_size_tracking = icon_size;
     let icon_anchor_tracking = icon_anchor;
     let map_context = use_context::<LeafletMapContext>().expect("Map context not found");

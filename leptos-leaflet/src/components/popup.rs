@@ -3,27 +3,27 @@ use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
 
 use super::{LeafletMapContext, Position};
-use crate::core::{IntoThreadSafeJsValue, JsMaybeSignal};
+use crate::core::{IntoThreadSafeJsValue, JsSignal};
 use crate::prelude::LeafletOverlayContainerContext;
 
 /// A popup component for displaying content on the map.
 #[component]
 pub fn Popup(
-    #[prop(into, optional)] position: JsMaybeSignal<Position>,
-    #[prop(into, optional)] pane: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] offset: Option<MaybeSignal<(u32, u32)>>,
-    #[prop(into, optional)] min_width: Option<MaybeSignal<f64>>,
-    #[prop(into, optional)] max_width: Option<MaybeSignal<f64>>,
-    #[prop(into, optional)] auto_pan: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] auto_pan_padding_top_left: Option<MaybeSignal<(u32, u32)>>,
-    #[prop(into, optional)] auto_pan_padding_bottom_right: Option<MaybeSignal<(u32, u32)>>,
-    #[prop(into, optional)] auto_pan_padding: Option<MaybeSignal<(u32, u32)>>,
-    #[prop(into, optional)] keep_in_view: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] close_button: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] auto_close: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] close_on_escape_key: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] close_on_click: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] class_name: Option<MaybeSignal<String>>,
+    #[prop(into, optional)] position: JsSignal<Position>,
+    #[prop(into, optional)] pane: Option<Signal<String>>,
+    #[prop(into, optional)] offset: Option<Signal<(u32, u32)>>,
+    #[prop(into, optional)] min_width: Option<Signal<f64>>,
+    #[prop(into, optional)] max_width: Option<Signal<f64>>,
+    #[prop(into, optional)] auto_pan: Option<Signal<bool>>,
+    #[prop(into, optional)] auto_pan_padding_top_left: Option<Signal<(u32, u32)>>,
+    #[prop(into, optional)] auto_pan_padding_bottom_right: Option<Signal<(u32, u32)>>,
+    #[prop(into, optional)] auto_pan_padding: Option<Signal<(u32, u32)>>,
+    #[prop(into, optional)] keep_in_view: Option<Signal<bool>>,
+    #[prop(into, optional)] close_button: Option<Signal<bool>>,
+    #[prop(into, optional)] auto_close: Option<Signal<bool>>,
+    #[prop(into, optional)] close_on_escape_key: Option<Signal<bool>>,
+    #[prop(into, optional)] close_on_click: Option<Signal<bool>>,
+    #[prop(into, optional)] class_name: Option<Signal<String>>,
     children: Children,
 ) -> impl IntoView {
     let map_context = use_context::<LeafletMapContext>();

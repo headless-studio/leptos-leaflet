@@ -15,8 +15,8 @@ use super::{provide_leaflet_context, MapEvents, PopupEvents, Position, TooltipEv
 /// It also provides a signal to access the map instance, allowing to interact with the map from other components.
 #[component]
 pub fn MapContainer(
-    #[prop(into, optional)] class: MaybeSignal<String>,
-    #[prop(into, optional)] style: MaybeSignal<String>,
+    #[prop(into, optional)] class: Signal<String>,
+    #[prop(into, optional)] style: Signal<String>,
     /// Centers the map on the given location
     #[prop(into, optional)]
     center: Option<Position>,

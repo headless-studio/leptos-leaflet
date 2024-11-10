@@ -13,24 +13,24 @@ use crate::{
 /// A polyline overlay that represents a polyline on the map.
 #[component(transparent)]
 pub fn Polyline(
-    #[prop(into)] positions: MaybeSignal<Vec<Position>>,
-    #[prop(into, optional)] stroke: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] color: MaybeSignal<String>,
-    #[prop(into, optional)] weight: MaybeSignal<Option<f64>>,
-    #[prop(into, optional)] opacity: MaybeSignal<Option<f64>>,
-    #[prop(into, optional)] interactive: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] line_cap: MaybeSignal<Option<LineCap>>,
-    #[prop(into, optional)] line_join: MaybeSignal<Option<LineJoin>>,
-    #[prop(into, optional)] dash_array: MaybeSignal<String>,
-    #[prop(into, optional)] dash_offset: MaybeSignal<Option<String>>,
-    #[prop(into, optional)] fill: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] fill_color: MaybeSignal<String>,
-    #[prop(into, optional)] fill_opacity: MaybeSignal<Option<f64>>,
-    #[prop(into, optional)] fill_rule: MaybeSignal<Option<FillRule>>,
-    #[prop(into, optional)] bubbling_mouse_events: MaybeSignal<Option<bool>>,
-    #[prop(into, optional)] class_name: MaybeSignal<String>,
-    #[prop(into, optional)] smooth_factor: MaybeSignal<Option<f64>>,
-    #[prop(into, optional)] no_clip: MaybeSignal<Option<bool>>,
+    #[prop(into)] positions: Signal<Vec<Position>>,
+    #[prop(into, optional)] stroke: Signal<Option<bool>>,
+    #[prop(into, optional)] color: Signal<String>,
+    #[prop(into, optional)] weight: Signal<Option<f64>>,
+    #[prop(into, optional)] opacity: Signal<Option<f64>>,
+    #[prop(into, optional)] interactive: Signal<Option<bool>>,
+    #[prop(into, optional)] line_cap: Signal<Option<LineCap>>,
+    #[prop(into, optional)] line_join: Signal<Option<LineJoin>>,
+    #[prop(into, optional)] dash_array: Signal<String>,
+    #[prop(into, optional)] dash_offset: Signal<Option<String>>,
+    #[prop(into, optional)] fill: Signal<Option<bool>>,
+    #[prop(into, optional)] fill_color: Signal<String>,
+    #[prop(into, optional)] fill_opacity: Signal<Option<f64>>,
+    #[prop(into, optional)] fill_rule: Signal<Option<FillRule>>,
+    #[prop(into, optional)] bubbling_mouse_events: Signal<Option<bool>>,
+    #[prop(into, optional)] class_name: Signal<String>,
+    #[prop(into, optional)] smooth_factor: Signal<Option<f64>>,
+    #[prop(into, optional)] no_clip: Signal<Option<bool>>,
     #[prop(into, optional)] mouse_events: MouseEvents,
     #[prop(into, optional)] layer_events: LayerEvents,
     #[prop(into, optional)] popup_events: PopupEvents,
@@ -40,9 +40,9 @@ pub fn Polyline(
     extend_context_with_overlay();
     let overlay = JsStoredValue::new_local(None::<leaflet::Polyline>);
 
-    let positions_for_effect = positions.clone();
-    let color_clone = color.clone();
-    let fill_color_clone = fill_color.clone();
+    let positions_for_effect = positions;
+    let color_clone = color;
+    let fill_color_clone = fill_color;
     Effect::new(move |_| {
         if let Some(map) = use_context::<LeafletMapContext>()
             .expect("map context")

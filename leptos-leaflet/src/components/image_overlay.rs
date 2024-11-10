@@ -9,17 +9,17 @@ use crate::core::IntoThreadSafeJsValue;
 pub fn ImageOverlay(
     #[prop(into)] url: String,
     #[prop(into)] bounds: Bounds,
-    #[prop(into, optional)] opacity: Option<MaybeSignal<f64>>,
-    #[prop(into, optional)] alt: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] interactive: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] cross_origin: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] cross_origin_toggle: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] error_overlay_url: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] z_index: Option<MaybeSignal<f64>>,
-    #[prop(into, optional)] class_name: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] bubbling_mouse_events: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] pane: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] attribution: Option<MaybeSignal<String>>,
+    #[prop(into, optional)] opacity: Option<Signal<f64>>,
+    #[prop(into, optional)] alt: Option<Signal<String>>,
+    #[prop(into, optional)] interactive: Option<Signal<bool>>,
+    #[prop(into, optional)] cross_origin: Option<Signal<String>>,
+    #[prop(into, optional)] cross_origin_toggle: Option<Signal<bool>>,
+    #[prop(into, optional)] error_overlay_url: Option<Signal<String>>,
+    #[prop(into, optional)] z_index: Option<Signal<f64>>,
+    #[prop(into, optional)] class_name: Option<Signal<String>>,
+    #[prop(into, optional)] bubbling_mouse_events: Option<Signal<bool>>,
+    #[prop(into, optional)] pane: Option<Signal<String>>,
+    #[prop(into, optional)] attribution: Option<Signal<String>>,
 ) -> impl IntoView {
     let map_context = use_context::<LeafletMapContext>().expect("map context not found");
     Effect::new(move |_| {
