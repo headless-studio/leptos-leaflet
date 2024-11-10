@@ -10,6 +10,7 @@ use crate::{
     MouseEvents, MoveEvents, PopupEvents, TooltipEvents,
 };
 
+/// A marker component.
 #[component(transparent)]
 pub fn Marker(
     /// Position for the Marker

@@ -1,12 +1,16 @@
 use leptos::*;
 use wasm_bindgen::JsCast;
 
+/// A context struct for the Leaflet map.
+/// 
+/// This struct provides a way to access the current state of the Leaflet map.
 #[derive(Debug, Clone, Copy)]
 pub struct LeafletMapContext {
     map: RwSignal<Option<leaflet::Map>>,
 }
 
 impl LeafletMapContext {
+    /// Creates a new `LeafletMapContext` instance.
     pub fn new() -> Self {
         Self {
             map: create_rw_signal(None),

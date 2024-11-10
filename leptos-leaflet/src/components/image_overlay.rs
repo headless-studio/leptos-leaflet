@@ -3,6 +3,7 @@ use crate::components::context::LeafletMapContext;
 use leptos::logging::log;
 use leptos::*;
 
+/// An image overlay component.
 #[component(transparent)]
 pub fn ImageOverlay(
     #[prop(into)] url: String,

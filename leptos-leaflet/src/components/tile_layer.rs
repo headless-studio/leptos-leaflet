@@ -3,6 +3,7 @@ use leptos::*;
 
 use crate::components::context::LeafletMapContext;
 
+/// A tile layer component.
 #[component(transparent)]
 pub fn TileLayer(
     #[prop(into)] url: String,

@@ -5,6 +5,7 @@ use wasm_bindgen::prelude::*;
 use crate::components::context::{LeafletMapContext, LeafletOverlayContainerContext};
 use crate::components::position::Position;
 
+/// A tooltip component.
 #[component]
 pub fn Tooltip(
     #[prop(into, optional)] position: MaybeSignal<Position>,

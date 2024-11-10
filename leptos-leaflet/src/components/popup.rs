@@ -5,6 +5,7 @@ use leptos::html::Div;
 use leptos::*;
 use wasm_bindgen::prelude::*;
 
+/// A popup component for displaying content on the map.
 #[component]
 pub fn Popup(
     #[prop(into, optional)] position: MaybeSignal<Position>,

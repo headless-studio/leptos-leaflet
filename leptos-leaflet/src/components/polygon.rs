@@ -13,6 +13,7 @@ use crate::{
     PopupEvents, TooltipEvents,
 };
 
+/// A polygon overlay that represents a polygon on the map.
 #[component(transparent)]
 pub fn Polygon(
     #[prop(into)] positions: MaybeSignal<Vec<Position>>,

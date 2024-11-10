@@ -1,5 +1,6 @@
 use std::fmt::{Display, Formatter};
 
+/// Options for configuring the appearance of a path join.
 #[derive(Debug, Copy, Clone)]
 pub enum LineJoin {
     Arcs,
@@ -39,6 +40,7 @@ impl AsRef<str> for LineJoin {
     }
 }
 
+/// Options for configuring the appearance of a path cap.
 #[derive(Debug, Copy, Clone)]
 pub enum LineCap {
     Butt,
@@ -72,6 +74,7 @@ impl AsRef<str> for LineCap {
     }
 }
 
+/// Options for configuring the appearance of a path fill.
 #[derive(Debug, Copy, Clone)]
 pub enum FillRule {
     NonZero,

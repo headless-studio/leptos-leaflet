@@ -12,6 +12,7 @@ use crate::{
     PopupEvents, TooltipEvents,
 };
 
+/// A polyline overlay that represents a polyline on the map.
 #[component(transparent)]
 pub fn Polyline(
     #[prop(into)] positions: MaybeSignal<Vec<Position>>,

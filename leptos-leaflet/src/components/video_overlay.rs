@@ -3,6 +3,7 @@ use crate::components::context::LeafletMapContext;
 use leptos::logging::log;
 use leptos::*;
 
+/// A video overlay component.
 #[component(transparent)]
 pub fn VideoOverlay(
     #[prop(into)] url: String,

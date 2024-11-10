@@ -6,6 +6,7 @@ use crate::components::context::TileLayerWmsContext;
 use crate::MapEvents;
 use leaflet::{Map, TileLayerWms as LeafletTileLayerWms, TileLayerWmsOptions};
 
+/// A WMS tile layer component.
 #[component(transparent)]
 pub fn TileLayerWms(
     #[prop(into)] url: String,
