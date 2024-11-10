@@ -1,7 +1,7 @@
 use leaflet::LatLng;
 use leaflet::LatLngBounds;
 
-use crate::Position;
+use super::Position;
 
 /// Represents a geographical area defined by its northeast and southwest corners.
 ///

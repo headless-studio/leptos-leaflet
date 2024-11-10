@@ -1,13 +1,13 @@
-use leaflet::MarkerOptions;
-use leptos::*;
-use leptos_leaflet::*;
+use leptos::prelude::*;
+use leptos_leaflet::leaflet::MarkerOptions;
+use leptos_leaflet::prelude::*;
 
 use crate::droppables::DroppableMarker;
 
 #[component]
 pub fn App() -> impl IntoView {
-    let map = RwSignal::new(None);
-    let markers = RwSignal::new(Vec::<DroppableMarker>::new());
+    let map = RwSignal::new_local(None);
+    let markers = RwSignal::new_local(Vec::<DroppableMarker>::new());
 
     let add_marker = move |_| {
         if let Some(map) = map.get().as_ref() {

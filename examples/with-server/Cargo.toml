@@ -11,10 +11,10 @@ axum = { version = "0.7", optional = true }
 console_error_panic_hook = "0.1"
 console_log = "1"
 cfg-if = "1"
-leptos = { version = "0.7.0-beta4", default-features = false }
-leptos_axum = { version = "0.7.0-beta4", optional = true }
-leptos_meta = { version = "0.7.0-beta4", default-features = false }
-leptos_router = { version = "0.7.0-beta4", default-features = false }
+leptos = { version = "0.7.0-rc", default-features = false }
+leptos_axum = { version = "0.7.0-rc", optional = true }
+leptos_meta = { version = "0.7.0-rc", default-features = false }
+leptos_router = { version = "0.7.0-rc", default-features = false }
 leptos-leaflet = { path = "../../leptos-leaflet", default-features = false }
 log = "0.4"
 simple_logger = "4"
