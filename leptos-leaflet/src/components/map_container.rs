@@ -32,6 +32,12 @@ pub fn MapContainer(
     /// Zoom delta of the map. Defaults to 1.0
     #[prop(optional, default = 1.0)]
     zoom_delta: f64,
+    /// Allow zoom on double_click
+    #[prop(optional, default = true)]
+    double_click_zoom: bool,
+    /// Sets the minimum zoom level
+    #[prop(optional, default = 0.0)]
+    min_zoom: f64,
     /// Use geolocation from the browser to track the user
     #[prop(optional)]
     locate: bool,
@@ -76,6 +82,8 @@ pub fn MapContainer(
             options.set_zoom(zoom);
             options.set_zoom_snap(zoom_snap);
             options.set_zoom_delta(zoom_delta);
+            options.set_double_click_zoom(JsValue::from_bool(double_click_zoom));
+            options.set_min_zoom(min_zoom);
             if let Some(center) = center {
                 options.set_center(center.into());
             }
