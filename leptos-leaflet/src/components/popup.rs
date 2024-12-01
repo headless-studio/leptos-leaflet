@@ -11,13 +11,13 @@ use crate::prelude::LeafletOverlayContainerContext;
 pub fn Popup(
     #[prop(into, optional)] position: JsSignal<Position>,
     #[prop(into, optional)] pane: Option<Signal<String>>,
-    #[prop(into, optional)] offset: Option<Signal<(u32, u32)>>,
+    #[prop(into, optional)] offset: Option<Signal<(i32, i32)>>,
     #[prop(into, optional)] min_width: Option<Signal<f64>>,
     #[prop(into, optional)] max_width: Option<Signal<f64>>,
     #[prop(into, optional)] auto_pan: Option<Signal<bool>>,
-    #[prop(into, optional)] auto_pan_padding_top_left: Option<Signal<(u32, u32)>>,
-    #[prop(into, optional)] auto_pan_padding_bottom_right: Option<Signal<(u32, u32)>>,
-    #[prop(into, optional)] auto_pan_padding: Option<Signal<(u32, u32)>>,
+    #[prop(into, optional)] auto_pan_padding_top_left: Option<Signal<(i32, i32)>>,
+    #[prop(into, optional)] auto_pan_padding_bottom_right: Option<Signal<(i32, i32)>>,
+    #[prop(into, optional)] auto_pan_padding: Option<Signal<(i32, i32)>>,
     #[prop(into, optional)] keep_in_view: Option<Signal<bool>>,
     #[prop(into, optional)] close_button: Option<Signal<bool>>,
     #[prop(into, optional)] auto_close: Option<Signal<bool>>,
@@ -39,7 +39,8 @@ pub fn Popup(
             options.set_pane(pane.get_untracked());
         }
         if let Some(offset) = offset {
-            options.set_offset(leaflet::Point::from(offset.get_untracked()));
+            let (x, y) = offset.get_untracked();
+            options.set_offset(leaflet::Point::new(f64::from(x), f64::from(y)));
         }
         if let Some(min_width) = min_width {
             options.set_min_width(min_width.get_untracked());
@@ -51,17 +52,16 @@ pub fn Popup(
             options.set_auto_pan(auto_pan.get_untracked());
         }
         if let Some(auto_pan_padding_top_left) = auto_pan_padding_top_left {
-            options.set_auto_pan_padding_top_left(leaflet::Point::from(
-                auto_pan_padding_top_left.get_untracked(),
-            ));
+            let (x, y) = auto_pan_padding_top_left.get_untracked();
+            options.set_auto_pan_padding_top_left(leaflet::Point::new(f64::from(x), f64::from(y)));
         }
         if let Some(auto_pan_padding_bottom_right) = auto_pan_padding_bottom_right {
-            options.set_auto_pan_padding_bottom_right(leaflet::Point::from(
-                auto_pan_padding_bottom_right.get_untracked(),
-            ));
+            let (x, y) = auto_pan_padding_bottom_right.get_untracked();
+            options.set_auto_pan_padding_bottom_right(leaflet::Point::new(f64::from(x), f64::from(y)));
         }
         if let Some(auto_pan_padding) = auto_pan_padding {
-            options.set_auto_pan_padding(leaflet::Point::from(auto_pan_padding.get_untracked()));
+            let (x, y) = auto_pan_padding.get_untracked();
+            options.set_auto_pan_padding(leaflet::Point::new(f64::from(x), f64::from(y)));
         }
         if let Some(keep_in_view) = keep_in_view {
             options.set_keep_in_view(keep_in_view.get_untracked());

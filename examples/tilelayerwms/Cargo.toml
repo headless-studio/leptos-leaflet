@@ -9,7 +9,7 @@ edition = "2021"
 console_error_panic_hook = "0.1"
 geojson = "0.24"
 gloo = { version = "0.11", features = ["net"] }
-leptos = { version = "0.7.0-rc", default-features = false, "features" = [
+leptos = { version = "0.7", default-features = false, "features" = [
     "csr",
 ] }
 leptos-leaflet = { path = "../../leptos-leaflet", default-features = false, features = [
@@ -19,9 +19,6 @@ leptos-leaflet = { path = "../../leptos-leaflet", default-features = false, feat
 web-sys = { version = "0.3", features = ["HtmlBodyElement", "AbortController"] }
 log = "0.4"
 wasm-logger = "0.2"
-
-[patch.crates-io]
-leptos = { git = "https://github.com/leptos-rs/leptos", branch = "main" }
 
 [features]
 csr = []

@@ -5,7 +5,7 @@ version = "0.1.0"
 
 [dependencies]
 console_error_panic_hook = "0.1"
-leptos = { version = "0.7.0-rc", default-features = false, "features" = ["csr"] }
+leptos = { version = "0.7", default-features = false, "features" = ["csr"] }
 leptos-leaflet = { path = "../../leptos-leaflet", default-features = false, features = [
     "csr",
 ] }
