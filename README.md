@@ -26,3 +26,8 @@ Support for leptos 0.7.x exists in the `leptos-0.7` branch. When Leptos 0.7 is r
 - Circle
 - Tooltip
 - Popup
+
+## Compatibility
+
+leptos 0.7.x -> leptos-leaflet 0.9.x
+leptos 0.6.x -> leptos-leaflet 0.8.x
