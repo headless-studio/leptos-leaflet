@@ -26,6 +26,9 @@ pub fn MapContainer(
     /// Wether zoom controls should be added to the map.
     #[prop(optional, default = true)]
     zoom_control: bool,
+    /// Wether mouse wheel zoom controls is enabled or disabled.
+    #[prop(optional, default = true)]
+    scroll_wheel_zoom: bool,
     /// Zoom snap of the map. Defaults to 1.0
     #[prop(optional, default = 1.0)]
     zoom_snap: f64,
@@ -79,6 +82,7 @@ pub fn MapContainer(
 
             let options = leaflet::MapOptions::new();
             options.set_zoom_control(zoom_control);
+            options.set_scroll_wheel_zoom(scroll_wheel_zoom);
             options.set_zoom(zoom);
             options.set_zoom_snap(zoom_snap);
             options.set_zoom_delta(zoom_delta);
