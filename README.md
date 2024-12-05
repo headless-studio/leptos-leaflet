@@ -1,6 +1,7 @@
 # leptos-leaflet
 [![crates.io](https://img.shields.io/crates/v/leptos-leaflet.svg)](https://crates.io/crates/leptos-leaflet)
-![license: MIT](https://img.shields.io/crates/l/syn-rsx.svg)
+[![docs.rs](https://docs.rs/leptos-leaflet/badge.svg)](https://docs.rs/leptos-leaflet)
+[![license: MIT](https://img.shields.io/crates/l/syn-rsx.svg)](https://github.com/headless-studio/leptos-leaflet/LICENSE)
 
 Leaflet components for Leptos. This aims to target the functionality of React-Leaflet. 
 
@@ -29,5 +30,7 @@ Support for leptos 0.7.x exists in the `leptos-0.7` branch. When Leptos 0.7 is r
 
 ## Compatibility
 
-leptos 0.7.x -> leptos-leaflet 0.9.x
-leptos 0.6.x -> leptos-leaflet 0.8.x
+| Crate version | Leptos version |
+|---------------|----------------|
+| 0.9.x         | 0.7.x          |
+| 0.8.x         | 0.6.x          |
