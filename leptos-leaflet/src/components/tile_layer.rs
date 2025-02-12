@@ -1,8 +1,11 @@
 use leptos::logging::warn;
-use leptos::*;
+use leptos::prelude::*;
 
-use crate::components::context::LeafletMapContext;
+use crate::core::JsStoredValue;
 
+use super::LeafletMapContext;
+
+/// A tile layer component.
 #[component(transparent)]
 pub fn TileLayer(
     #[prop(into)] url: String,
@@ -14,7 +17,7 @@ pub fn TileLayer(
 ) -> impl IntoView {
     let map_context = use_context::<LeafletMapContext>().expect("map context not found");
 
-    create_effect(move |_| {
+    Effect::new(move |_| {
         if let Some(map) = map_context.map() {
             let options = leaflet::TileLayerOptions::default();
             if !attribution.is_empty() {
@@ -32,8 +35,10 @@ pub fn TileLayer(
                 (false, false) => (),
             }
 
+            let map_layer = JsStoredValue::new_local(map_layer);
+
             on_cleanup(move || {
-                map_layer.remove();
+                map_layer.with_value(|v| v.remove());
             });
         }
     });

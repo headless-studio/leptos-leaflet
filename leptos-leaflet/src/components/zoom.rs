@@ -1,7 +1,7 @@
-use crate::LeafletMapContext;
-use leaflet::Zoom;
-use leaflet::ZoomOptions;
-use leptos::*;
+use leaflet::{Zoom, ZoomOptions};
+use leptos::prelude::*;
+
+use crate::prelude::LeafletMapContext;
 
 /// Zoom controls
 #[component]
@@ -9,7 +9,7 @@ use leptos::*;
 pub fn Zoom(
     /// Position where the zoom control is shown.
     #[prop(into)]
-    position: MaybeSignal<String>,
+    position: Signal<String>,
     /// Text for "zoom in".
     #[prop(optional)]
     zoom_in_text: Option<String>,
@@ -23,7 +23,7 @@ pub fn Zoom(
     #[prop(optional)]
     zoom_out_title: Option<String>,
 ) -> impl IntoView {
-    let control = store_value(None::<Zoom>);
+    let control = RwSignal::new_local(None::<Zoom>);
 
     let mut options = ZoomOptions::new();
     options.set_position(&position.get_untracked());
@@ -41,7 +41,7 @@ pub fn Zoom(
         options.set_zoom_out_title(&out_title);
     }
 
-    create_effect(move |_| {
+    Effect::new(move |_| {
         let Some(map) = use_context::<LeafletMapContext>()
             .expect("Leaflet context not available. Could not initialize Zoom component.")
             .map()
@@ -51,21 +51,12 @@ pub fn Zoom(
 
         let c = Zoom::new(&options);
         c.add_to(&map);
-        control.set_value(Some(c));
-    });
-
-    on_cleanup(move || {
-        control.with_value(|contr| {
-            if let Some(c) = contr {
-                c.remove();
-            }
-        });
-        control.set_value(None);
+        control.set(Some(c));
     });
 
     let update_position = move || {
         let position = position.get();
-        let Some(c) = control.get_value() else {
+        let Some(c) = control.get() else {
             return;
         };
         c.set_position(&position);

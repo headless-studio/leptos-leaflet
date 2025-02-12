@@ -1,41 +1,41 @@
 use crate::components::context::extend_context_with_overlay;
 use crate::components::position::Position;
-use leptos::*;
+use leptos::prelude::*;
 use wasm_bindgen::JsCast;
 
-use crate::components::context::LeafletMapContext;
-use crate::core::LeafletMaybeSignal;
-use crate::{
-    setup_layer_leaflet_option, setup_layer_leaflet_option_ref, DragEvents, LayerEvents,
-    MouseEvents, MoveEvents, PopupEvents, TooltipEvents,
+use super::{
+    DragEvents, LayerEvents, LeafletMapContext, MouseEvents, MoveEvents, PopupEvents, TooltipEvents,
 };
+use crate::core::{JsSignal, JsStoredValue};
+use crate::{setup_layer_leaflet_option, setup_layer_leaflet_string};
 
+/// A marker component.
 #[component(transparent)]
 pub fn Marker(
     /// Position for the Marker
     #[prop(into)]
-    position: MaybeSignal<Position>,
-    #[prop(into, optional)] draggable: MaybeSignal<bool>,
-    #[prop(into, optional)] keyboard: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] title: LeafletMaybeSignal<String>,
-    #[prop(into, optional)] alt: LeafletMaybeSignal<String>,
-    #[prop(into, optional)] interactive: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] z_index_offset: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] opacity: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] rise_on_hover: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] rise_offset: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] pane: LeafletMaybeSignal<String>,
-    #[prop(into, optional)] shadow_pane: LeafletMaybeSignal<String>,
-    #[prop(into, optional)] bubbling_mouse_events: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] auto_pan: LeafletMaybeSignal<bool>,
-    #[prop(into, optional)] auto_pan_padding: LeafletMaybeSignal<(f64, f64)>,
-    #[prop(into, optional)] auto_pan_speed: LeafletMaybeSignal<f64>,
-    #[prop(into, optional)] icon_class: LeafletMaybeSignal<String>,
-    #[prop(into, optional)] icon_url: LeafletMaybeSignal<String>,
-    #[prop(into, optional)] icon_size: LeafletMaybeSignal<(f64, f64)>,
-    #[prop(into, optional)] icon_anchor: LeafletMaybeSignal<(f64, f64)>,
-    #[prop(into, optional)] attribution: LeafletMaybeSignal<String>,
-    #[prop(into, optional)] rotation: LeafletMaybeSignal<f64>,
+    position: JsSignal<Position>,
+    #[prop(into, optional)] draggable: Signal<bool>,
+    #[prop(into, optional)] keyboard: Signal<Option<bool>>,
+    #[prop(into, optional)] title: Signal<String>,
+    #[prop(into, optional)] alt: Signal<String>,
+    #[prop(into, optional)] interactive: Signal<Option<bool>>,
+    #[prop(into, optional)] z_index_offset: Signal<Option<f64>>,
+    #[prop(into, optional)] opacity: Signal<Option<f64>>,
+    #[prop(into, optional)] rise_on_hover: Signal<Option<bool>>,
+    #[prop(into, optional)] rise_offset: Signal<Option<f64>>,
+    #[prop(into, optional)] pane: Signal<String>,
+    #[prop(into, optional)] shadow_pane: Signal<String>,
+    #[prop(into, optional)] bubbling_mouse_events: Signal<Option<bool>>,
+    #[prop(into, optional)] auto_pan: Signal<Option<bool>>,
+    #[prop(into, optional)] auto_pan_padding: Signal<Option<(f64, f64)>>,
+    #[prop(into, optional)] auto_pan_speed: Signal<Option<f64>>,
+    #[prop(into, optional)] icon_class: Signal<Option<String>>,
+    #[prop(into, optional)] icon_url: Signal<Option<String>>,
+    #[prop(into, optional)] icon_size: Signal<Option<(f64, f64)>>,
+    #[prop(into, optional)] icon_anchor: Signal<Option<(f64, f64)>>,
+    #[prop(into, optional)] attribution: Signal<String>,
+    #[prop(into, optional)] rotation: Signal<Option<f64>>,
     #[prop(into, optional)] move_events: MoveEvents,
     #[prop(into, optional)] mouse_events: MouseEvents,
     #[prop(into, optional)] drag_events: DragEvents,
@@ -45,16 +45,16 @@ pub fn Marker(
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
     let position_tracking = position;
-    let icon_class_tracking = icon_class.clone();
-    let icon_url_tracking = icon_url.clone();
+    let icon_class_tracking = icon_class;
+    let icon_url_tracking = icon_url;
     let icon_size_tracking = icon_size;
     let icon_anchor_tracking = icon_anchor;
     let map_context = use_context::<LeafletMapContext>().expect("Map context not found");
 
     let overlay_context = extend_context_with_overlay();
-    let overlay = store_value(None::<leaflet::Marker>);
+    let overlay = JsStoredValue::new_local(None::<leaflet::Marker>);
 
-    create_effect(move |_| {
+    Effect::new(move |_| {
         if let Some(map) = map_context.map() {
             let options = leaflet::MarkerOptions::new();
             let drag = draggable.get_untracked();
@@ -62,19 +62,19 @@ pub fn Marker(
                 options.set_draggable(drag);
             }
             setup_layer_leaflet_option!(keyboard, options);
-            setup_layer_leaflet_option_ref!(title, options);
-            setup_layer_leaflet_option_ref!(alt, options);
+            setup_layer_leaflet_string!(title, options);
+            setup_layer_leaflet_string!(alt, options);
             setup_layer_leaflet_option!(interactive, options);
             setup_layer_leaflet_option!(z_index_offset, options);
             setup_layer_leaflet_option!(opacity, options);
             setup_layer_leaflet_option!(rise_on_hover, options);
             setup_layer_leaflet_option!(rise_offset, options);
-            setup_layer_leaflet_option_ref!(pane, options);
-            setup_layer_leaflet_option_ref!(shadow_pane, options);
+            setup_layer_leaflet_string!(pane, options);
+            setup_layer_leaflet_string!(shadow_pane, options);
             setup_layer_leaflet_option!(bubbling_mouse_events, options);
             setup_layer_leaflet_option!(auto_pan, options);
             setup_layer_leaflet_option!(auto_pan_speed, options);
-            setup_layer_leaflet_option_ref!(attribution, options);
+            setup_layer_leaflet_string!(attribution, options);
 
             if let Some((x, y)) = auto_pan_padding.get_untracked() {
                 options.set_auto_pan_padding(leaflet::Point::new(x, y));
@@ -102,8 +102,9 @@ pub fn Marker(
                 let icon = leaflet::DivIcon::new(&icon_options);
                 options.set_icon(icon.into());
             }
+
             let marker =
-                leaflet::Marker::new_with_options(&position.get_untracked().into(), &options);
+                leaflet::Marker::new_with_options(&position.get_untracked().as_lat_lng(), &options);
 
             mouse_events.setup(&marker);
             move_events.setup(&marker);
@@ -118,17 +119,17 @@ pub fn Marker(
         };
     });
 
-    let position_stop = watch(
+    let position_stop = Effect::watch(
         move || position_tracking.get(),
         move |position_tracking, _, _| {
-            if let Some(marker) = overlay.get_value() {
-                marker.set_lat_lng(&position_tracking.into());
+            if let Some(marker) = overlay.get_value().as_ref() {
+                marker.set_lat_lng(&position_tracking.as_lat_lng());
             }
         },
         false,
     );
 
-    let icon_stop = watch(
+    let icon_stop = Effect::watch(
         move || {
             (
                 icon_url_tracking.get(),
@@ -167,10 +168,10 @@ pub fn Marker(
         false,
     );
 
-    let opacity_stop = watch(
+    let opacity_stop = Effect::watch(
         move || opacity.get(),
         move |opacity, _, _| {
-            overlay.get_value().and_then(|marker| {
+            overlay.get_value().as_ref().and_then(|marker| {
                 opacity.map(|opacity| {
                     marker.set_opacity(opacity);
                 })
@@ -179,10 +180,10 @@ pub fn Marker(
         false,
     );
 
-    let drag_stop = watch(
+    let drag_stop = Effect::watch(
         move || draggable.get(),
         move |&draggable, _, _| {
-            if let Some(marker) = overlay.get_value() {
+            if let Some(marker) = overlay.get_value().as_ref() {
                 match draggable {
                     true => marker.dragging().enable(),
                     false => marker.dragging().disable(),
@@ -192,14 +193,14 @@ pub fn Marker(
         false,
     );
 
-    let rotation_stop = watch(
+    let rotation_stop = Effect::watch(
         move || rotation.get(),
         move |&rotation, prev_rotation, _| {
-            if let (Some(marker), Some(rotation)) = (overlay.get_value(), rotation) {
+            if let (Some(marker), Some(rotation)) = (overlay.get_value().as_ref(), rotation) {
                 if Some(rotation.trunc()) == prev_rotation.copied().flatten().map(|r| r.trunc()) {
                     return;
                 }
-                if let Ok(internal_icon) = js_sys::Reflect::get(&marker, &"_icon".into()) {
+                if let Ok(internal_icon) = js_sys::Reflect::get(marker, &"_icon".into()) {
                     let internal_icon = internal_icon.unchecked_ref::<web_sys::HtmlElement>();
                     _ = internal_icon
                         .style()
@@ -233,11 +234,11 @@ pub fn Marker(
     );
 
     on_cleanup(move || {
-        position_stop();
-        icon_stop();
-        opacity_stop();
-        drag_stop();
-        rotation_stop();
+        position_stop.stop();
+        icon_stop.stop();
+        opacity_stop.stop();
+        drag_stop.stop();
+        rotation_stop.stop();
         if let Some(overlay) = overlay.get_value() {
             overlay.remove();
         }

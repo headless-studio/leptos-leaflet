@@ -1,31 +1,34 @@
-use crate::components::bounds::Bounds;
-use crate::components::context::LeafletMapContext;
 use leptos::logging::log;
-use leptos::*;
+use leptos::prelude::*;
 
+use crate::core::IntoThreadSafeJsValue;
+
+use super::{Bounds, LeafletMapContext};
+
+/// A video overlay component.
 #[component(transparent)]
 pub fn VideoOverlay(
     #[prop(into)] url: String,
     #[prop(into)] bounds: Bounds,
-    #[prop(into, optional)] opacity: Option<MaybeSignal<f64>>,
-    #[prop(into, optional)] alt: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] interactive: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] cross_origin: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] cross_origin_toggle: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] error_overlay_url: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] z_index: Option<MaybeSignal<f64>>,
-    #[prop(into, optional)] class_name: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] bubbling_mouse_events: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] pane: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] attribution: Option<MaybeSignal<String>>,
-    #[prop(into, optional)] autoplay: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] looped: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] keep_aspect_ratio: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] muted: Option<MaybeSignal<bool>>,
-    #[prop(into, optional)] plays_inline: Option<MaybeSignal<bool>>,
+    #[prop(into, optional)] opacity: Option<Signal<f64>>,
+    #[prop(into, optional)] alt: Option<Signal<String>>,
+    #[prop(into, optional)] interactive: Option<Signal<bool>>,
+    #[prop(into, optional)] cross_origin: Option<Signal<String>>,
+    #[prop(into, optional)] cross_origin_toggle: Option<Signal<bool>>,
+    #[prop(into, optional)] error_overlay_url: Option<Signal<String>>,
+    #[prop(into, optional)] z_index: Option<Signal<f64>>,
+    #[prop(into, optional)] class_name: Option<Signal<String>>,
+    #[prop(into, optional)] bubbling_mouse_events: Option<Signal<bool>>,
+    #[prop(into, optional)] pane: Option<Signal<String>>,
+    #[prop(into, optional)] attribution: Option<Signal<String>>,
+    #[prop(into, optional)] autoplay: Option<Signal<bool>>,
+    #[prop(into, optional)] looped: Option<Signal<bool>>,
+    #[prop(into, optional)] keep_aspect_ratio: Option<Signal<bool>>,
+    #[prop(into, optional)] muted: Option<Signal<bool>>,
+    #[prop(into, optional)] plays_inline: Option<Signal<bool>>,
 ) -> impl IntoView {
     let map_context = use_context::<LeafletMapContext>().expect("map context not found");
-    create_effect(move |_| {
+    Effect::new(move |_| {
         if let Some(map) = map_context.map() {
             log!("Adding image layer: {}", url);
             let options = leaflet::VideoOverlayOptions::new();
@@ -78,7 +81,12 @@ pub fn VideoOverlay(
                 options.set_plays_inline(plays_inline.get_untracked());
             }
 
-            let map_layer = leaflet::VideoOverlay::new_with_options(&url, &bounds.into(), &options);
+            let map_layer = leaflet::VideoOverlay::new_with_options(
+                &url,
+                &bounds.as_lat_lng_bounds(),
+                &options,
+            )
+            .into_thread_safe_js_value();
             map_layer.add_to(&map);
             on_cleanup(move || {
                 map_layer.remove();

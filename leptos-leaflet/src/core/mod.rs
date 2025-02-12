@@ -1,9 +1,11 @@
 /*
  * Copyright (c) HeadlessStudio  2023.
  */
-mod leaflet_maybe_signal;
+mod js_signals;
+mod thread_safe_jsvalue;
 
-pub use leaflet_maybe_signal::LeafletMaybeSignal;
+pub use js_signals::*;
+pub use thread_safe_jsvalue::{ThreadSafeJsValue, IntoThreadSafeJsValue};
 
 pub trait IntoLatLng {
     fn into_lat_lng(self) -> leaflet::LatLng;

@@ -1,25 +1,27 @@
 use leptos::html::Div;
-use leptos::*;
+use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
 
-use crate::components::context::{LeafletMapContext, LeafletOverlayContainerContext};
-use crate::components::position::Position;
+use crate::core::{IntoThreadSafeJsValue, JsSignal};
 
+use super::{LeafletMapContext, LeafletOverlayContainerContext, Position};
+
+/// A tooltip component.
 #[component]
 pub fn Tooltip(
-    #[prop(into, optional)] position: MaybeSignal<Position>,
-    #[prop(into, optional)] permanent: MaybeSignal<bool>,
-    #[prop(into, optional, default="auto".into())] direction: MaybeSignal<String>,
-    #[prop(into, optional)] sticky: MaybeSignal<bool>,
-    #[prop(into, optional, default=0.9.into())] opacity: MaybeSignal<f64>,
+    #[prop(into, optional)] position: JsSignal<Position>,
+    #[prop(into, optional)] permanent: Signal<bool>,
+    #[prop(into, optional, default="auto".into())] direction: Signal<String>,
+    #[prop(into, optional)] sticky: Signal<bool>,
+    #[prop(into, optional, default=0.9.into())] opacity: Signal<f64>,
     children: Children,
 ) -> impl IntoView {
     let map_context = use_context::<LeafletMapContext>();
     let overlay_context = use_context::<LeafletOverlayContainerContext>();
 
-    let content = create_node_ref::<Div>();
+    let content = NodeRef::<Div>::new();
     // let content = view! { <div>{children()}</div>};
-    create_effect(move |_| {
+    Effect::new(move |_| {
         let options = leaflet::TooltipOptions::default();
         options.set_permanent(permanent.get_untracked());
         options.set_direction(direction.get_untracked());
@@ -28,7 +30,8 @@ pub fn Tooltip(
 
         if let Some(overlay_context) = overlay_context {
             if let Some(layer) = overlay_context.container::<leaflet::Layer>() {
-                let tooltip = leaflet::Tooltip::new(&options, Some(layer.unchecked_ref()));
+                let tooltip = leaflet::Tooltip::new(&options, Some(layer.unchecked_ref()))
+                    .into_thread_safe_js_value();
                 let content = content.get_untracked().expect("content ref");
                 tooltip.set_content(content.unchecked_ref());
                 layer.bind_tooltip(&tooltip);
@@ -37,8 +40,11 @@ pub fn Tooltip(
                 });
             }
         } else if let Some(map) = map_context.expect("Map context not found").map() {
-            let tooltip =
-                leaflet::Tooltip::new_with_lat_lng(&position.get_untracked().into(), &options);
+            let tooltip = leaflet::Tooltip::new_with_lat_lng(
+                &position.get_untracked().as_lat_lng(),
+                &options,
+            )
+            .into_thread_safe_js_value();
             let content = content.get_untracked().expect("content ref");
             let html_view: &JsValue = content.unchecked_ref();
             tooltip.set_content(html_view);
@@ -49,5 +55,5 @@ pub fn Tooltip(
         }
     });
 
-    view! { <div style="visibility:collapse"><div _ref=content>{children()}</div></div> }
+    view! { <div style="visibility:collapse"><div node_ref=content>{children()}</div></div> }
 }

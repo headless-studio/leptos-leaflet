@@ -1,4 +1,4 @@
-use leptos::*;
+use leptos::prelude::*;
 
 mod app;
 mod droppables;

@@ -1,18 +1,22 @@
 use leaflet::Map;
-use leptos::{html::Div, *};
+use leptos::{html::Div, prelude::*};
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlDivElement;
 
 use leaflet::LocateOptions;
 
-use crate::components::context::provide_leaflet_context;
-use crate::components::position::Position;
-use crate::{MapEvents, PopupEvents, TooltipEvents};
+use crate::core::JsWriteSignal;
 
+use super::{provide_leaflet_context, MapEvents, PopupEvents, Position, TooltipEvents};
+
+/// A container for the Leaflet map.
+/// 
+/// This is the main container for the Leaflet map. It provides a way to add child nodes to the map.
+/// It also provides a signal to access the map instance, allowing to interact with the map from other components.
 #[component]
 pub fn MapContainer(
-    #[prop(into, optional)] class: MaybeSignal<String>,
-    #[prop(into, optional)] style: MaybeSignal<String>,
+    #[prop(into, optional)] class: Signal<String>,
+    #[prop(into, optional)] style: Signal<String>,
     /// Centers the map on the given location
     #[prop(into, optional)]
     center: Option<Position>,
@@ -22,12 +26,21 @@ pub fn MapContainer(
     /// Wether zoom controls should be added to the map.
     #[prop(optional, default = true)]
     zoom_control: bool,
+    /// Wether mouse wheel zoom controls is enabled or disabled.
+    #[prop(optional, default = true)]
+    scroll_wheel_zoom: bool,
     /// Zoom snap of the map. Defaults to 1.0
     #[prop(optional, default = 1.0)]
     zoom_snap: f64,
     /// Zoom delta of the map. Defaults to 1.0
     #[prop(optional, default = 1.0)]
     zoom_delta: f64,
+    /// Allow zoom on double_click
+    #[prop(optional, default = true)]
+    double_click_zoom: bool,
+    /// Sets the minimum zoom level
+    #[prop(optional, default = 0.0)]
+    min_zoom: f64,
     /// Use geolocation from the browser to track the user
     #[prop(optional)]
     locate: bool,
@@ -40,7 +53,7 @@ pub fn MapContainer(
     /// Sets the view of the map if geolocation is available
     #[prop(optional)]
     set_view: bool,
-    #[prop(optional)] map: Option<WriteSignal<Option<Map>>>,
+    #[prop(optional)] map: Option<JsWriteSignal<Option<Map>>>,
     #[prop(optional)] events: MapEvents,
     #[prop(optional)] popup_events: PopupEvents,
     #[prop(optional)] tooltip_events: TooltipEvents,
@@ -54,32 +67,35 @@ pub fn MapContainer(
     #[prop(optional)]
     children: Option<Children>,
 ) -> impl IntoView {
-    let map_ref = node_ref.unwrap_or(create_node_ref::<Div>());
+    let map_ref = node_ref.unwrap_or_default();
     let map_context = provide_leaflet_context();
 
     let map_load = map_ref;
-    map_load.on_load(move |map_div| {
-        let html_node = map_div.unchecked_ref::<HtmlDivElement>();
-        // Randomize the id of the map
-        if html_node.id().is_empty() {
-            let id = format!("map-{}", rand::random::<u64>());
-            _ = map_div.clone().id(id);
-        }
-        let events = events.clone();
-        let popup_events = popup_events.clone();
-        let tooltip_events = tooltip_events.clone();
-        _ = map_div.on_mount(move |map_div| {
-            let map_div = map_div.unchecked_ref::<HtmlDivElement>();
+    Effect::new(move |_| {
+        if let Some(map_div) = map_load.get() {
+            let html_node = map_div.unchecked_ref::<HtmlDivElement>();
+            // Randomize the id of the map
+            if html_node.id().is_empty() {
+                let id = format!("map-{}", rand::random::<u64>());
+                map_div.set_id(&id);
+            }
+            let events = events.clone();
+            let popup_events = popup_events.clone();
+            let tooltip_events = tooltip_events.clone();
+
             let options = leaflet::MapOptions::new();
             options.set_prefer_canvas(prefer_canvas);
             options.set_zoom_control(zoom_control);
+            options.set_scroll_wheel_zoom(scroll_wheel_zoom);
             options.set_zoom(zoom);
             options.set_zoom_snap(zoom_snap);
             options.set_zoom_delta(zoom_delta);
+            options.set_double_click_zoom(JsValue::from_bool(double_click_zoom));
+            options.set_min_zoom(min_zoom);
             if let Some(center) = center {
-                options.set_center(center.into());
+                options.set_center(center.as_lat_lng());
             }
-            let leaflet_map = Map::new(&map_div.id(), &options);
+            let leaflet_map = Map::new(&html_node.id(), &options);
 
             // Setup events
             events.setup(&leaflet_map);
@@ -98,11 +114,11 @@ pub fn MapContainer(
             if let Some(map) = map {
                 map.set(Some(leaflet_map));
             }
-        });
+        };
     });
 
     on_cleanup(move || {
-        if let Some(map) = map_context.map_signal().get_untracked() {
+        if let Some(map) = map_context.map_untracked().as_ref() {
             map.remove();
         };
     });

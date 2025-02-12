@@ -1,13 +1,13 @@
 use std::time::Duration;
 
-use leptos::*;
-use leptos_leaflet::*;
+use leptos::prelude::*;
+use leptos_leaflet::prelude::*;
 
 #[component]
 pub fn App() -> impl IntoView {
-    let (marker_position, set_marker_position) = create_signal(Position::new(51.49, -0.08));
+    let (marker_position, set_marker_position) = JsRwSignal::new_local(Position::new(51.49, -0.08)).split();
 
-    create_effect(move |_| {
+    Effect::new(move |_| {
         set_interval_with_handle(
             move || {
                 set_marker_position.update(|pos| {

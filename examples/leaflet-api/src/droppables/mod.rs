@@ -1,9 +1,9 @@
 use std::ops::Deref;
 
-use leptos_leaflet::{leaflet::*, IntoLatLng};
+use leptos_leaflet::{leaflet::*, prelude::*};
 
 pub struct DroppableMarker {
-    marker: Marker
+    marker: Marker,
 }
 
 impl DroppableMarker {
