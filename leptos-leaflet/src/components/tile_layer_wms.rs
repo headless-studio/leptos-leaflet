@@ -1,3 +1,4 @@
+use leptos::either::Either;
 use leptos::logging::warn;
 use leptos::prelude::*;
 use leaflet::{Map, TileLayerWms as LeafletTileLayerWms, TileLayerWmsOptions};
@@ -38,9 +39,7 @@ pub fn TileLayerWms(
             });
         }
     });
-    children.map_or(view! { <>""</> }.into_any(), |c| {
-        view! { <>{ c() }</>}.into_any()
-    })
+    children.map_or(Either::Left(view! {}), |c| Either::Right(view! { { c() } }))
 }
 
 #[component(transparent)]
