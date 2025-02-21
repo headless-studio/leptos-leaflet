@@ -135,6 +135,18 @@ impl From<Position> for [f64; 2] {
     }
 }
 
+impl From<(f64, f64)> for Position {
+    fn from(value: (f64, f64)) -> Self {
+        Self::new(value.0, value.1)
+    }
+}
+
+impl From<[f64; 2]> for Position {
+    fn from(value: [f64; 2]) -> Self {
+        Self::new(value[0], value[1])
+    }
+}
+
 impl IntoLatLng for Position {
     fn into_lat_lng(self) -> LatLng {
         LatLng::new(self.lat, self.lng)

@@ -1,4 +1,4 @@
 [workspace]
-members = [ "examples/leaflet-api","leptos-leaflet"]
-exclude = ["examples"]
+exclude  = ["examples"]
+members  = ["examples/*", "leptos-leaflet"]
 resolver = "2"

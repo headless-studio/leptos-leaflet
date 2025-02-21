@@ -29,8 +29,8 @@
 //! ```rust
 //! use std::time::Duration;
 //! 
-//! use leptos::*;
-//! use leptos_leaflet::*;
+//! use leptos::prelude::*;
+//! use leptos_leaflet::prelude::*;
 //! 
 //! #[component]
 //! pub fn App() -> impl IntoView {
@@ -57,12 +57,12 @@
 //!                       <strong>{"A pretty CSS3 popup"}</strong>
 //!                   </Popup>
 //!               </Marker>
-//!                 <Marker position=position!(51.5, -0.065) draggable=true >
+//!                 <Marker position=(51.5, -0.065) draggable=true >
 //!                   <Popup>
 //!                       <strong>{"A pretty CSS3 popup"}</strong>
 //!                   </Popup>
 //!               </Marker>
-//!               <Tooltip position=position!(51.5, -0.06) permanent=true direction="top">
+//!               <Tooltip position=(51.5, -0.06) permanent=true direction="top">
 //!                   <strong>{"And a tooltip"}</strong>
 //!               </Tooltip>
 //!               <Polyline positions=positions(&[(51.505, -0.09), (51.51, -0.1), (51.51, -0.12)])/>
@@ -71,7 +71,7 @@
 //!                     <strong>{"I'm a polygon"}</strong>
 //!                 </Tooltip>
 //!             </Polygon>
-//!             <Circle center=position!(51.505, -0.09) color="blue" radius=200.0>
+//!             <Circle center=(51.505, -0.09) color="blue" radius=200.0>
 //!                 <Tooltip sticky=true>{"I'm a circle"}</Tooltip>
 //!             </Circle>
 //!         </MapContainer>

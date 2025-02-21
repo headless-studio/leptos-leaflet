@@ -280,6 +280,7 @@ fn invalid_thread() -> ! {
 ///
 /// This also adds a type alias for the ThreadSafeJsValue with a suffix.
 /// e.g. JsValue -> JsValueTS
+#[allow(dead_code)]
 #[macro_export]
 macro_rules! impl_thread_safe_js_value {
     ($type:ty) => {

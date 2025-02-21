@@ -1,33 +1,37 @@
 [package]
-name = "leptos-leaflet"
-authors = ["Daniel Santana <danielgsantana@gmail.com>", "Artur Leao <artur.leao@gmail.com>", "Lewin Probst <info@emirror.de>"]
-version = "0.9.1"
+authors = [
+    "Artur Leao <artur.leao@gmail.com>",
+    "Daniel Santana <danielgsantana@gmail.com>",
+    "Lewin Probst <info@emirror.de>",
+]
+description = "Leaflet components to use in Leptos."
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/headless-studio/leptos-leaflet"
-description = "Leaflet components to use in Leptos."
+name = "leptos-leaflet"
 readme = "../README.md"
+repository = "https://github.com/headless-studio/leptos-leaflet"
+version = "0.9.2"
 
 [dependencies]
-getrandom = { version = "0.2", features = ["js"] }
-js-sys = "0.3"
+getrandom = { version = "0.3" }
+js-sys    = "0.3"
 
-leaflet = "0.4"
-leptos = { version = "0.7", default-features = false }
+leaflet     = "0.4"
+leptos      = { version = "0.7", default-features = false }
 leptos_meta = { version = "0.7", default-features = false }
 
 paste = "1.0"
-rand = "0.8"
+rand  = "0.9"
 
-wasm-bindgen = "0.2"
 serde-wasm-bindgen = "0.6"
+wasm-bindgen = "0.2"
 web-sys = { version = "0.3", features = [
-    "console",
-    "HtmlElement",
     "HtmlDivElement",
+    "HtmlElement",
+    "console",
 ] }
 
 [features]
-hydrate = ["leptos/hydrate"]
-csr = ["leptos/csr"]
-ssr = ["leptos/ssr", "leptos_meta/ssr"]
+csr     = ["getrandom/wasm_js", "leptos/csr"]
+hydrate = ["getrandom/wasm_js", "leptos/hydrate"]
+ssr     = ["leptos/ssr", "leptos_meta/ssr"]

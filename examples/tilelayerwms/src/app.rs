@@ -1,5 +1,5 @@
 use geojson::GeoJson;
-use leptos::{prelude::*, spawn::spawn_local};
+use leptos::{prelude::*, task::spawn_local};
 use leptos_leaflet::leaflet::{TileLayerWmsOptions, WmsRequestBuilder};
 use leptos_leaflet::prelude::*;
 
