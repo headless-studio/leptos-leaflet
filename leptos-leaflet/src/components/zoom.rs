@@ -54,6 +54,14 @@ pub fn Zoom(
         control.set(Some(c));
     });
 
+    on_cleanup(move || {
+        control.with_untracked(|contr| {
+            if let Some(c) = contr {
+                c.remove();
+            }
+        });
+    });
+
     let update_position = move || {
         let position = position.get();
         let Some(c) = control.get() else {
