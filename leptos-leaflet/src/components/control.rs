@@ -1,5 +1,6 @@
 use leaflet::Control;
 use leaflet::ControlOptions;
+use leptos::html::Div;
 use leptos::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::HtmlDivElement;
@@ -22,6 +23,16 @@ pub fn Control(
     let options = ControlOptions::new();
     options.set_position(position.get_untracked());
 
+    let ready_signal = Trigger::new();
+    let control_view_ref = NodeRef::<Div>::new();
+    let control_view = move || {
+        view! {
+            <div node_ref=control_view_ref>
+            { children() }
+            </div>
+        }
+    };
+
     Effect::new(move |_| {
         let Some(map) = use_context::<LeafletMapContext>()
             .expect("Leaflet context not available. Could not initialize Control component.")
@@ -33,11 +44,6 @@ pub fn Control(
         let c = Control::new(&options);
 
         // Renders the children of the control.
-        let control_view = view! {
-            { children() }
-        }
-        .to_html();
-
         c.on_add(move |_| {
             let control_html: HtmlDivElement = document()
                 .create_element("div")
@@ -46,13 +52,13 @@ pub fn Control(
             if leaflet_bar {
                 control_html.set_class_name("leaflet-bar");
             }
-            control_html.set_inner_html(&control_view);
 
             control_html.unchecked_into()
         });
 
         c.add_to(&map);
         control.set_value(Some(c));
+        ready_signal.notify();
     });
 
     on_cleanup(move || {
@@ -72,7 +78,22 @@ pub fn Control(
         c.set_position(&position);
     };
 
+    let move_control_view = move || {
+        ready_signal.track();
+        let c = control.get_value();
+        match c {
+            Some(ch) => {
+                ch.get_container()
+                    .prepend_with_node_1(&control_view_ref.get().unwrap())
+                    .expect("append_child failed");
+            }
+            None => (),
+        }
+    };
+
     view! {
+        { control_view }
         { update_position }
+        { move_control_view }
     }
 }
