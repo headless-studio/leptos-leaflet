@@ -81,13 +81,10 @@ pub fn Control(
     let move_control_view = move || {
         ready_signal.track();
         let c = control.get_value();
-        match c {
-            Some(ch) => {
-                ch.get_container()
-                    .prepend_with_node_1(&control_view_ref.get().unwrap())
-                    .expect("append_child failed");
-            }
-            None => (),
+        if let Some(ch) = c {
+            ch.get_container()
+                .prepend_with_node_1(&control_view_ref.get().unwrap())
+                .expect("append_child failed");
         }
     };
 
