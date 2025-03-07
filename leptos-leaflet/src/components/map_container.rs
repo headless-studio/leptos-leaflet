@@ -76,7 +76,7 @@ pub fn MapContainer(
             let html_node = map_div.unchecked_ref::<HtmlDivElement>();
             // Randomize the id of the map
             if html_node.id().is_empty() {
-                let id = format!("map-{}", rand::random::<u64>());
+                let id = format!("map-{}", (js_sys::Math::random() * 1000.0) as u32);
                 map_div.set_id(&id);
             }
             let events = events.clone();
