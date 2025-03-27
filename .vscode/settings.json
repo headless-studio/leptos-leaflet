@@ -1,8 +1,9 @@
 {
     "rust-analyzer.linkedProjects": [
-        ".\\examples\\simple-map\\Cargo.toml",
-        ".\\examples\\with-server\\Cargo.toml",
-        ".\\Cargo.toml"
+        "./examples/simple-map/Cargo.toml",
+        "./examples/with-server/Cargo.toml",
+        "./examples/leaflet-api/Cargo.toml",
+        "./Cargo.toml"
     ],
     // "rust-analyzer.check.allTargets": false,
     // "rust-analyzer.cargo.target": "wasm32-unknown-unknown",
