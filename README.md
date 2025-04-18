@@ -28,5 +28,6 @@ For now only a few of the components are ported, and events must be set in the S
 
 | Crate version | Leptos version |
 |---------------|----------------|
+| 0.10.x        | 0.8.x          |
 | 0.9.x         | 0.7.x          |
 | 0.8.x         | 0.6.x          |
