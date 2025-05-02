@@ -16,8 +16,8 @@ version = "0.9.3"
 js-sys    = "0.3"
 
 leaflet     = "0.4"
-leptos      = { version = "0.7", default-features = false }
-leptos_meta = { version = "0.7", default-features = false }
+leptos      = { version = "0.8", default-features = false }
+leptos_meta = { version = "0.8", default-features = false }
 
 paste = "1.0"
 
