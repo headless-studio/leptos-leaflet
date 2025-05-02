@@ -10,14 +10,14 @@ license = "MIT"
 name = "leptos-leaflet"
 readme = "../README.md"
 repository = "https://github.com/headless-studio/leptos-leaflet"
-version = "0.10.0-rc1"
+version = "0.10.0"
 
 [dependencies]
-js-sys    = "0.3"
+js-sys = "0.3"
 
-leaflet     = "0.4"
-leptos      = { version = "0.8.0-rc", default-features = false }
-leptos_meta = { version = "0.8.0-rc", default-features = false }
+leaflet = "0.4"
+leptos = { version = "0.8", default-features = false }
+leptos_meta = { version = "0.8", default-features = false }
 
 paste = "1.0"
 
@@ -30,6 +30,6 @@ web-sys = { version = "0.3", features = [
 ] }
 
 [features]
-csr     = ["leptos/csr"]
+csr = ["leptos/csr"]
 hydrate = ["leptos/hydrate"]
-ssr     = ["leptos/ssr", "leptos_meta/ssr"]
+ssr = ["leptos/ssr", "leptos_meta/ssr"]
