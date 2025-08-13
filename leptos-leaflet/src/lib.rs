@@ -12,6 +12,7 @@
 //! - [`Polygon`](crate::Polygon): A polygon overlay that represents a polygon on the map.
 //! - [`Polyline`](crate::Polyline): A polyline overlay that represents a polyline on the map.
 //! - [`Popup`](crate::Popup): A popup overlay that represents a popup on the map.
+//! - [`QuadTileLayer`](crate::QuadTileLayer): A tile layer that uses quadkey-based URLs instead of x/y/z coordinates.
 //! - [`TileLayer`](crate::TileLayer): A tile layer that represents a tile layer on the map.
 //! - [`TileLayerWms`](crate::TileLayerWms): A tile layer that represents a tile layer on the map.
 //! - [`Tooltip`](crate::Tooltip): A tooltip overlay that represents a tooltip on the map.
