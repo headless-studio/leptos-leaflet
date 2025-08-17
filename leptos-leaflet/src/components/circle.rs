@@ -11,7 +11,7 @@ use crate::{
 };
 
 /// A circle overlay that represents a circle on the map.
-/// 
+///
 /// The `Circle` component is used to create a circle overlay on the map. It provides options to customize
 /// the appearance of the circle, such as the stroke color, fill color, and radius.
 #[component(transparent)]

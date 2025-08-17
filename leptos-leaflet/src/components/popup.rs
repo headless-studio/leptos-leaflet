@@ -2,7 +2,7 @@ use leptos::html::Div;
 use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
 
-use super::{LeafletMapContext, Position};
+use super::{use_pane_context, LeafletMapContext, Position};
 use crate::core::{IntoThreadSafeJsValue, JsSignal};
 use crate::prelude::LeafletOverlayContainerContext;
 
@@ -35,8 +35,14 @@ pub fn Popup(
     Effect::new(move |_| {
         let inner_content = content;
         let options = leaflet::PopupOptions::default();
+        // Use explicit pane if provided, otherwise use pane context if available
         if let Some(pane) = &pane {
-            options.set_pane(pane.get_untracked());
+            let pane_value = pane.get_untracked();
+            if !pane_value.is_empty() {
+                options.set_pane(pane_value);
+            }
+        } else if let Some(pane_context) = use_pane_context() {
+            options.set_pane(pane_context.name().to_string());
         }
         if let Some(offset) = offset {
             let (x, y) = offset.get_untracked();
@@ -57,7 +63,8 @@ pub fn Popup(
         }
         if let Some(auto_pan_padding_bottom_right) = auto_pan_padding_bottom_right {
             let (x, y) = auto_pan_padding_bottom_right.get_untracked();
-            options.set_auto_pan_padding_bottom_right(leaflet::Point::new(f64::from(x), f64::from(y)));
+            options
+                .set_auto_pan_padding_bottom_right(leaflet::Point::new(f64::from(x), f64::from(y)));
         }
         if let Some(auto_pan_padding) = auto_pan_padding {
             let (x, y) = auto_pan_padding.get_untracked();

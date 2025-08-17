@@ -4,7 +4,8 @@ use leptos::prelude::*;
 use wasm_bindgen::JsCast;
 
 use super::{
-    DragEvents, LayerEvents, LeafletMapContext, MouseEvents, MoveEvents, PopupEvents, TooltipEvents,
+    use_pane_context, DragEvents, LayerEvents, LeafletMapContext, MouseEvents, MoveEvents,
+    PopupEvents, TooltipEvents,
 };
 use crate::core::{JsSignal, JsStoredValue};
 use crate::{setup_layer_leaflet_option, setup_layer_leaflet_string};
@@ -69,7 +70,15 @@ pub fn Marker(
             setup_layer_leaflet_option!(opacity, options);
             setup_layer_leaflet_option!(rise_on_hover, options);
             setup_layer_leaflet_option!(rise_offset, options);
-            setup_layer_leaflet_string!(pane, options);
+
+            // Use explicit pane if provided, otherwise use pane context if available
+            let pane_value = pane.get_untracked();
+            if !pane_value.is_empty() {
+                options.set_pane(pane_value);
+            } else if let Some(pane_context) = use_pane_context() {
+                options.set_pane(pane_context.name().to_string());
+            }
+
             setup_layer_leaflet_string!(shadow_pane, options);
             setup_layer_leaflet_option!(bubbling_mouse_events, options);
             setup_layer_leaflet_option!(auto_pan, options);
