@@ -7,6 +7,7 @@ mod image_overlay;
 mod map_container;
 mod marker;
 mod pane;
+mod pane_strategy;
 mod path_options;
 mod polygon;
 mod polyline;
@@ -34,6 +35,7 @@ pub use pane::{
     provide_pane_context, provide_pane_context_with_renderer, use_pane_context, Pane, PaneContext,
     RendererType,
 };
+pub use pane_strategy::PaneStrategy;
 pub use path_options::*;
 pub use polygon::Polygon;
 pub use polyline::Polyline;

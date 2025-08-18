@@ -1,6 +1,13 @@
 use leptos::prelude::*;
 use leptos_leaflet::prelude::*;
 
+/// Pane Demo - Demonstrates the use of PaneContext with Popup and Tooltip components
+///
+/// This example shows how:
+/// 1. Different panes can be created with custom z-index values for layering control
+/// 2. Popup and Tooltip components automatically inherit the pane context from their parent Pane
+/// 3. Custom renderers (SVG/Canvas) can be specified for vector layers within panes
+/// 4. Components can override the pane context by specifying their own pane parameter
 #[component]
 pub fn App() -> impl IntoView {
     // State for controlling which panes are visible
@@ -119,7 +126,8 @@ pub fn App() -> impl IntoView {
                                 fill_color="lightblue"
                                 fill_opacity=0.5
                             >
-                                <Tooltip>"Background Circle 1 (z-index: 350)"</Tooltip>
+                                // Uses PaneStrategy::Context (default) - inherits the background-pane
+                                <Tooltip>"Background Circle 1 (z-index: 350) - Using Context Strategy"</Tooltip>
                             </Circle>
                             <Circle
                                 center=position!(51.505, -0.09)
@@ -128,7 +136,10 @@ pub fn App() -> impl IntoView {
                                 fill_color="blue"
                                 fill_opacity=0.3
                             >
-                                <Tooltip>"Background Circle 2 (z-index: 350)"</Tooltip>
+                                // Uses explicit PaneStrategy::Custom to override the pane context
+                                <Tooltip pane_strategy=PaneStrategy::Custom(Signal::derive(|| "foreground-pane".to_string()))>
+                                    "Background Circle 2 - Using Custom Strategy (overridden to foreground-pane)"
+                                </Tooltip>
                             </Circle>
                     }.into_any()
                 } else {
@@ -141,13 +152,20 @@ pub fn App() -> impl IntoView {
                 {move || if show_middle_pane.get() {
                     view! {
                             <Marker position=position!(51.505, -0.09) icon_class="red-marker".to_string()>
-                                <Popup>"Red Middle Marker 1 (z-index: 550)"</Popup>
+                                // Uses PaneStrategy::Context (inherits middle-pane)
+                                <Popup>"Red Middle Marker 1 (z-index: 550) - Context Strategy"</Popup>
                             </Marker>
                             <Marker position=position!(51.503, -0.091) icon_class="red-marker".to_string()>
-                                <Popup>"Red Middle Marker 2 (z-index: 550)"</Popup>
+                                // Uses PaneStrategy::Default to ignore pane context and use Leaflet's default
+                                <Popup pane_strategy=PaneStrategy::Default>
+                                    "Red Middle Marker 2 - Default Strategy (Leaflet's default popup pane)"
+                                </Popup>
                             </Marker>
                             <Marker position=position!(51.507, -0.088) icon_class="red-marker".to_string()>
-                                <Popup>"Red Middle Marker 3 (z-index: 550)"</Popup>
+                                // Uses PaneStrategy::Custom with a reactive signal
+                                <Popup pane_strategy=PaneStrategy::Custom(Signal::derive(|| "svg-renderer-pane".to_string()))>
+                                    "Red Middle Marker 3 - Custom Strategy (svg-renderer-pane)"
+                                </Popup>
                             </Marker>
                             <Circle
                                 center=position!(51.505, -0.09)
@@ -156,7 +174,7 @@ pub fn App() -> impl IntoView {
                                 fill_color="pink"
                                 fill_opacity=0.4
                             >
-                                <Tooltip>"Red Middle Circle (z-index: 550)"</Tooltip>
+                                <Tooltip>"Red Middle Circle (z-index: 550) - Context Strategy"</Tooltip>
                             </Circle>
                     }.into_any()
                 } else {
@@ -297,11 +315,31 @@ pub fn App() -> impl IntoView {
                     fill_color="yellow"
                     fill_opacity=0.4
                 >
-                    <Tooltip>"Default Overlay Pane Circle (z-index: 400)"</Tooltip>
+                    // Outside of any Pane context, PaneStrategy::Context behaves like Default
+                    <Tooltip>"Default Overlay Pane Circle (z-index: 400) - Context Strategy (no context available)"</Tooltip>
                 </Circle>
                 <Marker position=position!(51.505, -0.09)>
-                    <Popup>"Default Marker Pane (z-index: 600)"</Popup>
+                    // Demonstrates PaneStrategy::Custom outside of pane context
+                    <Popup pane_strategy=PaneStrategy::Custom(Signal::derive(|| "canvas-renderer-pane".to_string()))>
+                        "Default Marker - Custom Strategy (canvas-renderer-pane)"
+                    </Popup>
                 </Marker>
+
+                // Standalone popup and tooltip to demonstrate PaneStrategy usage
+                <Popup
+                    position=position!(51.512, -0.085)
+                    pane_strategy=PaneStrategy::Default
+                >
+                    "Standalone Popup - Default Strategy (Leaflet's default)"
+                </Popup>
+
+                <Tooltip
+                    position=position!(51.498, -0.095)
+                    permanent=Signal::derive(|| true)
+                    pane_strategy=PaneStrategy::Custom(Signal::derive(|| "foreground-pane".to_string()))
+                >
+                    "Standalone Tooltip - Custom Strategy (foreground-pane)"
+                </Tooltip>
             </MapContainer>
         </div>
     }
