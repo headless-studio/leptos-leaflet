@@ -15,7 +15,7 @@ version = "0.10.0"
 [dependencies]
 js-sys = "0.3"
 
-leaflet = "0.4"
+leaflet = { git = "https://github.com/emirror-de/leaflet-rs", branch = "emirror-de/master" }
 leptos = { version = "0.8", default-features = false }
 leptos_meta = { version = "0.8", default-features = false }
 
