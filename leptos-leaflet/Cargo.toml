@@ -22,6 +22,7 @@ leptos_meta = { version = "0.8", default-features = false }
 paste = "1.0"
 
 serde-wasm-bindgen = "0.6"
+tracing = "0.1.41"
 wasm-bindgen = "0.2"
 web-sys = { version = "0.3", features = [
     "HtmlDivElement",

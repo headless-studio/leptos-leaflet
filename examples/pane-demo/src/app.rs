@@ -7,17 +7,23 @@ pub fn App() -> impl IntoView {
     let (show_background_pane, set_show_background_pane) = signal(true);
     let (show_middle_pane, set_show_middle_pane) = signal(true);
     let (show_foreground_pane, set_show_foreground_pane) = signal(true);
+    let (show_svg_renderer_pane, set_show_svg_renderer_pane) = signal(true);
+    let (show_canvas_renderer_pane, set_show_canvas_renderer_pane) = signal(true);
 
     // Z-index values for demonstration (Leaflet defaults: tiles=200, overlays=400, shadows=500, markers=600, popups=700)
     let background_z_index = 350.0;
     let middle_z_index = 550.0;
     let foreground_z_index = 600.0;
+    let svg_renderer_z_index = 700.0;
+    let canvas_renderer_z_index = 750.0;
 
     view! {
         <div>
             // Controls section
             <div class="controls">
                 <h3>"Pane Controls"</h3>
+                <div class="section">
+                    <h4>"Default Renderer Panes"</h4></div>
                 <div class="control-group">
                     <label>
                         <input
@@ -56,6 +62,36 @@ pub fn App() -> impl IntoView {
                         "Foreground Pane (Green Polygons)"
                     </label>
                     <span class="z-index-info">"z-index: 650"</span>
+                </div>
+
+                <div class="section">
+                    <h4>"Custom Renderer Panes"</h4>
+                </div>
+                <div class="control-group">
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked=show_svg_renderer_pane
+                            on:change=move |ev| {
+                                set_show_svg_renderer_pane.set(event_target_checked(&ev));
+                            }
+                        />
+                        "SVG Renderer Pane (Purple Shapes)"
+                    </label>
+                    <span class="z-index-info">"z-index: 700"</span>
+                </div>
+                <div class="control-group">
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked=show_canvas_renderer_pane
+                            on:change=move |ev| {
+                                set_show_canvas_renderer_pane.set(event_target_checked(&ev));
+                            }
+                        />
+                        "Canvas Renderer Pane (Cyan Shapes)"
+                    </label>
+                    <span class="z-index-info">"z-index: 750"</span>
                 </div>
             </div>
 
@@ -158,6 +194,95 @@ pub fn App() -> impl IntoView {
                             >
                                 <Tooltip>"Foreground Polygon 2 (z-index: 650)"</Tooltip>
                             </Polygon>
+                    }.into_any()
+                } else {
+                    view! {}.into_any()
+                }}
+                </Pane>
+
+                // SVG Renderer Pane - Purple shapes using explicit SVG renderer
+                <Pane name="svg-renderer-pane" z_index=svg_renderer_z_index renderer=RendererType::Svg>
+                {move || if show_svg_renderer_pane.get() {
+                    view! {
+                            <Circle
+                                center=position!(51.501, -0.089)
+                                radius=100.0
+                                color="purple"
+                                fill_color="plum"
+                                fill_opacity=0.6
+                            >
+                                <Tooltip>"SVG Rendered Circle (z-index: 700)"</Tooltip>
+                            </Circle>
+                            <Polygon
+                                color="indigo"
+                                fill_color="violet"
+                                fill_opacity=0.5
+                                positions=positions(&[
+                                    (51.499, -0.087),
+                                    (51.503, -0.087),
+                                    (51.503, -0.091),
+                                    (51.499, -0.091)
+                                ])
+                            >
+                                <Tooltip>"SVG Rendered Polygon (z-index: 700)"</Tooltip>
+                            </Polygon>
+                            <Polyline
+                                color="purple"
+                                weight=4.0
+                                positions=positions(&[
+                                    (51.500, -0.088),
+                                    (51.502, -0.090),
+                                    (51.504, -0.088),
+                                    (51.506, -0.090)
+                                ])
+                            >
+                                <Tooltip>"SVG Rendered Polyline (z-index: 700)"</Tooltip>
+                            </Polyline>
+                    }.into_any()
+                } else {
+                    view! {}.into_any()
+                }}
+                </Pane>
+
+                // Canvas Renderer Pane - Cyan shapes using explicit Canvas renderer
+                <Pane name="canvas-renderer-pane" z_index=canvas_renderer_z_index renderer=RendererType::Svg>
+                {move || if show_canvas_renderer_pane.get() {
+                    view! {
+                            <Circle
+                                center=position!(51.509, -0.089)
+                                radius=80.0
+                                color="cyan"
+                                fill_color="lightcyan"
+                                fill_opacity=0.7
+                            >
+                                <Tooltip>"Canvas Rendered Circle (z-index: 750)"</Tooltip>
+                            </Circle>
+                            <Polygon
+                                color="darkcyan"
+                                fill_color="aqua"
+                                fill_opacity=0.5
+                                positions=positions(&[
+                                    (51.507, -0.087),
+                                    (51.511, -0.087),
+                                    (51.511, -0.091),
+                                    (51.507, -0.091)
+                                ])
+                            >
+                                <Tooltip>"Canvas Rendered Polygon (z-index: 750)"</Tooltip>
+                            </Polygon>
+                            <Polyline
+                                color="teal"
+                                weight=3.0
+                                dash_array="5, 5"
+                                positions=positions(&[
+                                    (51.508, -0.088),
+                                    (51.510, -0.090),
+                                    (51.512, -0.088),
+                                    (51.514, -0.090)
+                                ])
+                            >
+                                <Tooltip>"Canvas Rendered Polyline (z-index: 750)"</Tooltip>
+                            </Polyline>
                     }.into_any()
                 } else {
                     view! {}.into_any()

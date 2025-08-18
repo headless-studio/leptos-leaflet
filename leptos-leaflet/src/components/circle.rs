@@ -2,13 +2,15 @@ use leaflet::CircleOptions;
 use leptos::prelude::*;
 
 use super::{
-    extend_context_with_overlay, FillRule, LayerEvents, LeafletMapContext, LineCap, LineJoin,
-    MouseEvents, MoveEvents, PopupEvents, Position, StringEmptyOption, TooltipEvents,
+    extend_context_with_overlay, use_pane_context, FillRule, LayerEvents, LeafletMapContext,
+    LineCap, LineJoin, MouseEvents, MoveEvents, PopupEvents, Position, RendererType,
+    StringEmptyOption, TooltipEvents,
 };
 use crate::{
     core::{JsSignal, JsStoredValue},
     setup_layer_leaflet_option, setup_layer_leaflet_option_ref, setup_layer_leaflet_string,
 };
+use tracing::debug;
 
 /// A circle overlay that represents a circle on the map.
 ///
@@ -68,6 +70,47 @@ pub fn Circle(
             setup_layer_leaflet_option_ref!(fill_rule, options);
             setup_layer_leaflet_option!(bubbling_mouse_events, options);
             setup_layer_leaflet_string!(class_name, options);
+
+            // Set pane and renderer if available from pane context
+            if let Some(pane_context) = use_pane_context() {
+                debug!(
+                    "Circle using pane: {} with renderer type: {:?}",
+                    pane_context.name(),
+                    pane_context.renderer_type()
+                );
+                options.set_pane(pane_context.name().to_string());
+
+                match pane_context.renderer_type() {
+                    RendererType::Svg => {
+                        debug!("Setting SVG renderer for pane: {}", pane_context.name());
+                        if let Some(renderer) = pane_context.svg_renderer() {
+                            debug!("SVG renderer found for pane: {}", pane_context.name());
+                            options.set_renderer(renderer.clone().into());
+                        } else {
+                            debug!("SVG renderer NOT found for pane: {}", pane_context.name());
+                        }
+                    }
+                    RendererType::Canvas => {
+                        debug!("Setting Canvas renderer for pane: {}", pane_context.name());
+                        if let Some(renderer) = pane_context.canvas_renderer() {
+                            debug!("Canvas renderer found for pane: {}", pane_context.name());
+                            options.set_renderer(renderer.clone().into());
+                        } else {
+                            debug!(
+                                "Canvas renderer NOT found for pane: {}",
+                                pane_context.name()
+                            );
+                        }
+                    }
+                    RendererType::Default => {
+                        debug!("Using default renderer for pane: {}", pane_context.name());
+                        // Use default rendering but still set the pane
+                    }
+                }
+            } else {
+                debug!("Circle created with NO pane context - using default pane");
+            }
+
             let circle =
                 leaflet::Circle::new_with_options(&center.get_untracked().into(), &options);
 

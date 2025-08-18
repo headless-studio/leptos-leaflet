@@ -30,7 +30,10 @@ pub use image_overlay::ImageOverlay;
 pub use leaflet::{CircleOptions, PathOptions, PolylineOptions};
 pub use map_container::{LeafletMap, MapContainer};
 pub use marker::Marker;
-pub use pane::{provide_pane_context, use_pane_context, Pane, PaneContext};
+pub use pane::{
+    provide_pane_context, provide_pane_context_with_renderer, use_pane_context, Pane, PaneContext,
+    RendererType,
+};
 pub use path_options::*;
 pub use polygon::Polygon;
 pub use polyline::Polyline;

@@ -2,13 +2,15 @@ use leaflet::{to_lat_lng_array, PolylineOptions};
 use leptos::prelude::*;
 
 use super::{
-    extend_context_with_overlay, update_overlay_context, FillRule, LayerEvents, LeafletMapContext,
-    LineCap, LineJoin, MouseEvents, PopupEvents, Position, StringEmptyOption, TooltipEvents,
+    extend_context_with_overlay, update_overlay_context, use_pane_context, FillRule, LayerEvents,
+    LeafletMapContext, LineCap, LineJoin, MouseEvents, PopupEvents, Position, RendererType,
+    StringEmptyOption, TooltipEvents,
 };
 use crate::core::JsStoredValue;
 use crate::{
     setup_layer_leaflet_option, setup_layer_leaflet_option_ref, setup_layer_leaflet_string,
 };
+use tracing::debug;
 
 /// A polyline overlay that represents a polyline on the map.
 #[component(transparent)]
@@ -67,6 +69,31 @@ pub fn Polyline(
             setup_layer_leaflet_string!(class_name, options);
             setup_layer_leaflet_option!(smooth_factor, options);
             setup_layer_leaflet_option!(no_clip, options);
+
+            // Set pane and renderer if available from pane context
+            if let Some(pane_context) = use_pane_context() {
+                debug!("Polyline using pane: {}", pane_context.name());
+                options.set_pane(pane_context.name().to_string());
+
+                match pane_context.renderer_type() {
+                    RendererType::Svg => {
+                        debug!("Setting SVG renderer for pane: {}", pane_context.name());
+                        if let Some(renderer) = pane_context.svg_renderer() {
+                            options.set_renderer(renderer.clone().into());
+                        }
+                    }
+                    RendererType::Canvas => {
+                        debug!("Setting Canvas renderer for pane: {}", pane_context.name());
+                        if let Some(renderer) = pane_context.canvas_renderer() {
+                            options.set_renderer(renderer.clone().into());
+                        }
+                    }
+                    RendererType::Default => {
+                        debug!("Using default renderer for pane: {}", pane_context.name());
+                        // Use default rendering but still set the pane
+                    }
+                }
+            }
             let polyline = leaflet::Polyline::new_with_options(&lat_lngs, &options);
 
             mouse_events.setup(&polyline);
