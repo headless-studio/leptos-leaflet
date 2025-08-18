@@ -10,7 +10,7 @@ license = "MIT"
 name = "leptos-leaflet"
 readme = "../README.md"
 repository = "https://github.com/headless-studio/leptos-leaflet"
-version = "0.10.0"
+version = "0.10.1"
 
 [dependencies]
 js-sys = "0.3"
