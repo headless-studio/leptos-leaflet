@@ -143,9 +143,7 @@ pub fn Pane(
             // Set z-index if provided
             if let Some(z_idx) = z_index {
                 let z_value = z_idx.get_untracked();
-                if z_value > 0.0 {
-                    let _ = pane.style().set_property("z-index", &z_value.to_string());
-                }
+                let _ = pane.style().set_property("z-index", &z_value.to_string());
             }
 
             pane_element.set_value(Some(pane));
@@ -174,9 +172,7 @@ pub fn Pane(
             move || z_idx.get(),
             move |&z_value, _, _| {
                 if let Some(pane) = pane_element.get_value().as_ref() {
-                    if z_value > 0.0 {
-                        let _ = pane.style().set_property("z-index", &z_value.to_string());
-                    }
+                    let _ = pane.style().set_property("z-index", &z_value.to_string());
                 }
             },
             false,
