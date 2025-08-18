@@ -1,3 +1,4 @@
+use leptos::html::Div;
 use leptos::prelude::*;
 use web_sys::HtmlElement;
 
@@ -128,6 +129,9 @@ pub fn Pane(
     // Store the pane element
     let pane_element = JsStoredValue::new_local(None::<HtmlElement>);
 
+    // Create a node ref to hold the children content
+    let content_ref = NodeRef::<Div>::new();
+
     Effect::new(move |_| {
         if let Some(map) = map_context.map() {
             // Get the map container to use as the parent for the pane
@@ -145,6 +149,22 @@ pub fn Pane(
             }
 
             pane_element.set_value(Some(pane));
+        }
+    });
+
+    // Effect to move content to pane when both are available
+    let content_ref_clone = content_ref.clone();
+    let pane_element_clone = pane_element.clone();
+    Effect::new(move |_| {
+        // Wait for both the pane and content to be available
+        if let (Some(pane), Some(content_div)) = (
+            pane_element_clone.get_value().as_ref(),
+            content_ref_clone.get(),
+        ) {
+            // Move all children from the hidden div to the pane
+            while let Some(child) = content_div.first_child() {
+                let _ = pane.append_child(&child);
+            }
         }
     });
 
@@ -179,7 +199,14 @@ pub fn Pane(
     // Provide context for child components so they know which pane to use
     provide_pane_context(name_clone);
 
-    children.map(|child| child())
+    // Render children to a hidden div, then move them to the pane
+    view! {
+        <div style="display: none;">
+            <div node_ref=content_ref>
+                {children.map(|child| child())}
+            </div>
+        </div>
+    }
 }
 
 #[cfg(test)]
