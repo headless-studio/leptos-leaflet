@@ -9,21 +9,9 @@ pub fn App() -> impl IntoView {
     let (show_foreground_pane, set_show_foreground_pane) = signal(true);
 
     // Z-index values for demonstration (Leaflet defaults: tiles=200, overlays=400, shadows=500, markers=600, popups=700)
-    let background_z_index = Signal::derive(move || {
-        if show_background_pane.get() {
-            350.0 // Below default overlay pane (400)
-        } else {
-            0.0
-        }
-    });
-    let middle_z_index = Signal::derive(move || if show_middle_pane.get() { 550.0 } else { 0.0 }); // Between shadows (500) and markers (600)
-    let foreground_z_index = Signal::derive(move || {
-        if show_foreground_pane.get() {
-            650.0 // Above default marker pane (600)
-        } else {
-            0.0
-        }
-    });
+    let background_z_index = 350.0;
+    let middle_z_index = 550.0;
+    let foreground_z_index = 600.0;
 
     view! {
         <div>
@@ -85,9 +73,9 @@ pub fn App() -> impl IntoView {
                 />
 
                 // Background Pane - Blue Circles (lowest z-index)
+                <Pane name="background-pane" z_index=background_z_index>
                 {move || if show_background_pane.get() {
                     view! {
-                        <Pane name="background-pane" z_index=background_z_index>
                             <Circle
                                 center=position!(51.505, -0.09)
                                 radius=400.0
@@ -106,16 +94,16 @@ pub fn App() -> impl IntoView {
                             >
                                 <Tooltip>"Background Circle 2 (z-index: 350)"</Tooltip>
                             </Circle>
-                        </Pane>
                     }.into_any()
                 } else {
                     view! {}.into_any()
                 }}
+                </Pane>
 
                 // Middle Pane - Red Markers (middle z-index)
+                <Pane name="middle-pane" z_index=middle_z_index>
                 {move || if show_middle_pane.get() {
                     view! {
-                        <Pane name="middle-pane" z_index=middle_z_index>
                             <Marker position=position!(51.505, -0.09) icon_class="red-marker".to_string()>
                                 <Popup>"Red Middle Marker 1 (z-index: 550)"</Popup>
                             </Marker>
@@ -134,16 +122,16 @@ pub fn App() -> impl IntoView {
                             >
                                 <Tooltip>"Red Middle Circle (z-index: 550)"</Tooltip>
                             </Circle>
-                        </Pane>
                     }.into_any()
                 } else {
                     view! {}.into_any()
                 }}
+                </Pane>
 
                 // Foreground Pane - Green Polygons (highest z-index)
+                <Pane name="foreground-pane" z_index=foreground_z_index>
                 {move || if show_foreground_pane.get() {
                     view! {
-                        <Pane name="foreground-pane" z_index=foreground_z_index>
                             <Polygon
                                 color="green"
                                 fill_color="lightgreen"
@@ -170,11 +158,11 @@ pub fn App() -> impl IntoView {
                             >
                                 <Tooltip>"Foreground Polygon 2 (z-index: 650)"</Tooltip>
                             </Polygon>
-                        </Pane>
                     }.into_any()
                 } else {
                     view! {}.into_any()
                 }}
+                </Pane>
 
                 // Add additional elements outside of panes for comparison
                 <Circle
