@@ -69,6 +69,8 @@ pub fn Polygon(
             setup_layer_leaflet_option_ref!(fill_rule, options);
             setup_layer_leaflet_option!(bubbling_mouse_events, options);
             setup_layer_leaflet_string!(class_name, options);
+            setup_layer_leaflet_option!(smooth_factor, options);
+            setup_layer_leaflet_option!(no_clip, options);
 
             // Set pane and renderer if available from pane context
             if let Some(pane_context) = use_pane_context() {
