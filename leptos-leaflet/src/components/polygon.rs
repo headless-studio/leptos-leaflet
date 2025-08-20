@@ -3,13 +3,15 @@ use leptos::prelude::*;
 use leaflet::{to_lat_lng_array, PolylineOptions};
 
 use super::{
-    extend_context_with_overlay, update_overlay_context, FillRule, LayerEvents, LeafletMapContext,
-    LineCap, LineJoin, MouseEvents, PopupEvents, Position, StringEmptyOption, TooltipEvents,
+    extend_context_with_overlay, update_overlay_context, use_pane_context, FillRule, LayerEvents,
+    LeafletMapContext, LineCap, LineJoin, MouseEvents, PaneRendererScope, PopupEvents, Position,
+    StringEmptyOption, TooltipEvents,
 };
 use crate::core::JsStoredValue;
 use crate::{
     setup_layer_leaflet_option, setup_layer_leaflet_option_ref, setup_layer_leaflet_string,
 };
+use tracing::debug;
 
 /// A polygon overlay that represents a polygon on the map.
 #[component(transparent)]
@@ -69,6 +71,40 @@ pub fn Polygon(
             setup_layer_leaflet_string!(class_name, options);
             setup_layer_leaflet_option!(smooth_factor, options);
             setup_layer_leaflet_option!(no_clip, options);
+
+            // Set pane and renderer if available from pane context
+            if let Some(pane_context) = use_pane_context() {
+                debug!("Polygon using pane: {}", pane_context.name());
+                options.set_pane(pane_context.name().to_string());
+
+                match pane_context.renderer_scope() {
+                    PaneRendererScope::PaneSpecificSvg => {
+                        debug!(
+                            "Setting pane-specific SVG renderer for pane: {}",
+                            pane_context.name()
+                        );
+                        if let Some(renderer) = pane_context.svg_renderer() {
+                            options.set_renderer(renderer.clone().into());
+                        }
+                    }
+                    PaneRendererScope::PaneSpecificCanvas => {
+                        debug!(
+                            "Setting pane-specific Canvas renderer for pane: {}",
+                            pane_context.name()
+                        );
+                        if let Some(renderer) = pane_context.canvas_renderer() {
+                            options.set_renderer(renderer.clone().into());
+                        }
+                    }
+                    PaneRendererScope::Global => {
+                        debug!("Using global renderer for pane: {}", pane_context.name());
+                        // Use global rendering but still set the pane
+                        options.set_pane(pane_context.name().to_string());
+                    }
+                }
+            } else {
+                debug!("Pane context NOT available.");
+            }
 
             let polygon = leaflet::Polygon::new_with_options(&lat_lngs, &options);
 

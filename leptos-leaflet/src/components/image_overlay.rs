@@ -1,8 +1,7 @@
+use super::{use_pane_context, Bounds, LeafletMapContext};
+use crate::core::IntoThreadSafeJsValue;
 use leptos::logging::log;
 use leptos::prelude::*;
-use super::{Bounds, LeafletMapContext};
-use crate::core::IntoThreadSafeJsValue;
-
 
 /// An image overlay component.
 #[component(transparent)]
@@ -50,18 +49,29 @@ pub fn ImageOverlay(
             if let Some(class_name) = &class_name {
                 options.set_class_name(class_name.get_untracked());
             }
-            if let Some(bubbling_mouse_events) = bubbling_mouse_events {
+            if let Some(bubbling_mouse_events) = &bubbling_mouse_events {
                 options.set_bubbling_mouse_events(bubbling_mouse_events.get_untracked());
             }
+
+            // Use explicit pane if provided, otherwise use pane context if available
             if let Some(pane) = &pane {
-                options.set_pane(pane.get_untracked());
+                let pane_value = pane.get_untracked();
+                if !pane_value.is_empty() {
+                    options.set_pane(pane_value);
+                }
+            } else if let Some(pane_context) = use_pane_context() {
+                options.set_pane(pane_context.name().to_string());
             }
             if let Some(attribution) = &attribution {
                 options.set_attribution(attribution.get_untracked());
             }
 
-            let map_layer = leaflet::ImageOverlay::new_with_options(&url, &bounds.as_lat_lng_bounds(), &options)
-                .into_thread_safe_js_value();
+            let map_layer = leaflet::ImageOverlay::new_with_options(
+                &url,
+                &bounds.as_lat_lng_bounds(),
+                &options,
+            )
+            .into_thread_safe_js_value();
             map_layer.add_to(&map);
             on_cleanup(move || {
                 map_layer.remove();

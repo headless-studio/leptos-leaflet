@@ -23,6 +23,7 @@ For now only a few of the components are ported, and events must be set in the S
 - Circle
 - Tooltip
 - Popup
+- Pane
 
 ## Compatibility
 

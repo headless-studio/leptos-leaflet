@@ -15,13 +15,14 @@ version = "0.10.1"
 [dependencies]
 js-sys = "0.3"
 
-leaflet = "0.4"
+leaflet = { git = "https://github.com/slowtec/leaflet-rs", rev = "a50652b" }
 leptos = { version = "0.8", default-features = false }
 leptos_meta = { version = "0.8", default-features = false }
 
 paste = "1.0"
 
 serde-wasm-bindgen = "0.6"
+tracing = "0.1.41"
 wasm-bindgen = "0.2"
 web-sys = { version = "0.3", features = [
     "HtmlDivElement",

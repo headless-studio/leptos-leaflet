@@ -2,15 +2,118 @@ use leptos::html::Div;
 use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
 
-use super::{LeafletMapContext, Position};
+use super::{use_pane_context, LeafletMapContext, PaneStrategy, Position};
 use crate::core::{IntoThreadSafeJsValue, JsSignal};
 use crate::prelude::LeafletOverlayContainerContext;
 
 /// A popup component for displaying content on the map.
+///
+/// This component supports different pane handling strategies through the `pane_strategy` parameter.
+///
+/// # Pane Integration
+///
+/// The `pane_strategy` parameter controls how the popup determines which pane to use:
+/// - **PaneStrategy::Context** (default): Uses the pane context from parent `Pane` components
+/// - **PaneStrategy::Custom(signal)**: Uses a specific pane name (can be reactive)
+/// - **PaneStrategy::Default**: Uses Leaflet's default popup pane behavior
+///
+/// # Examples
+///
+/// Basic popup using pane context (default behavior):
+/// ```rust,no_run
+/// use leptos::prelude::*;
+/// use leptos_leaflet::prelude::*;
+///
+/// #[component]
+/// fn App() -> impl IntoView {
+///     view! {
+///         <MapContainer center=Position::new(51.505, -0.09) zoom=13.0>
+///             <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
+///
+///             <Pane name="custom-pane" z_index=Signal::derive(|| 650.0)>
+///                 <Marker position=position!(51.505, -0.09)>
+///                     // This popup will automatically use "custom-pane" (default behavior)
+///                     <Popup>"I'm in the custom pane!"</Popup>
+///                 </Marker>
+///             </Pane>
+///         </MapContainer>
+///     }
+/// }
+/// ```
+///
+/// Popup with explicit pane strategy:
+/// ```rust,no_run
+/// use leptos::prelude::*;
+/// use leptos_leaflet::prelude::*;
+///
+/// #[component]
+/// fn ExplicitPaneExample() -> impl IntoView {
+///     view! {
+///         <MapContainer center=Position::new(51.505, -0.09) zoom=13.0>
+///             <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
+///
+///             <Pane name="background-pane" z_index=Signal::derive(|| 350.0)>
+///                 <Marker position=position!(51.505, -0.09)>
+///                     // This popup uses a custom pane, ignoring the parent pane context
+///                     <Popup pane_strategy=PaneStrategy::Custom(Signal::derive(|| "popup-pane".to_string()))>
+///                         "I'm in a different pane than my parent!"
+///                     </Popup>
+///                 </Marker>
+///             </Pane>
+///         </MapContainer>
+///     }
+/// }
+/// ```
+///
+/// Popup using Leaflet's default behavior:
+/// ```rust,no_run
+/// use leptos::prelude::*;
+/// use leptos_leaflet::prelude::*;
+///
+/// #[component]
+/// fn DefaultPaneExample() -> impl IntoView {
+///     view! {
+///         <MapContainer center=Position::new(51.505, -0.09) zoom=13.0>
+///             <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
+///
+///             <Pane name="custom-pane" z_index=Signal::derive(|| 650.0)>
+///                 <Marker position=position!(51.505, -0.09)>
+///                     // This popup ignores both custom and context panes, using Leaflet's default
+///                     <Popup pane_strategy=PaneStrategy::Default>
+///                         "I'm in Leaflet's default popup pane!"
+///                     </Popup>
+///                 </Marker>
+///             </Pane>
+///         </MapContainer>
+///     }
+/// }
+/// ```
+///
+/// Standalone popup with position:
+/// ```rust,no_run
+/// use leptos::prelude::*;
+/// use leptos_leaflet::prelude::*;
+///
+/// #[component]
+/// fn StandalonePopupExample() -> impl IntoView {
+///     view! {
+///         <MapContainer center=Position::new(51.505, -0.09) zoom=13.0>
+///             <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
+///
+///             <Pane name="popup-pane" z_index=Signal::derive(|| 700.0)>
+///                 // Standalone popup that inherits the pane context (default behavior)
+///                 <Popup position=position!(51.505, -0.09)>
+///                     "Standalone popup in custom pane"
+///                 </Popup>
+///             </Pane>
+///         </MapContainer>
+///     }
+/// }
+/// ```
 #[component]
 pub fn Popup(
     #[prop(into, optional)] position: JsSignal<Position>,
-    #[prop(into, optional)] pane: Option<Signal<String>>,
+    #[prop(into, optional)] pane_strategy: Option<PaneStrategy>,
     #[prop(into, optional)] offset: Option<Signal<(i32, i32)>>,
     #[prop(into, optional)] min_width: Option<Signal<f64>>,
     #[prop(into, optional)] max_width: Option<Signal<f64>>,
@@ -35,8 +138,23 @@ pub fn Popup(
     Effect::new(move |_| {
         let inner_content = content;
         let options = leaflet::PopupOptions::default();
-        if let Some(pane) = &pane {
-            options.set_pane(pane.get_untracked());
+
+        // Apply pane strategy
+        match pane_strategy.as_ref().unwrap_or(&PaneStrategy::Context) {
+            PaneStrategy::Custom(pane_signal) => {
+                let pane_value = pane_signal.get_untracked();
+                if !pane_value.is_empty() {
+                    options.set_pane(pane_value);
+                }
+            }
+            PaneStrategy::Context => {
+                if let Some(pane_context) = use_pane_context() {
+                    options.set_pane(pane_context.name().to_string());
+                }
+            }
+            PaneStrategy::Default => {
+                // Use Leaflet's default pane behavior - don't set any pane
+            }
         }
         if let Some(offset) = offset {
             let (x, y) = offset.get_untracked();
@@ -57,7 +175,8 @@ pub fn Popup(
         }
         if let Some(auto_pan_padding_bottom_right) = auto_pan_padding_bottom_right {
             let (x, y) = auto_pan_padding_bottom_right.get_untracked();
-            options.set_auto_pan_padding_bottom_right(leaflet::Point::new(f64::from(x), f64::from(y)));
+            options
+                .set_auto_pan_padding_bottom_right(leaflet::Point::new(f64::from(x), f64::from(y)));
         }
         if let Some(auto_pan_padding) = auto_pan_padding {
             let (x, y) = auto_pan_padding.get_untracked();
