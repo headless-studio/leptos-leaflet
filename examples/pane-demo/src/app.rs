@@ -263,7 +263,7 @@ pub fn App() -> impl IntoView {
                 </Pane>
 
                 // Canvas Renderer Pane - Cyan shapes using explicit Canvas renderer
-                <Pane name="canvas-renderer-pane" z_index=canvas_renderer_z_index renderer=RendererType::Svg>
+                <Pane name="canvas-renderer-pane" z_index=canvas_renderer_z_index renderer=RendererType::Canvas>
                 {move || if show_canvas_renderer_pane.get() {
                     view! {
                             <Circle
