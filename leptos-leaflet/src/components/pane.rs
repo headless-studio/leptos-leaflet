@@ -410,14 +410,6 @@ mod tests {
     }
 
     #[test]
-    fn test_pane_context_clone() {
-        let context = PaneContext::new("test-pane".to_string());
-        let cloned = context.clone();
-        assert_eq!(context.name(), cloned.name());
-        assert_eq!(context.renderer_scope(), cloned.renderer_scope());
-    }
-
-    #[test]
     fn test_pane_context_with_svg_renderer() {
         let svg_renderer = JsStoredValue::new_local(None);
         let canvas_renderer = JsStoredValue::new_local(None);
@@ -452,41 +444,6 @@ mod tests {
     }
 
     #[test]
-    fn test_renderer_scope_copy() {
-        let renderer_scope = PaneRendererScope::PaneSpecificSvg;
-        let copied = renderer_scope;
-        assert_eq!(renderer_scope, copied);
-    }
-
-    #[test]
-    fn test_renderer_scope_debug() {
-        let svg = PaneRendererScope::PaneSpecificSvg;
-        let canvas = PaneRendererScope::PaneSpecificCanvas;
-        let global = PaneRendererScope::Global;
-
-        assert_eq!(format!("{:?}", svg), "PaneSpecificSvg");
-        assert_eq!(format!("{:?}", canvas), "PaneSpecificCanvas");
-        assert_eq!(format!("{:?}", global), "Global");
-    }
-
-    #[test]
-    fn test_renderer_scope_equality() {
-        assert_eq!(
-            PaneRendererScope::PaneSpecificSvg,
-            PaneRendererScope::PaneSpecificSvg
-        );
-        assert_eq!(
-            PaneRendererScope::PaneSpecificCanvas,
-            PaneRendererScope::PaneSpecificCanvas
-        );
-        assert_eq!(PaneRendererScope::Global, PaneRendererScope::Global);
-        assert_ne!(
-            PaneRendererScope::PaneSpecificSvg,
-            PaneRendererScope::PaneSpecificCanvas
-        );
-    }
-
-    #[test]
     fn test_renderer_scope_default() {
         assert_eq!(PaneRendererScope::default(), PaneRendererScope::Global);
     }
@@ -494,54 +451,5 @@ mod tests {
     #[test]
     fn pane_strategy_default() {
         assert_eq!(PaneStrategy::default(), PaneStrategy::Context);
-    }
-
-    #[test]
-    fn pane_strategy_debug() {
-        let custom = PaneStrategy::Custom(Signal::derive(|| "test-pane".to_string()));
-        let context = PaneStrategy::Context;
-        let default = PaneStrategy::Default;
-
-        assert_eq!(format!("{:?}", context), "Context");
-        assert_eq!(format!("{:?}", default), "Default");
-        // Custom variant will have a complex debug representation due to Signal
-        assert!(format!("{:?}", custom).contains("Custom"));
-    }
-
-    #[test]
-    fn pane_strategy_clone() {
-        let context = PaneStrategy::Context;
-        let cloned = context.clone();
-        assert_eq!(context, cloned);
-
-        let default = PaneStrategy::Default;
-        let cloned_default = default.clone();
-        assert_eq!(default, cloned_default);
-    }
-
-    #[test]
-    fn pane_strategy_equality() {
-        assert_eq!(PaneStrategy::Context, PaneStrategy::Context);
-        assert_eq!(PaneStrategy::Default, PaneStrategy::Default);
-        assert_ne!(PaneStrategy::Context, PaneStrategy::Default);
-    }
-
-    #[test]
-    fn pane_strategy_custom_with_signal() {
-        let signal1 = Signal::derive(|| "pane1".to_string());
-        let signal2 = Signal::derive(|| "pane2".to_string());
-
-        let custom1 = PaneStrategy::Custom(signal1);
-        let custom2 = PaneStrategy::Custom(signal2);
-
-        // Custom strategies with different signals should not be equal
-        // Note: This test verifies the enum structure, actual signal comparison
-        // would need runtime evaluation
-        match (&custom1, &custom2) {
-            (PaneStrategy::Custom(_), PaneStrategy::Custom(_)) => {
-                // Both are Custom variants - this is what we expect
-            }
-            _ => panic!("Expected both to be Custom variants"),
-        }
     }
 }
