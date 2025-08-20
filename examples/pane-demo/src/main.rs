@@ -14,10 +14,6 @@ fn main() {
         .with_ansi(false) // Only partially supported across browsers
         .without_time() // std::time is not available in browsers
         .with_writer(MakeWebConsoleWriter::new()); // write events to the console
-                                                   /*
-                                                   let perf_layer =
-                                                       performance_layer().with_details_from_fields(Pretty::default());
-                                                   */
     tracing_subscriber::registry().with(fmt_layer).init();
     trace!("Logging initialized.");
 
