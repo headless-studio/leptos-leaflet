@@ -33,7 +33,7 @@ pub fn Polygon(
     #[prop(into, optional)] bubbling_mouse_events: Signal<Option<bool>>,
     #[prop(into, optional)] class_name: Signal<String>,
     #[prop(into, optional)] smooth_factor: Signal<Option<f64>>,
-    #[prop(into, optional)] _no_clip: Signal<Option<bool>>,
+    #[prop(into, optional)] no_clip: Signal<Option<bool>>,
     #[prop(into, optional)] mouse_events: MouseEvents,
     #[prop(into, optional)] layer_events: LayerEvents,
     #[prop(into, optional)] popup_events: PopupEvents,
