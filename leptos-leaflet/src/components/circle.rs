@@ -3,7 +3,7 @@ use leptos::prelude::*;
 
 use super::{
     extend_context_with_overlay, use_pane_context, FillRule, LayerEvents, LeafletMapContext,
-    LineCap, LineJoin, MouseEvents, MoveEvents, PopupEvents, Position, RendererType,
+    LineCap, LineJoin, MouseEvents, MoveEvents, PaneRendererScope, PopupEvents, Position,
     StringEmptyOption, TooltipEvents,
 };
 use crate::{
@@ -74,37 +74,53 @@ pub fn Circle(
             // Set pane and renderer if available from pane context
             if let Some(pane_context) = use_pane_context() {
                 debug!(
-                    "Circle using pane: {} with renderer type: {:?}",
+                    "Circle using pane: {} with renderer scope: {:?}",
                     pane_context.name(),
-                    pane_context.renderer_type()
+                    pane_context.renderer_scope()
                 );
                 options.set_pane(pane_context.name().to_string());
 
-                match pane_context.renderer_type() {
-                    RendererType::Svg => {
-                        debug!("Setting SVG renderer for pane: {}", pane_context.name());
+                match pane_context.renderer_scope() {
+                    PaneRendererScope::PaneSpecificSvg => {
+                        debug!(
+                            "Setting pane-specific SVG renderer for pane: {}",
+                            pane_context.name()
+                        );
                         if let Some(renderer) = pane_context.svg_renderer() {
-                            debug!("SVG renderer found for pane: {}", pane_context.name());
-                            options.set_renderer(renderer.clone().into());
-                        } else {
-                            debug!("SVG renderer NOT found for pane: {}", pane_context.name());
-                        }
-                    }
-                    RendererType::Canvas => {
-                        debug!("Setting Canvas renderer for pane: {}", pane_context.name());
-                        if let Some(renderer) = pane_context.canvas_renderer() {
-                            debug!("Canvas renderer found for pane: {}", pane_context.name());
+                            debug!(
+                                "Pane-specific SVG renderer found for pane: {}",
+                                pane_context.name()
+                            );
                             options.set_renderer(renderer.clone().into());
                         } else {
                             debug!(
-                                "Canvas renderer NOT found for pane: {}",
+                                "Pane-specific SVG renderer NOT found for pane: {}",
                                 pane_context.name()
                             );
                         }
                     }
-                    RendererType::Default => {
-                        debug!("Using default renderer for pane: {}", pane_context.name());
-                        // Use default rendering but still set the pane
+                    PaneRendererScope::PaneSpecificCanvas => {
+                        debug!(
+                            "Setting pane-specific Canvas renderer for pane: {}",
+                            pane_context.name()
+                        );
+                        if let Some(renderer) = pane_context.canvas_renderer() {
+                            debug!(
+                                "Pane-specific Canvas renderer found for pane: {}",
+                                pane_context.name()
+                            );
+                            options.set_renderer(renderer.clone().into());
+                        } else {
+                            debug!(
+                                "Pane-specific Canvas renderer NOT found for pane: {}",
+                                pane_context.name()
+                            );
+                        }
+                    }
+                    PaneRendererScope::Global => {
+                        debug!("Using global renderer for pane: {}", pane_context.name());
+                        // Use global rendering but still set the pane
+                        options.set_pane(pane_context.name().to_string());
                     }
                 }
             } else {

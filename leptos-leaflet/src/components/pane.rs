@@ -7,20 +7,20 @@ use super::use_leaflet_context;
 use crate::core::JsStoredValue;
 use tracing::debug;
 
-/// Type of renderer to use for vector layers in a pane
+/// Specifies the rendering scope for vector layers within a pane
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum RendererType {
-    /// Use Leaflet's default rendering (typically SVG)
-    Default,
-    /// Force SVG rendering for all child vector layers
-    Svg,
-    /// Force Canvas rendering for all child vector layers
-    Canvas,
+pub enum PaneRendererScope {
+    /// Use the map's global renderer (no pane-specific renderer created)
+    Global,
+    /// Create a pane-specific SVG renderer for all child vector layers
+    PaneSpecificSvg,
+    /// Create a pane-specific Canvas renderer for all child vector layers
+    PaneSpecificCanvas,
 }
 
-impl Default for RendererType {
+impl Default for PaneRendererScope {
     fn default() -> Self {
-        Self::Default
+        Self::Global
     }
 }
 
@@ -28,7 +28,7 @@ impl Default for RendererType {
 #[derive(Debug, Clone)]
 pub struct PaneContext {
     name: String,
-    renderer_type: RendererType,
+    renderer_scope: PaneRendererScope,
     svg_renderer: JsStoredValue<Option<leaflet::Svg>>,
     canvas_renderer: JsStoredValue<Option<leaflet::Canvas>>,
 }
@@ -37,7 +37,7 @@ impl PaneContext {
     pub fn new(name: String) -> Self {
         Self {
             name,
-            renderer_type: RendererType::Default,
+            renderer_scope: PaneRendererScope::Global,
             svg_renderer: JsStoredValue::new_local(None),
             canvas_renderer: JsStoredValue::new_local(None),
         }
@@ -45,13 +45,13 @@ impl PaneContext {
 
     pub fn new_with_renderer(
         name: String,
-        renderer_type: RendererType,
+        renderer_scope: PaneRendererScope,
         svg_renderer: JsStoredValue<Option<leaflet::Svg>>,
         canvas_renderer: JsStoredValue<Option<leaflet::Canvas>>,
     ) -> Self {
         Self {
             name,
-            renderer_type,
+            renderer_scope,
             svg_renderer,
             canvas_renderer,
         }
@@ -61,8 +61,8 @@ impl PaneContext {
         &self.name
     }
 
-    pub fn renderer_type(&self) -> &RendererType {
-        &self.renderer_type
+    pub fn renderer_scope(&self) -> &PaneRendererScope {
+        &self.renderer_scope
     }
 
     /// Gets the SVG renderer if available
@@ -86,12 +86,12 @@ pub fn provide_pane_context(name: String) -> PaneContext {
 /// Provides pane context with renderer for child components
 pub fn provide_pane_context_with_renderer(
     name: String,
-    renderer_type: RendererType,
+    renderer_scope: PaneRendererScope,
     svg_renderer: JsStoredValue<Option<leaflet::Svg>>,
     canvas_renderer: JsStoredValue<Option<leaflet::Canvas>>,
 ) -> PaneContext {
     let context =
-        PaneContext::new_with_renderer(name, renderer_type, svg_renderer, canvas_renderer);
+        PaneContext::new_with_renderer(name, renderer_scope, svg_renderer, canvas_renderer);
     provide_context(context.clone());
     context
 }
@@ -146,7 +146,7 @@ pub fn use_pane_context() -> Option<PaneContext> {
 ///         <MapContainer center=Position::new(51.505, -0.09) zoom=13.0>
 ///             <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
 ///
-///             <Pane name="svg-pane" z_index=Signal::derive(|| 600.0) renderer=RendererType::Svg>
+///             <Pane name="svg-pane" z_index=Signal::derive(|| 600.0) renderer=PaneRendererScope::PaneSpecificSvg>
 ///                 <Circle
 ///                     center=position!(51.505, -0.09)
 ///                     radius=200.0
@@ -175,7 +175,7 @@ pub fn use_pane_context() -> Option<PaneContext> {
 ///         <MapContainer center=Position::new(51.505, -0.09) zoom=13.0>
 ///             <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
 ///
-///             <Pane name="canvas-pane" z_index=Signal::derive(|| 650.0) renderer=RendererType::Canvas>
+///             <Pane name="canvas-pane" z_index=Signal::derive(|| 650.0) renderer=PaneRendererScope::PaneSpecificCanvas>
 ///                 <Polyline
 ///                     positions=positions(&[(51.505, -0.09), (51.51, -0.1), (51.51, -0.12)])
 ///                     color="red"
@@ -245,12 +245,12 @@ pub fn Pane(
     /// Z-index for the pane (optional, controls stacking order)
     #[prop(into, optional)]
     z_index: Option<Signal<f64>>,
-    /// Renderer type for this pane (optional)
-    /// - None (default): Uses Leaflet's default rendering (typically SVG)
-    /// - RendererType::Svg: Forces SVG rendering for all child vector layers
-    /// - RendererType::Canvas: Forces Canvas rendering for all child vector layers
+    /// Renderer scope for this pane (optional)
+    /// - None (default): Uses the map's global renderer (no pane-specific renderer)
+    /// - PaneRendererScope::PaneSpecificSvg: Creates a pane-specific SVG renderer for child vector layers
+    /// - PaneRendererScope::PaneSpecificCanvas: Creates a pane-specific Canvas renderer for child vector layers
     #[prop(into, optional)]
-    renderer: Option<RendererType>,
+    renderer: Option<PaneRendererScope>,
     /// Child components that should be rendered in this pane
     #[prop(optional)]
     children: Option<Children>,
@@ -265,17 +265,17 @@ pub fn Pane(
     let svg_renderer = JsStoredValue::new_local(None::<leaflet::Svg>);
     let canvas_renderer = JsStoredValue::new_local(None::<leaflet::Canvas>);
 
-    let renderer_type = renderer.unwrap_or(RendererType::Default);
+    let renderer_scope = renderer.unwrap_or(PaneRendererScope::Global);
 
     // Provide context for children - this is the key fix!
     // Each Pane provides its own context to its children
     debug!(
-        "Providing pane context for: {} with renderer type: {:?}",
-        name_clone, renderer_type
+        "Providing pane context for: {} with renderer scope: {:?}",
+        name_clone, renderer_scope
     );
     let _pane_context = provide_pane_context_with_renderer(
         name_clone.clone(),
-        renderer_type,
+        renderer_scope,
         svg_renderer.clone(),
         canvas_renderer.clone(),
     );
@@ -283,8 +283,8 @@ pub fn Pane(
     Effect::new(move |_| {
         if let Some(map) = map_context.map() {
             debug!(
-                "Creating pane: {} with renderer type: {:?}",
-                name, renderer_type
+                "Creating pane: {} with renderer scope: {:?}",
+                name, renderer_scope
             );
 
             // Create the pane
@@ -297,27 +297,33 @@ pub fn Pane(
                 debug!("Set z-index {} for pane: {}", z_value, name);
             }
 
-            // Create and add renderer to map based on type
-            match &renderer_type {
-                RendererType::Svg => {
+            // Create and add renderer to map based on scope
+            match &renderer_scope {
+                PaneRendererScope::PaneSpecificSvg => {
                     let options = SvgOptions::default();
                     options.set_pane(name.clone());
                     let renderer = leaflet::Svg::with_options(&options);
                     renderer.add_to(&map);
                     svg_renderer.set_value(Some(renderer));
-                    debug!("Created and stored SVG renderer for pane: {}", name);
+                    debug!(
+                        "Created and stored pane-specific SVG renderer for pane: {}",
+                        name
+                    );
                 }
-                RendererType::Canvas => {
+                PaneRendererScope::PaneSpecificCanvas => {
                     let options = CanvasOptions::default();
                     options.set_pane(name.clone());
                     let renderer = leaflet::Canvas::with_options(&options);
                     renderer.add_to(&map);
                     canvas_renderer.set_value(Some(renderer));
-                    debug!("Created and stored Canvas renderer for pane: {}", name);
+                    debug!(
+                        "Created and stored pane-specific Canvas renderer for pane: {}",
+                        name
+                    );
                 }
-                RendererType::Default => {
-                    // Use default rendering - no custom renderer needed
-                    debug!("Using default renderer for pane: {}", name);
+                PaneRendererScope::Global => {
+                    // Use global rendering - no pane-specific renderer needed
+                    debug!("Using global renderer for pane: {}", name);
                 }
             }
 
@@ -378,7 +384,7 @@ mod tests {
     fn test_pane_context_creation() {
         let context = PaneContext::new("test-pane".to_string());
         assert_eq!(context.name(), "test-pane");
-        assert_eq!(*context.renderer_type(), RendererType::Default);
+        assert_eq!(*context.renderer_scope(), PaneRendererScope::Global);
     }
 
     #[test]
@@ -386,7 +392,7 @@ mod tests {
         let context = PaneContext::new("test-pane".to_string());
         let cloned = context.clone();
         assert_eq!(context.name(), cloned.name());
-        assert_eq!(context.renderer_type(), cloned.renderer_type());
+        assert_eq!(context.renderer_scope(), cloned.renderer_scope());
     }
 
     #[test]
@@ -395,12 +401,15 @@ mod tests {
         let canvas_renderer = JsStoredValue::new_local(None);
         let context = PaneContext::new_with_renderer(
             "svg-pane".to_string(),
-            RendererType::Svg,
+            PaneRendererScope::PaneSpecificSvg,
             svg_renderer,
             canvas_renderer,
         );
         assert_eq!(context.name(), "svg-pane");
-        assert_eq!(*context.renderer_type(), RendererType::Svg);
+        assert_eq!(
+            *context.renderer_scope(),
+            PaneRendererScope::PaneSpecificSvg
+        );
     }
 
     #[test]
@@ -409,42 +418,54 @@ mod tests {
         let canvas_renderer = JsStoredValue::new_local(None);
         let context = PaneContext::new_with_renderer(
             "canvas-pane".to_string(),
-            RendererType::Canvas,
+            PaneRendererScope::PaneSpecificCanvas,
             svg_renderer,
             canvas_renderer,
         );
         assert_eq!(context.name(), "canvas-pane");
-        assert_eq!(*context.renderer_type(), RendererType::Canvas);
+        assert_eq!(
+            *context.renderer_scope(),
+            PaneRendererScope::PaneSpecificCanvas
+        );
     }
 
     #[test]
-    fn test_renderer_type_copy() {
-        let renderer_type = RendererType::Svg;
-        let copied = renderer_type;
-        assert_eq!(renderer_type, copied);
+    fn test_renderer_scope_copy() {
+        let renderer_scope = PaneRendererScope::PaneSpecificSvg;
+        let copied = renderer_scope;
+        assert_eq!(renderer_scope, copied);
     }
 
     #[test]
-    fn test_renderer_type_debug() {
-        let svg = RendererType::Svg;
-        let canvas = RendererType::Canvas;
-        let default = RendererType::Default;
+    fn test_renderer_scope_debug() {
+        let svg = PaneRendererScope::PaneSpecificSvg;
+        let canvas = PaneRendererScope::PaneSpecificCanvas;
+        let global = PaneRendererScope::Global;
 
-        assert_eq!(format!("{:?}", svg), "Svg");
-        assert_eq!(format!("{:?}", canvas), "Canvas");
-        assert_eq!(format!("{:?}", default), "Default");
+        assert_eq!(format!("{:?}", svg), "PaneSpecificSvg");
+        assert_eq!(format!("{:?}", canvas), "PaneSpecificCanvas");
+        assert_eq!(format!("{:?}", global), "Global");
     }
 
     #[test]
-    fn test_renderer_type_equality() {
-        assert_eq!(RendererType::Svg, RendererType::Svg);
-        assert_eq!(RendererType::Canvas, RendererType::Canvas);
-        assert_eq!(RendererType::Default, RendererType::Default);
-        assert_ne!(RendererType::Svg, RendererType::Canvas);
+    fn test_renderer_scope_equality() {
+        assert_eq!(
+            PaneRendererScope::PaneSpecificSvg,
+            PaneRendererScope::PaneSpecificSvg
+        );
+        assert_eq!(
+            PaneRendererScope::PaneSpecificCanvas,
+            PaneRendererScope::PaneSpecificCanvas
+        );
+        assert_eq!(PaneRendererScope::Global, PaneRendererScope::Global);
+        assert_ne!(
+            PaneRendererScope::PaneSpecificSvg,
+            PaneRendererScope::PaneSpecificCanvas
+        );
     }
 
     #[test]
-    fn test_renderer_type_default() {
-        assert_eq!(RendererType::default(), RendererType::Default);
+    fn test_renderer_scope_default() {
+        assert_eq!(PaneRendererScope::default(), PaneRendererScope::Global);
     }
 }

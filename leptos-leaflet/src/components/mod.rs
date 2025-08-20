@@ -33,7 +33,7 @@ pub use map_container::{LeafletMap, MapContainer};
 pub use marker::Marker;
 pub use pane::{
     provide_pane_context, provide_pane_context_with_renderer, use_pane_context, Pane, PaneContext,
-    RendererType,
+    PaneRendererScope,
 };
 pub use pane_strategy::PaneStrategy;
 pub use path_options::*;
