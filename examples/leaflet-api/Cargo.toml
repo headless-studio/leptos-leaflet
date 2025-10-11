@@ -10,6 +10,3 @@ leptos-leaflet = { path = "../../leptos-leaflet", default-features = false, feat
     "csr",
 ] }
 web-sys = { version = "0.3", features = ["HtmlBodyElement"] }
-
-[patch.crates-io]
-leptos = { git = "https://github.com/leptos-rs/leptos", branch = "main" }

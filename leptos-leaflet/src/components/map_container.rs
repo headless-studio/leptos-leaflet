@@ -10,7 +10,7 @@ use crate::core::JsWriteSignal;
 use super::{provide_leaflet_context, MapEvents, PopupEvents, Position, TooltipEvents};
 
 /// A container for the Leaflet map.
-/// 
+///
 /// This is the main container for the Leaflet map. It provides a way to add child nodes to the map.
 /// It also provides a signal to access the map instance, allowing to interact with the map from other components.
 #[component]
@@ -95,7 +95,10 @@ pub fn MapContainer(
             if let Some(center) = center {
                 options.set_center(center.as_lat_lng());
             }
-            let leaflet_map = Map::new(&html_node.id(), &options);
+            let Ok(leaflet_map) = Map::new(&html_node.id(), &options) else {
+                tracing::error!("Failed to create map");
+                return;
+            };
 
             // Setup events
             events.setup(&leaflet_map);
