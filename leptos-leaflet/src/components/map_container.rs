@@ -3,9 +3,9 @@ use leptos::{html::Div, prelude::*};
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlDivElement;
 
-use leaflet::LocateOptions;
-
 use crate::core::JsWriteSignal;
+use leaflet::LocateOptions;
+use leptos::attr::draggable;
 
 use super::{provide_leaflet_context, MapEvents, PopupEvents, Position, TooltipEvents};
 
@@ -56,6 +56,7 @@ pub fn MapContainer(
     /// Sets the view of the map if geolocation is available
     #[prop(optional)]
     set_view: bool,
+    #[prop(optional, default = true)] dragging: bool,
     #[prop(optional)] map: Option<JsWriteSignal<Option<Map>>>,
     #[prop(optional)] events: MapEvents,
     #[prop(optional)] popup_events: PopupEvents,
@@ -87,6 +88,7 @@ pub fn MapContainer(
             let tooltip_events = tooltip_events.clone();
 
             let options = leaflet::MapOptions::new();
+            options.set_dragging(dragging);
             options.set_prefer_canvas(prefer_canvas);
             options.set_zoom_control(zoom_control);
             options.set_scroll_wheel_zoom(scroll_wheel_zoom);
