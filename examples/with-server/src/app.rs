@@ -76,7 +76,7 @@ fn HomePage() -> impl IntoView {
         log!("hello from {:?}", loc.lat_lng());
     };
 
-    let events = MapEvents::new().location_found(location_found);
+    let events = MapEvents::new().set_location_found(location_found);
 
     view! {
           <MapContainer style="height: 400px" center=Position::new(51.505, -0.09) zoom=13.0 set_view=true map=set_map locate=true watch=true events>
