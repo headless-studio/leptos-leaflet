@@ -44,6 +44,9 @@ pub fn MapContainer(
     /// Use geolocation from the browser to track the user
     #[prop(optional)]
     locate: bool,
+    /// Shows the attribution on the map.
+    #[prop(into, optional, default = true)]
+    use_attribution: bool,
     /// Tracks position of the user on the map
     #[prop(optional)]
     watch: bool,
@@ -87,6 +90,7 @@ pub fn MapContainer(
             options.set_prefer_canvas(prefer_canvas);
             options.set_zoom_control(zoom_control);
             options.set_scroll_wheel_zoom(scroll_wheel_zoom);
+            options.set_attribution_control(use_attribution);
             options.set_zoom(zoom);
             options.set_zoom_snap(zoom_snap);
             options.set_zoom_delta(zoom_delta);
