@@ -51,9 +51,21 @@
             .description p {
                 margin-bottom: 8px;
             }
-
             /* Custom red marker styles */
             .red-marker {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 30px !important;
+                height: 30px !important;
+                margin-left: -15px !important; /* offset for centering */
+                margin-top: -30px !important; /* offset for pin point */
+            }
+
+            .red-marker::before {
+                content: "";
+                position: absolute;
                 background-color: #dc3545;
                 border: 2px solid #721c24;
                 border-radius: 50% 50% 50% 0;
@@ -64,14 +76,12 @@
 
             .red-marker::after {
                 content: "";
-                position: absolute;
+                position: relative;
                 width: 8px;
                 height: 8px;
                 border-radius: 50%;
                 background-color: white;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%) rotate(45deg);
+                z-index: 1;
             }
         </style>
     </head>
